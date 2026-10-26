@@ -98,6 +98,10 @@ Shoppers see the shop's current in-stock pieces, always up to date with How many
 | Brand logos are static SVGs in `public/brands/`, matched by slug, with a text fallback | Simple, per-deploy, and works with no extra API | — Pending |
 | Follow `C:\Git\vintage` structure and conventions | User instruction. Keeps both repos consistent | — Pending |
 | Cloudflare Workers through OpenNext | User choice. Vintage already proves the setup | — Pending |
+| `SITE_URL` is `https://www.blacktailarchive.cgaudino.com` for now | The user owns cgaudino.com on Cloudflare. It moves to a dedicated domain later, which is only an env change | — Pending |
+| Condition grades read A Excellent, AB Very good, B Good | User choice | — Pending |
+| No item code on the marketplaces. The item page links to the shop's Vinted and eBay profiles | User choice | — Pending |
+| R2 + D1 tag cache + DO queue, and no `cacheComponents` | Research: Vintage's R2-only config makes `revalidateTag` a no-op, and Cache Components breaks on Workers | — Pending |
 
 ## Open Items
 
