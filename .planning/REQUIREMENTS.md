@@ -7,7 +7,7 @@
 
 ### Foundation
 
-- [ ] **FOUND-01**: The app builds with Next 16 and deploys to Cloudflare Workers through OpenNext, from CI on push to main
+- [x] **FOUND-01**: The app builds with Next 16 and deploys to Cloudflare Workers through OpenNext, from CI on push to main
 - [x] **FOUND-02**: OpenNext uses an R2 incremental cache, a D1 tag cache and a Durable Object queue, so tag revalidation works across Worker isolates
 - [x] **FOUND-03**: Env vars `STORE_SLUG`, `HOWMANY_API_URL`, `HOWMANY_WEBHOOK_SECRET` and `SITE_URL` are validated with Zod, and a bad or missing value stops the app with a clear list of problems
 - [x] **FOUND-04**: CI runs lint, typecheck, tests and an OpenNext worker build on every PR
@@ -121,7 +121,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 | Phase 1 | Pending |
+| FOUND-01 | Phase 1 | Complete |
 | FOUND-02 | Phase 1 | Complete |
 | FOUND-03 | Phase 1 | Complete |
 | FOUND-04 | Phase 1 | Complete |

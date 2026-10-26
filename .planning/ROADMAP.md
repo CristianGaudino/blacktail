@@ -12,7 +12,7 @@ Blacktail goes from an empty repo to a launched Blacktail Archive storefront in 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Live Stock Skeleton** - Deployed Worker shows real How many stock and refreshes within seconds of a signed webhook
+- [x] **Phase 1: Live Stock Skeleton** - Deployed Worker shows real How many stock and refreshes within seconds of a signed webhook (completed 2026-10-26)
 - [ ] **Phase 2: Branded Catalogue** - Blacktail Archive look, header and footer, and the full All Items browse, filter, search, sort and paging
 - [ ] **Phase 3: Item and Brand Pages** - Item page with gallery, details and where to buy, real 404s, JSON-LD, and Brands pages with logos
 - [ ] **Phase 4: Home and Launch** - Mockup home page, Just Dropped, About and Contact, site-wide SEO, and the second-shop onboarding doc
@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   5. Every PR runs lint, typecheck, tests and an OpenNext worker build, and fails if `cacheComponents`, `'use cache'`, `cacheTag`, `cacheLife` or an em dash in `COPY` appears
   6. Every page of the deployed site sends `noindex` (robots meta and `X-Robots-Tag`), so the unfinished site isn't indexed before Phase 4 makes indexing depend on the environment (SEO-03)
 
-**Plans:** 4/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 **Wave 1**
@@ -105,7 +105,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Live Stock Skeleton | 4/4 | In Progress | - |
+| 1. Live Stock Skeleton | 4/4 | Complete    | 2026-10-26 |
 | 2. Branded Catalogue | 0/TBD | Not started | - |
 | 3. Item and Brand Pages | 0/TBD | Not started | - |
 | 4. Home and Launch | 0/TBD | Not started | - |
