@@ -10,6 +10,28 @@ export const CACHE = {
     webhookRevalidate: { expire: 0 },
 } as const;
 
+/** How the catalogue page reads its URL. Param names equal the API's, so a shared link is also an API query */
+export const CATALOGUE = {
+    pageSize:      24,
+    /** Pages past this are clamped, so a made-up page number cannot mint cache keys */
+    maxPage:       500,
+    /** Code points, so the cap never splits a character */
+    maxQueryChars: 80,
+    /** Panel group order, without the ranges */
+    lists:         ['brand', 'type', 'size', 'colour', 'era', 'condition', 'department', 'material'],
+    /** `filter` is the /filters key; step is the snap unit (cents for price, mm for measurements) */
+    ranges: {
+        price:    { filter: 'priceCents', min: 'minPrice',      max: 'maxPrice',      step: 100 },
+        pitToPit: { filter: 'pitToPitMm', min: 'minPitToPitMm', max: 'maxPitToPitMm', step: 10 },
+        length:   { filter: 'lengthMm',   min: 'minLengthMm',   max: 'maxLengthMm',   step: 10 },
+    },
+} as const;
+
+export const SORTS = ['newest', 'price_asc', 'price_desc'] as const;
+/** The API default, so it is left out of URLs and API calls */
+export const DEFAULT_SORT = 'newest';
+export const SEARCH_PARAMS = { q: 'q', sort: 'sort', page: 'page' } as const;
+
 /** The How many public API contract */
 export const STORE_API = {
     listLimit:               100,

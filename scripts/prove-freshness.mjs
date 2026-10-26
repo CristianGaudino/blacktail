@@ -1,6 +1,7 @@
 // Freshness round trip: a signed How many webhook must refresh the list within seconds.
 // Usage: node scripts/prove-freshness.mjs <baseUrl> [--mock <mockUrl>] [--outage]
 // Needs HOWMANY_WEBHOOK_SECRET and STORE_SLUG in the environment. No dependencies.
+// The stock page is /shop; / only redirects to it (307).
 // Runs against `next start`, `wrangler dev` and the deployed Worker. Without --mock only the
 // checks that need no mock run (no request counters, data-as-of only for the round trip).
 import { createHmac } from 'node:crypto';
@@ -24,7 +25,7 @@ const asOf = html => html.match(/data-as-of="([^"]*)"/)?.[1] ?? null;
 const assert = (condition, detail) => { if (!condition) throw new Error(detail); };
 
 async function page() {
-    const res = await fetch(`${base}/`, { redirect: 'manual' });
+    const res = await fetch(`${base}/shop`, { redirect: 'manual' });
     const html = await res.text();
     return { status: res.status, headers: res.headers, html, asOf: asOf(html) };
 }
@@ -73,7 +74,13 @@ await check('ready', async () => {
         } catch { /* server still starting */ }
         await sleep(1000);
     }
-    throw new Error('GET / never returned 200 with a data-as-of value within 60 s');
+    throw new Error('GET /shop never returned 200 with a data-as-of value within 60 s');
+});
+
+await check('home-redirect', async () => {
+    const res = await fetch(`${base}/`, { redirect: 'manual' });
+    assert(res.status === 307, `GET / returned ${res.status}, expected 307`);
+    assert(/\/shop$/.test(res.headers.get('location') ?? ''), `GET / location is ${res.headers.get('location')}, expected one ending in /shop`);
 });
 
 await check('noindex', async () => {

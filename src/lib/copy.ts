@@ -5,6 +5,9 @@ export const COPY = {
         tryAgain: 'Try again',
         goHome:   'Go home',
     },
+    catalogue: {
+        title: 'All Items',
+    },
     stock: {
         empty: 'Nothing is in stock right now. Please check back soon.',
     },
