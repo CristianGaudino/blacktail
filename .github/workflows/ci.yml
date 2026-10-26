@@ -1,0 +1,120 @@
+name: CI
+
+# Pull requests only. Not on a push to main: the pull request ran the same checks.
+# GitHub Actions minutes are limited, and a job is billed in whole minutes.
+# No secrets here: the webhook secret below is a placeholder and fork PRs get none.
+on:
+  pull_request:
+    # A draft costs nothing until it is marked ready, so push to it as often as you like
+    types: [opened, synchronize, reopened, ready_for_review]
+    # Notes and docs can't break anything
+    paths-ignore: ['**.md', '.planning/**']
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - name: Lint
+        run: npm run lint
+      - name: Typecheck
+        run: npm run typecheck
+      # Includes the Cache Components guard and the em dash test
+      - name: Tests
+        run: npm test
+      # No separate build here: the worker job below builds the app (OpenNext runs the Next build), so it would be the same minute twice
+
+  # The Worker has to run before a change reaches production, and the webhook round trip only
+  # exists on Cloudflare's cache (R2, D1, the queue): `next start` can't show it. OpenNext can't
+  # build on Windows, so this job is the only place the Worker is built and run.
+  worker:
+    if: github.event.pull_request.draft == false
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    # Placeholders only. The How many API is a mock on this runner; the build must not call it (checked below).
+    env:
+      STORE_SLUG: blacktail-archive
+      HOWMANY_API_URL: http://127.0.0.1:4010/api/v1/stores/blacktail-archive
+      HOWMANY_WEBHOOK_SECRET: ci-webhook-secret-0123456789
+      SITE_URL: https://www.blacktailarchive.cgaudino.com
+      NEXT_TELEMETRY_DISABLED: 1
+      WRANGLER_SEND_METRICS: false
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # Before the build, so a call the build makes is counted
+      - name: Start the mock How many API
+        run: |
+          node scripts/mock-howmany.mjs --port 4010 > mock.log 2>&1 &
+          curl -s -o /dev/null --retry 30 --retry-connrefused --retry-delay 1 http://127.0.0.1:4010/__count
+      - name: Build for Cloudflare Workers
+        run: npx opennextjs-cloudflare build
+      - name: The build made no How many calls
+        run: |
+          got=$(curl -s http://127.0.0.1:4010/__count)
+          echo "calls during the build: $got"
+          [ "$got" = '{"store":0,"items":0}' ] || { echo 'the build called the API (want {"store":0,"items":0})'; exit 1; }
+      # Creates the local D1 revalidations table the webhook writes to
+      - name: Fill the local cache stores
+        run: npx opennextjs-cloudflare populateCache local
+      - name: Start the Worker
+        run: |
+          printf 'STORE_SLUG=%s\nHOWMANY_API_URL=%s\nHOWMANY_WEBHOOK_SECRET=%s\nSITE_URL=%s\n' \
+            "$STORE_SLUG" "$HOWMANY_API_URL" "$HOWMANY_WEBHOOK_SECRET" "$SITE_URL" > .dev.vars
+          npx wrangler dev --port 8787 --ip 127.0.0.1 > wrangler.log 2>&1 &
+          # Warm up on / (no robots.txt until Phase 4); the result is ignored, an error there still shows in the log
+          curl -s -o /dev/null --retry 60 --retry-connrefused --retry-delay 2 http://127.0.0.1:8787/ || true
+      - name: Prove the freshness round trip on the Worker
+        run: node scripts/prove-freshness.mjs http://127.0.0.1:8787 --mock http://127.0.0.1:4010
+      - name: The Worker logged no error
+        run: |
+          if grep -q ERROR wrangler.log; then echo 'the Worker logged an error:'; grep ERROR wrangler.log | sort -u | head -20; exit 1; fi
+      # After the log check: the outage makes the page log its expected API error
+      - name: Prove the outage path on the Worker
+        run: node scripts/prove-freshness.mjs http://127.0.0.1:8787 --mock http://127.0.0.1:4010 --outage
+      - name: A Worker without its secret refuses to serve
+        run: |
+          pkill -f wrangler || true
+          pkill -f workerd || true
+          sleep 3
+          printf 'STORE_SLUG=%s\nHOWMANY_API_URL=%s\nSITE_URL=%s\n' "$STORE_SLUG" "$HOWMANY_API_URL" "$SITE_URL" > .dev.vars
+          npx wrangler dev --port 8788 --ip 127.0.0.1 > wrangler-bad.log 2>&1 &
+          # Only wait for the port: curl's own retry would also retry the 500 we want
+          code=000
+          for i in $(seq 1 60); do
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 http://127.0.0.1:8788/ || true)
+            if [ "$code" != 000 ]; then break; fi
+            sleep 2
+          done
+          echo "GET / without HOWMANY_WEBHOOK_SECRET: $code (want 500)"
+          [ "$code" = 500 ] || exit 1
+          # The Worker's console output reaches the log file a moment after the response
+          for i in $(seq 1 15); do
+            grep -q "Invalid environment variables" wrangler-bad.log && exit 0
+            sleep 1
+          done
+          echo 'the log does not name the invalid variables'; exit 1
+      - name: Logs
+        if: failure()
+        run: |
+          for f in mock.log wrangler.log wrangler-bad.log; do
+            [ -f "$f" ] && { echo "--- $f (tail) ---"; tail -n 40 "$f"; }
+          done
+          true

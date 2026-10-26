@@ -33,17 +33,17 @@ Decimal phases appear between their surrounding integers in numeric order.
   5. Every PR runs lint, typecheck, tests and an OpenNext worker build, and fails if `cacheComponents`, `'use cache'`, `cacheTag`, `cacheLife` or an em dash in `COPY` appears
   6. Every page of the deployed site sends `noindex` (robots meta and `X-Robots-Tag`), so the unfinished site isn't indexed before Phase 4 makes indexing depend on the environment (SEO-03)
 
-**Plans:** 4 plans
+**Plans:** 3/4 plans executed
 
 Plans:
 **Wave 1**
-- [ ] 01-01-PLAN.md — Walking skeleton: live item list through the tagged fetch and signed-webhook refresh, proven on `next start` against a mock API
+- [x] 01-01-PLAN.md — Walking skeleton: live item list through the tagged fetch and signed-webhook refresh, proven on `next start` against a mock API
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 01-02-PLAN.md — Hardening: env fail-fast, webhook/client unit tests, COPY empty and error screens, Cache Components and em-dash guards, lint and typecheck
+- [x] 01-02-PLAN.md — Hardening: env fail-fast, webhook/client unit tests, COPY empty and error screens, Cache Components and em-dash guards, lint and typecheck
 
 **Wave 3** *(blocked on Wave 2 completion)*
-- [ ] 01-03-PLAN.md — R2 + D1 tag cache + DO queue config, CI check and worker jobs proving the round trip on workerd, PR A
+- [x] 01-03-PLAN.md — R2 + D1 tag cache + DO queue config, CI check and worker jobs proving the round trip on workerd, PR A
 
 **Wave 4** *(blocked on Wave 3 completion)*
 - [ ] 01-04-PLAN.md — Owner Cloudflare/GitHub/How many setup, deploy workflow on push to main, PR B, live checks on the deployed Worker
@@ -105,7 +105,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Live Stock Skeleton | 0/4 | Planned | - |
+| 1. Live Stock Skeleton | 3/4 | In Progress | - |
 | 2. Branded Catalogue | 0/TBD | Not started | - |
 | 3. Item and Brand Pages | 0/TBD | Not started | - |
 | 4. Home and Launch | 0/TBD | Not started | - |
