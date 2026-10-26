@@ -6,7 +6,7 @@ import type { Item } from '@/lib/definitions';
 const formatPrice = (cents: number, currency: string) => new Intl.NumberFormat(undefined, { style: 'currency', currency }).format(cents / 100);
 
 /** data-as-of is the API's Date header for the cached /items response: an attribute only, never visible text */
-export function ItemList({ items, currency, asOf }: { items: Item[]; currency: string; asOf: string | null }) {
+export function ItemList({ items, asOf }: { items: Item[]; asOf: string | null }) {
     return (
         <section data-as-of={asOf ?? undefined}>
             {items.length === 0 ? <p>{COPY.stock.empty}</p> : (
@@ -18,7 +18,7 @@ export function ItemList({ items, currency, asOf }: { items: Item[]; currency: s
                                 {cover && <Image src={cover.thumbUrl} width={cover.width} height={cover.height} alt={[item.brand, item.title].filter(Boolean).join(' ')} />}
                                 {item.brand && <p>{item.brand}</p>}
                                 <p>{item.title}</p>
-                                <p>{formatPrice(item.priceCents, currency)}</p>
+                                <p>{formatPrice(item.priceCents, item.currency)}</p>
                             </li>
                         );
                     })}

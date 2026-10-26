@@ -73,10 +73,13 @@ describe('how many client', () => {
         expect(fetchMock.mock.calls.map(c => c[0])).toEqual([`${base}/items?limit=100`, `${base}/items?limit=100&page=2`]);
     });
 
-    it('stops on an empty page even if total says more', async () => {
-        fetchMock.mockResolvedValueOnce(reply({ items: [item], page: 1, limit: 100, total: 500 })).mockResolvedValueOnce(reply({ items: [], page: 2, limit: 100, total: 500 }));
-        expect((await getItems()).page.items).toHaveLength(1);
-        expect(fetchMock).toHaveBeenCalledTimes(2);
+    it('keeps an item once when it shows on two pages fetched a refresh apart', async () => {
+        const mk = (code: string) => ({ ...item, code });
+        const reply2 = (items: unknown[], n: number) => reply({ items, page: n, limit: 100, total: 101 });
+        fetchMock.mockResolvedValueOnce(reply2(Array.from({ length: 100 }, (_, i) => mk(`A${i}`)), 1)).mockResolvedValueOnce(reply2([mk('A99')], 2));
+        const codes = (await getItems()).page.items.map(i => i.code);
+        expect(codes).toHaveLength(100);
+        expect(new Set(codes).size).toBe(100);
     });
 
     it('returns the response Date header as asOf', async () => {
