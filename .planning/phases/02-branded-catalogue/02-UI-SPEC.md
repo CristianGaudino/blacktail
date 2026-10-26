@@ -58,6 +58,7 @@ Layout constants (also multiples of 4):
 Exceptions:
 - Touch targets are 44px (a multiple of 4): header icon buttons, hamburger, chips' remove target, pager links, colour swatches (24px visible circle, 44px hit area), filter checkbox rows on phones (`min-h-11`). From 1024px, checkbox rows may drop to 32px.
 - Hairlines are 1px borders (not a spacing step).
+- The keyboard focus ring and the selected-swatch ring are 2px STROKES (line widths, like the 1px hairlines, not spacing). Every gap or offset that goes with them is on the scale: the focus ring offset is 4px and the selected-swatch gap between the swatch and its ring is 4px. Justification: a 1px stroke is too thin for a visible focus indicator, and a 4px stroke would crowd the 24px swatches.
 
 ---
 
@@ -102,7 +103,7 @@ Accent reserved for (Forest as a FILL or emphasis, in addition to its role as te
 4. The price and measurement slider's selected range and both thumbs
 5. The ring around a selected colour swatch
 6. The current page number in the pager (filled square, Ivory number)
-7. The 2px keyboard focus ring (offset 2px, on every interactive element)
+7. The 2px keyboard focus ring (offset 4px, on every interactive element)
 8. The "NEW" badge text and border (Ivory background)
 
 Not accent: chips (Sand), links, icons, headings, dropdown panels, hover states.
@@ -120,7 +121,7 @@ All text goes in `COPY` (`src/lib/copy.ts`) for generic UI wording, or `src/shop
 | Element | Copy |
 |---------|------|
 | Primary CTA (mobile drawer) | Apply filters |
-| Secondary actions | Clear all (filter bar chips and drawer footer), Show more, Show fewer |
+| Secondary actions | Clear all filters (chip row and drawer footer), Show more, Show fewer |
 | Banner title | All Items |
 | Result count | `1 item` or `{n} items` (e.g. `48 items`) |
 | Sort label | Sort by: |
@@ -171,7 +172,7 @@ Footer (generic text in `COPY`, shop wording in `src/shop/copy.ts`):
 | Shop links | Vinted, eBay (each opens in a new tab; add visually hidden "(opens in a new tab)") |
 | Newsletter body | Be the first to know about new arrivals. |
 | Newsletter field label (hidden) / placeholder | Email address / Email |
-| Newsletter button | Subscribe |
+| Newsletter button | Subscribe to newsletter |
 | Newsletter note (visible, Olive, 12px sentence case) | Newsletter signup is coming soon. |
 | Legal line | `(c) {year} {shopName}` built from a COPY function taking both |
 
@@ -200,9 +201,10 @@ Every state lives in the URL (CAT-06). Param names equal the API's: repeated `ty
 
 ### All Items page (`/shop`)
 
+- Primary focal point: the "All Items" banner title (Display, 40px Bodoni Ivory on the Forest banner), the largest and highest-contrast element above the fold on every viewport. The first row of cards is the secondary focal point; the filter sidebar stays visually quiet (Label headings, no fills).
 - Order top to bottom: banner (Display title, left, inside the container), toolbar, active chips, grid, pager. Sidebar sits left of toolbar and grid from 1024px.
 - Toolbar: left, result count (Label role, Olive); right, `Sort by:` plus a styled native `<select>` (appearance none, `ChevronDown` icon, min-height 44px, Label role). Native select keeps it accessible and working without JS; changing it applies instantly. On phones the toolbar is one row: `Filter` button (`SlidersHorizontal` icon, opens the drawer) on the left and the sort select on the right, both 44px high, with a 1px Stone border; the count moves to its own line above the grid.
-- Active chips: a wrapping row (gap 8px) of removable chips and a trailing `Clear all` text link (only when at least one chip exists). A chip is an `<a>` to the same URL minus that value (works without JS), min-height 40px, Sand fill, Forest text, `X` icon 16px at the end, `aria-label` "Remove filter: {label}". One chip per selected value. Chips scroll horizontally on phones only if they exceed three rows; otherwise wrap.
+- Active chips: a wrapping row (gap 8px) of removable chips and a trailing `Clear all filters` text link (only when at least one chip exists). A chip is an `<a>` to the same URL minus that value (works without JS), min-height 40px, Sand fill, Forest text, `X` icon 16px at the end, `aria-label` "Remove filter: {label}". One chip per selected value. Chips scroll horizontally on phones only if they exceed three rows; otherwise wrap.
 - Grid: 2 columns below 640px (gap 16px), 3 columns from 640px (gap 24px); the sidebar appears at 1024px and the grid stays at 3 columns. 24 cards per page. The `data-as-of` attribute from Phase 1 stays on the grid's section.
 - Pager (numbered, CAT-07): `ChevronLeft`, page links, `ChevronRight`. Show first, last, current and one neighbour each side, with `...` between gaps. Links are 44px squares (Body role); the current page is a Forest filled square with an Ivory number; other pages are bare numbers with a 1px Stone border on hover. Hidden when there is one page. Following a page link scrolls to the top of the toolbar.
 - Loading: navigation from a filter change keeps the old grid at 60% opacity with `aria-busy="true"` (use `useTransition`). A `loading.tsx` for `/shop` shows 8 skeleton cards (Sand 40% frame at 4:5, two text bars; no animation if `prefers-reduced-motion`).
@@ -212,15 +214,15 @@ Every state lives in the URL (CAT-06). Param names equal the API's: repeated `ty
 - One `FilterPanel` client component wrapped around a GET `<form action="/shop">` used in two places: the sidebar (desktop) and the drawer (phones). Group order: Brand, Category, Size, Colour, Price, Era, Condition, Department, Material, Pit to pit, Length. Groups with no values in `/filters` are not rendered. Pit to pit and Length are hidden when their `/filters` range is `null` (D-16).
 - Each group is a `<details>` with a Label-role `<summary>` heading and a `Plus`/`Minus` indicator. The first five (Brand to Price) are open by default; the rest are closed unless one of their values is selected. Groups are separated by 24px and a 1px Stone rule.
 - Checkbox rows (Brand, Category, Size, Era, Condition, Department, Material): native `<input type="checkbox">` visually restyled (16px square, 1px Forest border; checked = Forest fill with an Ivory `Check` icon), label in Body role. No counts (D-17). Show the first 8 values in `/filters` order, then a `Show more` button (Label role, `aria-expanded`) expands the rest in place; selected values always show even when beyond 8. Size values keep API order (most common first), no custom sort.
-- Colour (D-15): a wrapping row of 24px round swatches, gap 12px, each a checkbox in a 44px target with the colour name as its accessible label and `title`. Hex comes from the shop's colour map. Unselected: 1px Stone rim. Selected: 2px Forest ring with a 2px Ivory gap. An unknown colour renders a neutral Sand swatch followed by its name in Label role (sentence case), so it is never anonymous. Light swatches always keep the Stone rim.
+- Colour (D-15): a wrapping row of 24px round swatches, gap 8px, each a checkbox in a 44px target with the colour name as its accessible label and `title`. Same cap as the checkbox lists (D-18): the first 8 colours in `/filters` order show, then `Show more` expands the rest in place; selected colours always show. At 8 swatches the row wraps to 2 rows inside the 224px sidebar content width (4 per row) and inside a 320px phone drawer, so it cannot overflow. Hex comes from the shop's colour map. Unselected: 1px Stone rim. Selected: 2px Forest ring with a 4px Ivory gap. An unknown colour renders a neutral Sand swatch followed by its name in Label role (sentence case), so it is never anonymous. Light swatches always keep the Stone rim.
 - Range sliders (Price, Pit to pit, Length; D-16): two overlaid native `<input type="range">` (min and max, so keyboard and screen readers work), 4px Stone track, Forest selected range, 20px Forest round thumbs with a 44px hit area. Bounds are the `/filters` min and max; steps are €1 for price and 1cm for measurements. Above the track, a read-out in Body role: `€20 to €80`, `50 to 60 cm`. The handles cannot cross. The URL carries cents (price) and mm (measurements). A slider at its full bounds adds no param.
 - Desktop apply (D-14): changes apply instantly: checkbox and swatch toggles after a 250ms debounce, sliders on release (the `change` event, not `input`). The URL is updated with `router.push(..., { scroll: false })` so Back undoes a change. With JS off, a visible "Apply filters" button (in a `<noscript>`-safe form) submits the GET form.
-- Phone drawer (CAT-08): a `<dialog>` that slides in from the left (width in Spacing), titled "Filter", with a close `X`. The groups scroll; a sticky footer holds a full-width Forest "Apply filters" button and a "Clear all" text button above it or beside it (stacked, 44px each). Changes inside the drawer are held in the form and only applied by Apply; closing with X, Esc or the backdrop discards them. Applying closes the drawer and moves focus to the result count.
+- Phone drawer (CAT-08): a `<dialog>` that slides in from the left (width in Spacing), titled "Filter", with a close `X`. The groups scroll; a sticky footer holds a full-width Forest "Apply filters" button with a "Clear all filters" text button stacked above it (44px each). Changes inside the drawer are held in the form and only applied by Apply; closing with X, Esc or the backdrop discards them. Applying closes the drawer and moves focus to the result count.
 - The sidebar scrolls with the page (not sticky) so it never traps a short viewport.
 
 ### Item card (CAT-01, CAT-10, D-21 to D-24)
 
-- The whole card is one `<a href="/items/{code}">` (no nested interactive elements). Hover: image scales to 102% over 200ms (disabled under `prefers-reduced-motion`). Focus: the 2px Forest ring wraps the card.
+- The whole card is one `<a href="/items/{code}">` (no nested interactive elements). Hover: image scales to 102% over 200ms (disabled under `prefers-reduced-motion`). Focus: the 2px Forest ring (4px offset) wraps the card.
 - Image frame: `aspect-ratio: 4 / 5`, Sand 40% fill, `object-cover`, image is `thumbUrl` through `next/image` with the API's `width` and `height` passed, `unoptimized` (project setting). The frame reserves space, so nothing shifts. The first 4 cards use `priority`; the rest lazy-load. An item with no photo shows the empty Sand frame (does not occur with the API's rules, but never crashes).
 - Overlays on the photo: "NEW" badge top-left at 8px inset (Ivory fill, Forest text and 1px Forest border, 4px 8px padding, Label role), shown when `publishedAt` is within the config's New-badge days (7, D-21). A heart top-right at 8px inset: lucide `Heart`, 20px, Ivory stroke on a Forest 40% circle (32px), `aria-hidden`, not focusable, not a button (D-24).
 - Text block (16px above): brand (Label role, caps, omitted when null), title (Bodoni 700 16px, 2 lines max), "Colour / Size" (Label role in sentence case, Olive; skips a missing part and the slash, omitted if both missing), price (Body, formatted `€120` or `€119.50`, D-22). Rows 4px apart.
@@ -231,13 +233,13 @@ Every state lives in the URL (CAT-06). Param names equal the API's: repeated `ty
 - Ivory with a 1px Forest top rule and 48px vertical padding. Desktop: four columns (gap 32px): logo plus the five social icons; Explore (Shop, Brands, Just Dropped, About, Contact; same labels as the header); Find us (email, Vinted, eBay); Newsletter. Phones: single column in the same order; the Explore list may sit beside Find us in two columns from 480px.
 - Social icons (D-07): Instagram, TikTok, Pinterest, Spotify, 24px glyphs in 44px targets. An icon with a URL in config is an `<a>` with an `aria-label` (the network name) opening in a new tab; an icon without a URL is a `<span aria-hidden>` (decorative, no link). Instagram is `https://www.instagram.com/blacktailarchive` from config.
 - Vinted and eBay links come from config (placeholder values until supplied, D-05); render them as given.
-- Newsletter (D-06) is a visual mock only: a plain `<div>` (not a `<form>`, never submits, no handler) holding a disabled text input (visible placeholder "Email", hidden label) and a disabled "Subscribe" button with an `ArrowRight` icon, both Sand 40% fill with Olive text. The visible note "Newsletter signup is coming soon." is linked to the input by `aria-describedby`. No provider, no network call.
+- Newsletter (D-06) is a visual mock only: a plain `<div>` (not a `<form>`, never submits, no handler) holding a disabled text input (visible placeholder "Email", hidden label) and a disabled "Subscribe to newsletter" button with an `ArrowRight` icon, both Sand 40% fill with Olive text. The visible note "Newsletter signup is coming soon." is linked to the input by `aria-describedby`. No provider, no network call.
 - Legal line below a 1px Stone rule: Label role, Olive.
 
 ### Motion and accessibility
 
 - Transitions 150 to 200ms, `ease-out`; all motion off under `prefers-reduced-motion: reduce`.
-- All text meets 4.5:1. Every interactive element has a visible 2px Forest focus ring, offset 2px. Focus order follows visual order. The result count is `role="status"` (`aria-live="polite"`) so instant filter changes are announced.
+- All text meets 4.5:1. Every interactive element has a visible 2px Forest focus ring, offset 4px. Focus order follows visual order. The result count is `role="status"` (`aria-live="polite"`) so instant filter changes are announced.
 - One `<h1>` per page (the banner title). The sidebar is `<aside aria-label="Filter">`. The grid is a `<ul>` of `<li>` cards.
 - External links use `rel="noopener noreferrer"`.
 - No horizontal scroll at 320px: grid, chips, pager (wraps) and drawer must all fit. Test at 320px, 375px, 768px, 1024px and 1280px.
@@ -255,7 +257,7 @@ Every state lives in the URL (CAT-06). Param names equal the API's: repeated `ty
 
 ## UI Considerations
 
-Applicable state considerations resolved: 19 covered, 2 backstop, 1 unresolved
+Applicable state considerations resolved: 20 covered, 2 backstop, 0 unresolved
 
 | Category | Element(s) | Status | Resolution / Reason |
 |----------|------------|--------|---------------------|
@@ -281,7 +283,7 @@ Applicable state considerations resolved: 19 covered, 2 backstop, 1 unresolved
 | long-text | interactive-control (card title) | ✅ covered | Titles clamp to 2 lines; brand is a single line with an ellipsis |
 | long-text | nav (long brand or type name in dropdown and filter rows) | 🧪 backstop | Rows wrap onto a second line rather than truncate; needs a visual check at 320px with a long brand name |
 | long-text | interactive-control (chip with a long value) | 🧪 backstop | A chip's label wraps within the container width; verify at 320px |
-| overflow | form (colour swatch row with many colours) | ⚠ unresolved | No cap on swatch count; planner assumes the row wraps and stays within the sidebar |
+| overflow | form (colour swatch row with many colours) | ✅ covered | Only the first 8 swatches show, then "Show more"; 8 swatches wrap to 2 rows of 4 within 224px and at 320px, so no overflow |
 
 <!-- Status vocabulary (locked by probe-core projectTruths):
      ✅ covered   -> a plain truth string lifted into must_haves.truths
