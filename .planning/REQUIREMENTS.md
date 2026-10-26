@@ -41,7 +41,7 @@
 - [x] **CAT-06**: Filters, search, sort and page live in the URL, so a filtered view can be shared or bookmarked, and invalid values are dropped instead of breaking the page
 - [x] **CAT-07**: The visitor can move through results with numbered pages (24 per page), and any filter, search or sort change goes back to page 1
 - [ ] **CAT-08**: On mobile, filters open in a drawer with an Apply button
-- [ ] **CAT-09**: Chosen filters show as removable chips with the result count, and an empty result shows a helpful message with a way to clear filters
+- [x] **CAT-09**: Chosen filters show as removable chips with the result count, and an empty result shows a helpful message with a way to clear filters
 - [x] **CAT-10**: Recently added items show a "New" badge
 - [ ] **CAT-11**: The visitor can see a Just Dropped page of the newest items
 
@@ -77,7 +77,7 @@
 - [ ] **SEO-01**: Every page has a title, description and Open Graph tags, and item pages use the item's name and cover photo
 - [ ] **SEO-02**: Item pages include JSON-LD `Product` data (name, image, price, currency, `InStock`, `UsedCondition`)
 - [ ] **SEO-03**: There is a sitemap of all pages and in-stock items, refreshed with the store tag, and a robots file that blocks indexing outside production
-- [ ] **SEO-04**: Filtered, searched or sorted listings are `noindex,follow`, with a canonical URL built from `SITE_URL`
+- [x] **SEO-04**: Filtered, searched or sorted listings are `noindex,follow`, with a canonical URL built from `SITE_URL`
 
 ### Template
 
@@ -146,7 +146,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CAT-06 | Phase 2 | Complete |
 | CAT-07 | Phase 2 | Complete |
 | CAT-08 | Phase 2 | Pending |
-| CAT-09 | Phase 2 | Pending |
+| CAT-09 | Phase 2 | Complete |
 | CAT-10 | Phase 2 | Complete |
 | CAT-11 | Phase 4 | Pending |
 | ITEM-01 | Phase 3 | Pending |
@@ -167,7 +167,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SEO-01 | Phase 4 | Pending |
 | SEO-02 | Phase 3 | Pending |
 | SEO-03 | Phase 4 | Pending |
-| SEO-04 | Phase 2 | Pending |
+| SEO-04 | Phase 2 | Complete |
 | TMPL-01 | Phase 2 | Complete |
 | TMPL-02 | Phase 4 | Pending |
 
