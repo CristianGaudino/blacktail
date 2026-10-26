@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Header } from '@/components/layout/Header';
 import { SHOP } from '@/shop/config';
 import { bodoni, montserrat } from '@/shop/fonts';
 import '../styles/globals.css';
@@ -12,7 +13,10 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: LayoutProps<'/'>) {
     return (
         <html lang={SHOP.locale} className={`${montserrat.variable} ${bodoni.variable}`}>
-            <body className="min-h-dvh bg-ivory font-sans text-forest antialiased">{children}</body>
+            <body className="min-h-dvh bg-ivory font-sans text-forest antialiased">
+                <Header />
+                {children}
+            </body>
         </html>
     );
 }
