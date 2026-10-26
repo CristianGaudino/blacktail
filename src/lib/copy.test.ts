@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest';
+import { SHOP } from '@/shop/config';
 import { COPY } from './copy';
 
 const EM_DASH = String.fromCharCode(0x2014);
@@ -22,6 +23,7 @@ const withEmDash = (value: unknown) => allText(value).filter(({ text }) => text.
 describe('on-screen text', () => {
     it('has no em dashes', () => {
         expect(withEmDash(COPY)).toEqual([]);
+        expect(withEmDash(SHOP)).toEqual([]);
     });
 
     it('finds an em dash in strings and in wording functions, but not an en dash or a hyphen', () => {
@@ -30,6 +32,7 @@ describe('on-screen text', () => {
     });
 
     it('calls the wording functions, so their output is checked', () => {
-        expect(allText(COPY).some(({ path }) => path === 'status.errorId')).toBe(true);
+        const paths = allText(COPY).map(({ path }) => path);
+        for (const path of ['status.errorId', 'catalogue.count', 'footer.legal']) expect(paths).toContain(path);
     });
 });
