@@ -11,7 +11,7 @@
     {
       "number": "2",
       "name": "Branded Catalogue",
-      "status": "pending"
+      "status": "in_progress"
     },
     {
       "number": "3",
@@ -29,5 +29,5 @@
     "label": "Advance to the next step",
     "reason": "Phase 2 of 4 · 25% · executing"
   },
-  "updated_at": "2026-10-26T20:31:09.686Z"
+  "updated_at": "2026-10-26T20:39:16.067Z"
 }

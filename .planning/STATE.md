@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 02
 current_phase_name: Branded Catalogue
 status: executing
-stopped_at: Completed 02-01-PLAN.md
-last_updated: "2026-10-26T20:31:11.979Z"
+stopped_at: Completed 02-02-PLAN.md
+last_updated: "2026-10-26T20:39:17.863Z"
 last_activity: 2026-10-26
 last_activity_desc: Phase 02 execution started
-state_head: 3461399679f617e184383e7757d686c81923b6f0
+state_head: fa308a36f70c936737ea6272b7ca33fedb6af0e0
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 14
-  completed_plans: 5
+  completed_plans: 6
   percent: 25
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-10-26)
 ## Current Position
 
 Phase: 02 (Branded Catalogue) — EXECUTING
-Plan: 2 of 10
+Plan: 3 of 10
 Status: Ready to execute
 Last activity: 2026-10-26 — Phase 02 execution started
 
@@ -61,6 +61,7 @@ Progress: [███░░░░░░░] 25%
 | Phase 01 P03 | n/a | 2 tasks | 5 files |
 | Phase 01 P04 | 30min | 2 tasks | 2 files |
 | Phase 02 P01 | 12min | 2 tasks | 12 files |
+| Phase 02 P02 | 10min | 2 tasks | 14 files |
 
 ## Accumulated Context
 
@@ -80,6 +81,7 @@ Recent decisions affecting current work:
 - [Phase 01]: Deploy smoke check is a noindex header grep plus an unsigned webhook POST expecting 401, after a curl retry wait for the certificate
 - [Phase 02]: A price or measurement bound equal to its own /filters bound is dropped after the min/max swap, so it never mints a second cache key
 - [Phase 02]: Search q is capped at 80 code points with Array.from so the cap never splits a character
+- [Phase 02]: Bodoni woff2 and OFL licence taken from the @fontsource/bodoni-moda 5.3.0 tarball in an isolated scratch dir; not a dependency
 
 ### Pending Todos
 
@@ -103,6 +105,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-26T20:31:11.894Z
-Stopped at: Completed 02-01-PLAN.md
+Last session: 2026-10-26T20:39:17.777Z
+Stopped at: Completed 02-02-PLAN.md
 Resume file: None

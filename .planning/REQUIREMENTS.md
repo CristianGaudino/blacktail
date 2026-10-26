@@ -25,7 +25,7 @@
 
 ### Design System and Shell
 
-- [ ] **SHELL-01**: The Blacktail palette (Forest, Olive, Stone, Sand, Ivory) and fonts (Bodoni Moda 700, Montserrat 400/500, self-hosted) are design tokens used across the site
+- [x] **SHELL-01**: The Blacktail palette (Forest, Olive, Stone, Sand, Ivory) and fonts (Bodoni Moda 700, Montserrat 400/500, self-hosted) are design tokens used across the site
 - [ ] **SHELL-02**: The header shows the Blacktail Archive logo and nav (Shop, Brands, Just Dropped, About, Contact), plus search, and bag, account and wishlist icons that are decorative only
 - [ ] **SHELL-03**: The footer shows the logo, nav links, contact details and shop links (Vinted and eBay profiles) from config
 - [ ] **SHELL-04**: On mobile, a menu opens the nav, and every page follows the mobile mockups with no horizontal scroll
@@ -81,7 +81,7 @@
 
 ### Template
 
-- [ ] **TMPL-01**: Everything shop-specific (name, copy, contact, platform links, theme tokens, fonts, images, default brand order, category tiles) lives in one per-shop folder and config, and a test fails if shop-specific strings appear elsewhere *(Traceability note: Phase 2 delivers TMPL-01 except the default brand order and category tiles, which land in Phase 4 with BRAND-02, HOME-01 and HOME-03.)*
+- [x] **TMPL-01**: Everything shop-specific (name, copy, contact, platform links, theme tokens, fonts, images, default brand order, category tiles) lives in one per-shop folder and config, and a test fails if shop-specific strings appear elsewhere *(Traceability note: Phase 2 delivers TMPL-01 except the default brand order and category tiles, which land in Phase 4 with BRAND-02, HOME-01 and HOME-03.)*
 - [ ] **TMPL-02**: A short onboarding doc explains how to deploy the template for another shop (env, Cloudflare R2, D1 and Worker setup, and assets)
 
 ## v2 Requirements
@@ -133,7 +133,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DATA-04 | Phase 1 | Complete |
 | DATA-05 | Phase 1 | Complete |
 | DATA-06 | Phase 1 | Complete |
-| SHELL-01 | Phase 2 | Pending |
+| SHELL-01 | Phase 2 | Complete |
 | SHELL-02 | Phase 2 | Pending |
 | SHELL-03 | Phase 2 | Pending |
 | SHELL-04 | Phase 2 | Pending |
@@ -168,7 +168,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SEO-02 | Phase 3 | Pending |
 | SEO-03 | Phase 4 | Pending |
 | SEO-04 | Phase 2 | Pending |
-| TMPL-01 | Phase 2 | Pending |
+| TMPL-01 | Phase 2 | Complete |
 | TMPL-02 | Phase 4 | Pending |
 
 **Coverage:**
