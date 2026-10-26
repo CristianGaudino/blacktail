@@ -20,6 +20,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 ## Phase Details
 
 ### Phase 1: Live Stock Skeleton
+
 **Goal**: As a shopper, I want to see the shop's current in-stock pieces on the live site, refreshed within seconds of any stock change, so that I never chase a piece that has already sold.
 **Mode:** mvp
 **Depends on**: Nothing (first phase)
@@ -31,17 +32,26 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. Starting the app with a missing or invalid env var stops it with a clear list of the problems, and a production build makes no per-item API calls while repeat page views are served from cache
   5. Every PR runs lint, typecheck, tests and an OpenNext worker build, and fails if `cacheComponents`, `'use cache'`, `cacheTag`, `cacheLife` or an em dash in `COPY` appears
   6. Every page of the deployed site sends `noindex` (robots meta and `X-Robots-Tag`), so the unfinished site isn't indexed before Phase 4 makes indexing depend on the environment (SEO-03)
+
 **Plans:** 4 plans
 
 Plans:
+**Wave 1**
 - [ ] 01-01-PLAN.md — Walking skeleton: live item list through the tagged fetch and signed-webhook refresh, proven on `next start` against a mock API
+
+**Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 01-02-PLAN.md — Hardening: env fail-fast, webhook/client unit tests, COPY empty and error screens, Cache Components and em-dash guards, lint and typecheck
+
+**Wave 3** *(blocked on Wave 2 completion)*
 - [ ] 01-03-PLAN.md — R2 + D1 tag cache + DO queue config, CI check and worker jobs proving the round trip on workerd, PR A
+
+**Wave 4** *(blocked on Wave 3 completion)*
 - [ ] 01-04-PLAN.md — Owner Cloudflare/GitHub/How many setup, deploy workflow on push to main, PR B, live checks on the deployed Worker
 
 **Research**: Highest-risk phase. Run `/gsd-plan-phase --research-phase 1` (research only) before planning, and prove the freshness round trip on a deployed Worker (D1 tag table, binding names, `WORKER_SELF_REFERENCE`, `{ expire: 0 }` vs `'max'`, `force-cache` after `await searchParams`).
 
 ### Phase 2: Branded Catalogue
+
 **Goal**: As a shopper, I want to browse, filter, search, sort and page through the shop's in-stock pieces in the Blacktail Archive look on desktop and phone, so that I can quickly find pieces in my size, brand and budget.
 **Mode:** mvp
 **Depends on**: Phase 1
@@ -52,10 +62,12 @@ Plans:
   3. A shopper can combine multi-select filters (type, brand, size, colour, era, condition, department, price range, plus pit-to-pit and length when the shop has measurements), search by words, sort by newest or price, and step through numbered pages of 24, with any change going back to page 1
   4. A filtered view's URL can be shared or bookmarked and reopens the same results; junk values in the URL are dropped instead of breaking the page; chosen filters show as removable chips with the result count; an empty result offers a way to clear filters; filtered, searched or sorted listings are `noindex,follow` with a canonical URL from `SITE_URL`
   5. On a phone, a menu opens the nav, filters open in a drawer with an Apply button, and no page scrolls sideways
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 3: Item and Brand Pages
+
 **Goal**: As a shopper, I want to open any piece to see its photos, condition, measurements and where to buy it, and to browse by brand, so that I can decide on a piece and go buy it on Vinted or eBay.
 **Mode:** mvp
 **Depends on**: Phase 2
@@ -66,10 +78,12 @@ Plans:
   3. A sold, hidden or unknown item returns a real 404 status with a branded page showing the newest drops, including on the deployed site right after the webhook for a piece that just sold
   4. Item pages carry JSON-LD `Product` data (name, image, price, currency, `InStock`, `UsedCondition`) that passes Google's Rich Results Test
   5. A shopper can open a Brands page of in-stock brands shown as their logos (or the brand name as text when there is no logo), and open `/brands/[slug]` to see that brand's in-stock items
+
 **Plans**: TBD
 **UI hint**: yes
 
 ### Phase 4: Home and Launch
+
 **Goal**: As a shopper, I want to land on a home page that matches the Blacktail Archive mockup, see the latest drops and read the shop's story and contact details, so that I trust the shop and come back for new pieces.
 **Mode:** mvp
 **Depends on**: Phase 3
@@ -80,6 +94,7 @@ Plans:
   3. A shopper can open a Just Dropped page of the newest items, an About / Our story page, and a Contact page with the shop's contact details and shop links (no form)
   4. Every page has its own title, description and Open Graph tags (item links preview with the item's name and cover photo); a sitemap lists all pages and in-stock items and refreshes with the store tag; robots blocks indexing outside production
   5. Following the onboarding doc, someone can deploy the template for another shop (env, Cloudflare R2, D1 and Worker setup, assets) without editing any component
+
 **Plans**: TBD
 **UI hint**: yes
 
