@@ -1,6 +1,6 @@
 import { connection } from 'next/server';
+import { CatalogueBanner } from '@/components/catalogue/CatalogueBanner';
 import { ItemList } from '@/components/stock/ItemList';
-import { COPY } from '@/lib/copy';
 import { getFilters, getItemsPage } from '@/lib/howmany/client';
 import { parseCatalogueQuery, toSearchString } from '@/lib/params';
 
@@ -12,7 +12,7 @@ export default async function ShopPage({ searchParams }: PageProps<'/shop'>) {
     const { page, asOf } = await getItemsPage(toSearchString(query));
     return (
         <main>
-            <h1>{COPY.catalogue.title}</h1>
+            <CatalogueBanner />
             <ItemList items={page.items} asOf={asOf} />
         </main>
     );

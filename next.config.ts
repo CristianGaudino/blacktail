@@ -23,6 +23,14 @@ const nextConfig: NextConfig = {
     async headers() {
         return [{ source: '/:path*', headers: SECURITY_HEADERS }];
     },
+    turbopack: {
+        rules: {
+            '*.css': {
+                loaders: ['@tailwindcss/turbopack'],
+                as: '*.css',
+            },
+        },
+    },
 };
 
 export default nextConfig;
