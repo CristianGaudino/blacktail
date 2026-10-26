@@ -15,8 +15,8 @@ export function ItemList({ items, currency, asOf }: { items: Item[]; currency: s
                         const cover = item.photos[0];
                         return (
                             <li key={item.code}>
-                                {cover && <Image src={cover.thumbUrl} width={cover.width} height={cover.height} alt={`${item.brand} ${item.title}`} />}
-                                <p>{item.brand}</p>
+                                {cover && <Image src={cover.thumbUrl} width={cover.width} height={cover.height} alt={[item.brand, item.title].filter(Boolean).join(' ')} />}
+                                {item.brand && <p>{item.brand}</p>}
                                 <p>{item.title}</p>
                                 <p>{formatPrice(item.priceCents, currency)}</p>
                             </li>

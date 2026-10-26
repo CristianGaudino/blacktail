@@ -57,6 +57,13 @@ describe('how many client', () => {
         expect(parsed).not.toHaveProperty('future');
     });
 
+    it('keeps an item with a null brand, size, colour or era, and the other items', async () => {
+        fetchMock.mockResolvedValue(reply(page([{ ...item, brand: null, size: null, colour: null, era: null }, { ...item, code: 'BT-0002' }])));
+        const { page: parsed } = await getItems();
+        expect(parsed.items).toHaveLength(2);
+        expect(parsed.items[0]).toMatchObject({ brand: null, size: null, colour: null, era: null });
+    });
+
     it('returns the response Date header as asOf', async () => {
         fetchMock.mockResolvedValue(reply(page([])));
         expect((await getItems()).asOf).toBe('Mon, 26 Oct 2026 14:00:00 GMT');
