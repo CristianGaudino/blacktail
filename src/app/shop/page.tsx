@@ -1,16 +1,31 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { connection } from 'next/server';
 import { CatalogueBanner } from '@/components/catalogue/CatalogueBanner';
+import { CatalogueShell, GridBusy } from '@/components/catalogue/CatalogueShell';
 import { FilterChips } from '@/components/catalogue/FilterChips';
 import { ItemGrid } from '@/components/catalogue/ItemGrid';
 import { Pager } from '@/components/catalogue/Pager';
+import { SortSelect } from '@/components/catalogue/SortSelect';
 import { CATALOGUE } from '@/lib/config';
 import { COPY } from '@/lib/copy';
+import { storeEnv } from '@/lib/env';
 import { getFilters, getItemsPage, getStore, HowManyError } from '@/lib/howmany/client';
 import { pageCountOf, resolvePage } from '@/lib/paging';
 import { hasFilters, pageHref, parseCatalogueQuery, toSearchString } from '@/lib/params';
 import { ROUTES } from '@/lib/routes';
+import { canonicalUrl, listingRobots } from '@/lib/seo';
+
+// SITE_URL is read here, per request, never at module scope and never from the Host header
+export async function generateMetadata({ searchParams }: PageProps<'/shop'>): Promise<Metadata> {
+    const query = parseCatalogueQuery(await searchParams, await getFilters());
+    return {
+        title:      COPY.catalogue.title,
+        robots:     listingRobots(query),
+        alternates: { canonical: canonicalUrl(storeEnv().SITE_URL, query) },
+    };
+}
 
 export default async function ShopPage({ searchParams }: PageProps<'/shop'>) {
     // Render on each request, so nothing is fetched at build and the cached fetch is the only snapshot
@@ -39,24 +54,29 @@ export default async function ShopPage({ searchParams }: PageProps<'/shop'>) {
     return (
         <main>
             <CatalogueBanner />
-            <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-12">
-                <div id="results" className="flex scroll-mt-24 flex-wrap items-center justify-between gap-4">
-                    <p
-                        id="result-count"
-                        role="status"
-                        aria-live="polite"
-                        tabIndex={-1}
-                        className="order-last w-full text-label uppercase text-olive lg:order-first lg:w-auto"
-                    >
-                        {COPY.catalogue.count(page.total)}
-                    </p>
+            <CatalogueShell>
+                <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-12">
+                    <div id="results" className="flex scroll-mt-24 flex-wrap items-center justify-between gap-4">
+                        <p
+                            id="result-count"
+                            role="status"
+                            aria-live="polite"
+                            tabIndex={-1}
+                            className="order-last w-full text-label uppercase text-olive lg:order-first lg:w-auto"
+                        >
+                            {COPY.catalogue.count(page.total)}
+                        </p>
+                        <SortSelect query={query} />
+                    </div>
+                    <FilterChips query={query} filters={filters} currency={store.currency} />
+                    <GridBusy>
+                        <div className="mt-6">
+                            <ItemGrid items={page.items} asOf={asOf} now={now} empty={empty} />
+                        </div>
+                        <Pager query={query} pageCount={pageCountOf(page.total)} />
+                    </GridBusy>
                 </div>
-                <FilterChips query={query} filters={filters} currency={store.currency} />
-                <div className="mt-6">
-                    <ItemGrid items={page.items} asOf={asOf} now={now} empty={empty} />
-                </div>
-                <Pager query={query} pageCount={pageCountOf(page.total)} />
-            </div>
+            </CatalogueShell>
         </main>
     );
 }

@@ -95,9 +95,9 @@ describe('ItemGrid', () => {
         expect(html).not.toContain('SECRET');
     });
 
-    it('carries asOf as data-as-of and the results anchor', () => {
+    it('carries asOf as data-as-of; the results anchor lives on the toolbar', () => {
         const html = render([item], { asOf: 'Mon, 01 Jun 2026 10:00:00 GMT' });
         expect(html).toContain('data-as-of="Mon, 01 Jun 2026 10:00:00 GMT"');
-        expect(html).toContain('id="results"');
+        expect(html).not.toContain('id="results"');
     });
 });
