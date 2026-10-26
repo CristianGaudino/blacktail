@@ -60,6 +60,19 @@ describe('POST /api/webhooks/howmany', () => {
         await expect401(await route.POST(post(JSON.stringify(store), { headers: { 'content-length': '100000' } })));
     });
 
+    it('401 for a chunked body above the limit, with no content-length, and stops reading it', async () => {
+        let pulls = 0;
+        const stream = new ReadableStream<Uint8Array>({
+            pull(controller) {
+                pulls++;
+                controller.enqueue(new Uint8Array(4096));
+            },
+        });
+        const request = new Request('https://shop.test/api/webhooks/howmany', { method: 'POST', body: stream, duplex: 'half' } as RequestInit);
+        await expect401(await route.POST(request));
+        expect(pulls).toBeLessThan(10);
+    });
+
     it('204 and revalidateTag for a valid event for this store', async () => {
         const res = await route.POST(post(JSON.stringify(store)));
         expect(res.status).toBe(204);
