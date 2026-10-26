@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { connection } from 'next/server';
 import { Suspense } from 'react';
 import { HeaderSearch } from './HeaderSearch';
+import { MobileMenu } from './MobileMenu';
 import { NavDropdown } from './NavDropdown';
 import { NavLink } from './NavLink';
 import { getFilters } from '@/lib/howmany/client';
@@ -46,11 +47,13 @@ export async function Header() {
     return (
         <header className="sticky top-0 z-40 border-b border-stone bg-ivory">
             <div className="mx-auto grid h-16 max-w-7xl grid-cols-[1fr_auto_1fr] items-center px-4 sm:px-6 lg:flex lg:h-20 lg:justify-between">
-                <div className="lg:hidden" />
+                <div className="lg:hidden">
+                    <MobileMenu typeLinks={typeLinks} brandLinks={brandLinks} />
+                </div>
                 <Link href={ROUTES.home} className="justify-self-center">
                     <Image src={logo} alt={SHOP.name} loading="eager" className="h-8 w-auto lg:h-10" />
                 </Link>
-                <nav className="hidden items-center gap-8 text-label uppercase lg:flex">
+                <nav className="hidden lg:flex items-center gap-8 text-label uppercase">
                     <NavDropdown label={COPY.nav.shop} href={ROUTES.shop} links={typeLinks} />
                     <NavDropdown label={COPY.nav.brands} href={ROUTES.brands} links={brandLinks} columns={2} />
                     <NavLink href={ROUTES.justDropped}>{COPY.nav.justDropped}</NavLink>

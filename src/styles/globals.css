@@ -24,6 +24,20 @@
     outline-offset: 4px;
 }
 
+/* Scroll lock while a dialog is open, without JavaScript */
+body:has(dialog[open]) {
+    overflow: hidden;
+}
+
+@keyframes sheet-in {
+    from { transform: translateX(-100%); }
+    to   { transform: translateX(0); }
+}
+
+dialog.sheet[open] {
+    animation: sheet-in 200ms ease-out;
+}
+
 @media (prefers-reduced-motion: reduce) {
     *,
     *::before,
