@@ -81,7 +81,7 @@
 
 ### Template
 
-- [ ] **TMPL-01**: Everything shop-specific (name, copy, contact, platform links, theme tokens, fonts, images, default brand order, category tiles) lives in one per-shop folder and config, and a test fails if shop-specific strings appear elsewhere
+- [ ] **TMPL-01**: Everything shop-specific (name, copy, contact, platform links, theme tokens, fonts, images, default brand order, category tiles) lives in one per-shop folder and config, and a test fails if shop-specific strings appear elsewhere *(Traceability note: Phase 2 delivers TMPL-01 except the default brand order and category tiles, which land in Phase 4 with BRAND-02, HOME-01 and HOME-03.)*
 - [ ] **TMPL-02**: A short onboarding doc explains how to deploy the template for another shop (env, Cloudflare R2, D1 and Worker setup, and assets)
 
 ## v2 Requirements
