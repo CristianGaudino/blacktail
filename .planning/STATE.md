@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 02
 current_phase_name: Branded Catalogue
 status: executing
-stopped_at: Completed 02-03-PLAN.md
-last_updated: "2026-10-26T20:42:00.341Z"
+stopped_at: Completed 02-04-PLAN.md
+last_updated: "2026-10-26T20:44:19.622Z"
 last_activity: 2026-10-26
 last_activity_desc: Phase 02 execution started
-state_head: a526a8178bb4007b0981edeaa83543f08e2f0d63
+state_head: ec79176189e370d1a5388f1d790e79704f036b15
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 14
-  completed_plans: 7
+  completed_plans: 8
   percent: 25
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-10-26)
 ## Current Position
 
 Phase: 02 (Branded Catalogue) — EXECUTING
-Plan: 4 of 10
+Plan: 5 of 10
 Status: Ready to execute
 Last activity: 2026-10-26 — Phase 02 execution started
 
@@ -63,6 +63,7 @@ Progress: [███░░░░░░░] 25%
 | Phase 02 P01 | 12min | 2 tasks | 12 files |
 | Phase 02 P02 | 10min | 2 tasks | 14 files |
 | Phase 02 P03 | 5min | 2 tasks | 7 files |
+| Phase 02 P04 | 5min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -84,6 +85,7 @@ Recent decisions affecting current work:
 - [Phase 02]: Search q is capped at 80 code points with Array.from so the cap never splits a character
 - [Phase 02]: Bodoni woff2 and OFL licence taken from the @fontsource/bodoni-moda 5.3.0 tarball in an isolated scratch dir; not a dependency
 - [Phase 02]: Plan 02-03: owner-pending email/Vinted/eBay use .ie placeholders marked PENDING-OWNER; COPY groups.type is 'Category'; mock colour 'Ochre' left out of COLOURS to keep swatch fallback provable
+- [Phase 02]: 02-04: formatMoney picks 0 or 2 fraction digits per amount for both min and max (avoids 119.5)
 
 ### Pending Todos
 
@@ -107,6 +109,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-26T20:42:00.243Z
-Stopped at: Completed 02-03-PLAN.md
+Last session: 2026-10-26T20:44:19.536Z
+Stopped at: Completed 02-04-PLAN.md
 Resume file: None

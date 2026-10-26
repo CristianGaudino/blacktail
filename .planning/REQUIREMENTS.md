@@ -29,7 +29,7 @@
 - [ ] **SHELL-02**: The header shows the Blacktail Archive logo and nav (Shop, Brands, Just Dropped, About, Contact), plus search, and bag, account and wishlist icons that are decorative only
 - [x] **SHELL-03**: The footer shows the logo, nav links, contact details and shop links (Vinted and eBay profiles) from config
 - [ ] **SHELL-04**: On mobile, a menu opens the nav, and every page follows the mobile mockups with no horizontal scroll
-- [ ] **SHELL-05**: Prices are shown from integer cents in the shop's currency through one money formatter
+- [x] **SHELL-05**: Prices are shown from integer cents in the shop's currency through one money formatter
 
 ### Catalogue
 
@@ -39,10 +39,10 @@
 - [x] **CAT-04**: The visitor can search by words in the title, brand or colour
 - [x] **CAT-05**: The visitor can sort by newest, price low to high and price high to low
 - [x] **CAT-06**: Filters, search, sort and page live in the URL, so a filtered view can be shared or bookmarked, and invalid values are dropped instead of breaking the page
-- [ ] **CAT-07**: The visitor can move through results with numbered pages (24 per page), and any filter, search or sort change goes back to page 1
+- [x] **CAT-07**: The visitor can move through results with numbered pages (24 per page), and any filter, search or sort change goes back to page 1
 - [ ] **CAT-08**: On mobile, filters open in a drawer with an Apply button
 - [ ] **CAT-09**: Chosen filters show as removable chips with the result count, and an empty result shows a helpful message with a way to clear filters
-- [ ] **CAT-10**: Recently added items show a "New" badge
+- [x] **CAT-10**: Recently added items show a "New" badge
 - [ ] **CAT-11**: The visitor can see a Just Dropped page of the newest items
 
 ### Item Page
@@ -137,17 +137,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SHELL-02 | Phase 2 | Pending |
 | SHELL-03 | Phase 2 | Complete |
 | SHELL-04 | Phase 2 | Pending |
-| SHELL-05 | Phase 2 | Pending |
+| SHELL-05 | Phase 2 | Complete |
 | CAT-01 | Phase 2 | Pending |
 | CAT-02 | Phase 2 | Complete |
 | CAT-03 | Phase 2 | Complete |
 | CAT-04 | Phase 2 | Complete |
 | CAT-05 | Phase 2 | Complete |
 | CAT-06 | Phase 2 | Complete |
-| CAT-07 | Phase 2 | Pending |
+| CAT-07 | Phase 2 | Complete |
 | CAT-08 | Phase 2 | Pending |
 | CAT-09 | Phase 2 | Pending |
-| CAT-10 | Phase 2 | Pending |
+| CAT-10 | Phase 2 | Complete |
 | CAT-11 | Phase 4 | Pending |
 | ITEM-01 | Phase 3 | Pending |
 | ITEM-02 | Phase 3 | Pending |
