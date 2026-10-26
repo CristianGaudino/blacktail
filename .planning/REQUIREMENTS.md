@@ -26,9 +26,9 @@
 ### Design System and Shell
 
 - [x] **SHELL-01**: The Blacktail palette (Forest, Olive, Stone, Sand, Ivory) and fonts (Bodoni Moda 700, Montserrat 400/500, self-hosted) are design tokens used across the site
-- [ ] **SHELL-02**: The header shows the Blacktail Archive logo and nav (Shop, Brands, Just Dropped, About, Contact), plus search, and bag, account and wishlist icons that are decorative only
+- [x] **SHELL-02**: The header shows the Blacktail Archive logo and nav (Shop, Brands, Just Dropped, About, Contact), plus search, and bag, account and wishlist icons that are decorative only
 - [x] **SHELL-03**: The footer shows the logo, nav links, contact details and shop links (Vinted and eBay profiles) from config
-- [ ] **SHELL-04**: On mobile, a menu opens the nav, and every page follows the mobile mockups with no horizontal scroll
+- [x] **SHELL-04**: On mobile, a menu opens the nav, and every page follows the mobile mockups with no horizontal scroll
 - [x] **SHELL-05**: Prices are shown from integer cents in the shop's currency through one money formatter
 
 ### Catalogue
@@ -134,9 +134,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DATA-05 | Phase 1 | Complete |
 | DATA-06 | Phase 1 | Complete |
 | SHELL-01 | Phase 2 | Complete |
-| SHELL-02 | Phase 2 | Pending |
+| SHELL-02 | Phase 2 | Complete |
 | SHELL-03 | Phase 2 | Complete |
-| SHELL-04 | Phase 2 | Pending |
+| SHELL-04 | Phase 2 | Complete |
 | SHELL-05 | Phase 2 | Complete |
 | CAT-01 | Phase 2 | Complete |
 | CAT-02 | Phase 2 | Complete |

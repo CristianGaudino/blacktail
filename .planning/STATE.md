@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 02
 current_phase_name: Branded Catalogue
 status: executing
-stopped_at: Completed 02-05-PLAN.md
-last_updated: "2026-10-26T20:52:16.270Z"
+stopped_at: Completed 02-06-PLAN.md
+last_updated: "2026-10-26T20:58:37.278Z"
 last_activity: 2026-10-26
 last_activity_desc: Phase 02 execution started
-state_head: 30ae844bc3b2fde015cb97cb9b88ad9e43b6c69e
+state_head: 8dd2d7dcaead0c944e4db34b2892048b2c65beca
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 14
-  completed_plans: 9
+  completed_plans: 10
   percent: 25
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-10-26)
 ## Current Position
 
 Phase: 02 (Branded Catalogue) — EXECUTING
-Plan: 6 of 10
+Plan: 7 of 10
 Status: Ready to execute
 Last activity: 2026-10-26 — Phase 02 execution started
 
@@ -65,6 +65,7 @@ Progress: [███░░░░░░░] 25%
 | Phase 02 P03 | 5min | 2 tasks | 7 files |
 | Phase 02 P04 | 5min | 2 tasks | 6 files |
 | Phase 02 P05 | 25min | 3 tasks | 11 files |
+| Phase 02 P06 | 20min | 2 tasks | 13 files |
 
 ## Accumulated Context
 
@@ -88,6 +89,7 @@ Recent decisions affecting current work:
 - [Phase 02]: Plan 02-03: owner-pending email/Vinted/eBay use .ie placeholders marked PENDING-OWNER; COPY groups.type is 'Category'; mock colour 'Ochre' left out of COLOURS to keep swatch fallback provable
 - [Phase 02]: 02-04: formatMoney picks 0 or 2 fraction digits per amount for both min and max (avoids 119.5)
 - [Phase 02]: 02-05: past-the-end redirect is a 307 only before loading.tsx; with the skeleton it is a meta refresh inside a 200 (accepted, owner to see in PR)
+- [Phase 02]: 02-06: Header keeps the logo as a static svg import (src/shop/logo.svg); hover-open for dropdowns is mouse-only from 1024px, touch uses click
 
 ### Pending Todos
 
@@ -111,6 +113,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-26T20:52:16.183Z
-Stopped at: Completed 02-05-PLAN.md
+Last session: 2026-10-26T20:58:37.188Z
+Stopped at: Completed 02-06-PLAN.md
 Resume file: None
