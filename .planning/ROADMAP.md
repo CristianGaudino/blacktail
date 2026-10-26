@@ -63,11 +63,11 @@ Plans:
   4. A filtered view's URL can be shared or bookmarked and reopens the same results; junk values in the URL are dropped instead of breaking the page; chosen filters show as removable chips with the result count; an empty result offers a way to clear filters; filtered, searched or sorted listings are `noindex,follow` with a canonical URL from `SITE_URL`
   5. On a phone, a menu opens the nav, filters open in a drawer with an Apply button, and no page scrolls sideways
 
-**Plans:** 10 plans
+**Plans:** 1/10 plans executed
 
 Plans:
 **Wave 1**
-- [ ] 02-01-PLAN.md — Tracer: / redirects to /shop; every catalogue param is cleaned against /filters into one canonical API query (mock and freshness proof on /shop)
+- [x] 02-01-PLAN.md — Tracer: / redirects to /shop; every catalogue param is cleaned against /filters into one canonical API query (mock and freshness proof on /shop)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 02-02-PLAN.md — Package check, Tailwind tokens and self-hosted fonts in src/shop, All Items banner
@@ -132,6 +132,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Live Stock Skeleton | 4/4 | Complete    | 2026-10-26 |
-| 2. Branded Catalogue | 0/7 | Not started | - |
+| 2. Branded Catalogue | 1/10 | In Progress | - |
 | 3. Item and Brand Pages | 0/TBD | Not started | - |
 | 4. Home and Launch | 0/TBD | Not started | - |

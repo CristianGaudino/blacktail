@@ -34,11 +34,11 @@
 ### Catalogue
 
 - [ ] **CAT-01**: The visitor can browse All Items as a grid of cards (cover thumbnail, brand, title, colour and size, price) with space reserved for each photo so nothing shifts
-- [ ] **CAT-02**: The visitor can filter by type, brand, size, colour, era, condition, department and price range, choosing several values per filter
-- [ ] **CAT-03**: The visitor can filter by pit-to-pit and length ranges. These filters hide when the shop has no measurements
-- [ ] **CAT-04**: The visitor can search by words in the title, brand or colour
-- [ ] **CAT-05**: The visitor can sort by newest, price low to high and price high to low
-- [ ] **CAT-06**: Filters, search, sort and page live in the URL, so a filtered view can be shared or bookmarked, and invalid values are dropped instead of breaking the page
+- [x] **CAT-02**: The visitor can filter by type, brand, size, colour, era, condition, department and price range, choosing several values per filter
+- [x] **CAT-03**: The visitor can filter by pit-to-pit and length ranges. These filters hide when the shop has no measurements
+- [x] **CAT-04**: The visitor can search by words in the title, brand or colour
+- [x] **CAT-05**: The visitor can sort by newest, price low to high and price high to low
+- [x] **CAT-06**: Filters, search, sort and page live in the URL, so a filtered view can be shared or bookmarked, and invalid values are dropped instead of breaking the page
 - [ ] **CAT-07**: The visitor can move through results with numbered pages (24 per page), and any filter, search or sort change goes back to page 1
 - [ ] **CAT-08**: On mobile, filters open in a drawer with an Apply button
 - [ ] **CAT-09**: Chosen filters show as removable chips with the result count, and an empty result shows a helpful message with a way to clear filters
@@ -139,11 +139,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SHELL-04 | Phase 2 | Pending |
 | SHELL-05 | Phase 2 | Pending |
 | CAT-01 | Phase 2 | Pending |
-| CAT-02 | Phase 2 | Pending |
-| CAT-03 | Phase 2 | Pending |
-| CAT-04 | Phase 2 | Pending |
-| CAT-05 | Phase 2 | Pending |
-| CAT-06 | Phase 2 | Pending |
+| CAT-02 | Phase 2 | Complete |
+| CAT-03 | Phase 2 | Complete |
+| CAT-04 | Phase 2 | Complete |
+| CAT-05 | Phase 2 | Complete |
+| CAT-06 | Phase 2 | Complete |
 | CAT-07 | Phase 2 | Pending |
 | CAT-08 | Phase 2 | Pending |
 | CAT-09 | Phase 2 | Pending |

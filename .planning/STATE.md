@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 02
 current_phase_name: Branded Catalogue
 status: executing
-stopped_at: Phase 2 UI-SPEC approved
-last_updated: "2026-10-26T20:11:21.324Z"
+stopped_at: Completed 02-01-PLAN.md
+last_updated: "2026-10-26T20:31:11.979Z"
 last_activity: 2026-10-26
-last_activity_desc: Phase 01 complete, transitioned to Phase 2
-state_head: 0c6088d6584542b1f899f7a375d8c351572303a2
+last_activity_desc: Phase 02 execution started
+state_head: 3461399679f617e184383e7757d686c81923b6f0
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 14
-  completed_plans: 4
+  completed_plans: 5
   percent: 25
 ---
 
@@ -23,14 +23,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-10-26)
 
 **Core value:** Shoppers see the shop's current in-stock pieces, always up to date with How many, in a storefront that looks like the Blacktail Archive mockups.
-**Current focus:** Phase 01 — Live Stock Skeleton
+**Current focus:** Phase 02 — Branded Catalogue
 
 ## Current Position
 
-Phase: 02 (Branded Catalogue) — READY TO EXECUTE
-Plan: Not started
+Phase: 02 (Branded Catalogue) — EXECUTING
+Plan: 2 of 10
 Status: Ready to execute
-Last activity: 2026-10-26 — Phase 01 complete, transitioned to Phase 2
+Last activity: 2026-10-26 — Phase 02 execution started
 
 Progress: [███░░░░░░░] 25%
 
@@ -60,6 +60,7 @@ Progress: [███░░░░░░░] 25%
 | Phase 01 P02 | 3 min | 3 tasks | 15 files |
 | Phase 01 P03 | n/a | 2 tasks | 5 files |
 | Phase 01 P04 | 30min | 2 tasks | 2 files |
+| Phase 02 P01 | 12min | 2 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -77,6 +78,8 @@ Recent decisions affecting current work:
 - [Phase 01]: Guard regex for one-argument revalidateTag tolerates nested parens so revalidateTag(storeTag(), opts) passes
 - [Phase 01]: D1 tag cache used plain (not wrapped) so populateCache creates the revalidations table; missing-env CI check polls the Worker log up to 15s
 - [Phase 01]: Deploy smoke check is a noindex header grep plus an unsigned webhook POST expecting 401, after a curl retry wait for the certificate
+- [Phase 02]: A price or measurement bound equal to its own /filters bound is dropped after the min/max swap, so it never mints a second cache key
+- [Phase 02]: Search q is capped at 80 code points with Array.from so the cap never splits a character
 
 ### Pending Todos
 
@@ -100,6 +103,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-26T18:47:51.795Z
-Stopped at: Phase 2 UI-SPEC approved
-Resume file: .planning/phases/02-branded-catalogue/02-UI-SPEC.md
+Last session: 2026-10-26T20:31:11.894Z
+Stopped at: Completed 02-01-PLAN.md
+Resume file: None
