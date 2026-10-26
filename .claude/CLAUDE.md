@@ -203,6 +203,16 @@ Blacktail is a Next.js storefront template that shows the stock a seller picks i
 
 <!-- GSD:stack-end -->
 
+## Git Rules
+
+- Never commit to `main`. Work on a branch (phase work uses `gsd/phase-{N}-{slug}`), push it, and open a PR with `gh pr create`.
+- Never merge a PR (no `gh pr merge`, no push to `main`). The owner merges.
+- Tell the owner when a PR is open, with its link.
+
+## Reference Codebase
+
+Follow `C:\Git\vintage` for structure, coding principles and reuse (mapped in `C:\Git\vintage\.planning\codebase\`, especially CONVENTIONS.md and STRUCTURE.md). The visual design is Blacktail's own (`docs/refs/Blacktail Archive - Branding.pdf`).
+
 <!-- GSD:conventions-start source:CONVENTIONS.md -->
 
 ## Conventions
