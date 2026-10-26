@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import { Footer } from '@/components/layout/Footer';
 import { Header } from '@/components/layout/Header';
 import { SHOP } from '@/shop/config';
 import { bodoni, montserrat } from '@/shop/fonts';
@@ -16,6 +17,7 @@ export default function RootLayout({ children }: LayoutProps<'/'>) {
             <body className="min-h-dvh bg-ivory font-sans text-forest antialiased">
                 <Header />
                 {children}
+                <Footer />
             </body>
         </html>
     );
