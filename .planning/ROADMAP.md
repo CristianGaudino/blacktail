@@ -31,7 +31,14 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. Starting the app with a missing or invalid env var stops it with a clear list of the problems, and a production build makes no per-item API calls while repeat page views are served from cache
   5. Every PR runs lint, typecheck, tests and an OpenNext worker build, and fails if `cacheComponents`, `'use cache'`, `cacheTag`, `cacheLife` or an em dash in `COPY` appears
   6. Every page of the deployed site sends `noindex` (robots meta and `X-Robots-Tag`), so the unfinished site isn't indexed before Phase 4 makes indexing depend on the environment (SEO-03)
-**Plans**: TBD
+**Plans:** 4 plans
+
+Plans:
+- [ ] 01-01-PLAN.md — Walking skeleton: live item list through the tagged fetch and signed-webhook refresh, proven on `next start` against a mock API
+- [ ] 01-02-PLAN.md — Hardening: env fail-fast, webhook/client unit tests, COPY empty and error screens, Cache Components and em-dash guards, lint and typecheck
+- [ ] 01-03-PLAN.md — R2 + D1 tag cache + DO queue config, CI check and worker jobs proving the round trip on workerd, PR A
+- [ ] 01-04-PLAN.md — Owner Cloudflare/GitHub/How many setup, deploy workflow on push to main, PR B, live checks on the deployed Worker
+
 **Research**: Highest-risk phase. Run `/gsd-plan-phase --research-phase 1` (research only) before planning, and prove the freshness round trip on a deployed Worker (D1 tag table, binding names, `WORKER_SELF_REFERENCE`, `{ expire: 0 }` vs `'max'`, `force-cache` after `await searchParams`).
 
 ### Phase 2: Branded Catalogue
@@ -83,7 +90,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Live Stock Skeleton | 0/TBD | Not started | - |
+| 1. Live Stock Skeleton | 0/4 | Planned | - |
 | 2. Branded Catalogue | 0/TBD | Not started | - |
 | 3. Item and Brand Pages | 0/TBD | Not started | - |
 | 4. Home and Launch | 0/TBD | Not started | - |
