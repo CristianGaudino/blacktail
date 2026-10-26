@@ -113,7 +113,7 @@ Plans:
 **Goal**: As a shopper, I want to land on a home page that matches the Blacktail Archive mockup, see the latest drops and read the shop's story and contact details, so that I trust the shop and come back for new pieces.
 **Mode:** mvp
 **Depends on**: Phase 3
-**Requirements**: HOME-01, HOME-02, HOME-03, BRAND-02, CAT-11, PAGE-01, PAGE-02, SEO-01, SEO-03, TMPL-02
+**Requirements**: HOME-01, HOME-02, HOME-03, BRAND-02, CAT-11, PAGE-01, PAGE-02, SEO-01, SEO-03, TMPL-01, TMPL-02
 **Success Criteria** (what must be TRUE):
   1. The home page matches the Just Dropped mockup on desktop and mobile: hero, brand strip, Just Dropped carousel, two promo banners, shop by category tiles, the "a more conscious way to shop" story band and the footer; a section with nothing to show is hidden, and lifestyle images come from `public/images/` slots with placeholders until real photos arrive
   2. The brand strip lists brands in stock first, then sold-before brands (empty until How many provides them), then the default order from config
