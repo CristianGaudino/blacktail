@@ -169,7 +169,9 @@ if (mock && outage) {
             return !p.asOf && !p.html.includes(lastTitle) ? p : null;
         });
         assert(errored, 'after a webhook with the API down, the page still showed the old stock');
-        assert(errored.status >= 500, `expected an error response, got ${errored.status}`);
+        // Next's loading.js docs, "Status codes": streaming page responses begin with a 200 status code, so with
+        // /shop/loading.tsx the error arrives inside the stream as React's failed-boundary marker ($RX( or data-dgst=), not as a 5xx
+        assert(errored.status >= 500 || /\$RX\(|data-dgst=/.test(errored.html), `expected an error response or a streamed error marker, got ${errored.status}`);
 
         await setMock({ status: 200 });
         const recovered = await poll(async () => {
