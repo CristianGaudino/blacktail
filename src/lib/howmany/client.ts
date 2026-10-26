@@ -36,7 +36,15 @@ export async function getStore(): Promise<Store> {
     return (await howmanyFetch('', storeSchema)).data;
 }
 
+/** Every shown item: pages are followed until the API's last-page rule (page * limit >= total) */
 export async function getItems(): Promise<{ page: ItemsPage; asOf: string | null }> {
-    const { data, asOf } = await howmanyFetch('/items', itemsPageSchema, { limit: String(STORE_API.listLimit) });
-    return { page: data, asOf };
+    const limit = String(STORE_API.listLimit);
+    const first = await howmanyFetch('/items', itemsPageSchema, { limit });
+    const items = [...first.data.items];
+    for (let n = 2; n - 1 < first.data.total / STORE_API.listLimit; n++) {
+        const next = await howmanyFetch('/items', itemsPageSchema, { limit, page: String(n) });
+        if (next.data.items.length === 0) break;
+        items.push(...next.data.items);
+    }
+    return { page: { ...first.data, items }, asOf: first.asOf };
 }
