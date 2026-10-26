@@ -8,9 +8,9 @@
 ### Foundation
 
 - [ ] **FOUND-01**: The app builds with Next 16 and deploys to Cloudflare Workers through OpenNext, from CI on push to main
-- [ ] **FOUND-02**: OpenNext uses an R2 incremental cache, a D1 tag cache and a Durable Object queue, so tag revalidation works across Worker isolates
-- [ ] **FOUND-03**: Env vars `STORE_SLUG`, `HOWMANY_API_URL`, `HOWMANY_WEBHOOK_SECRET` and `SITE_URL` are validated with Zod, and a bad or missing value stops the app with a clear list of problems
-- [ ] **FOUND-04**: CI runs lint, typecheck, tests and an OpenNext worker build on every PR
+- [x] **FOUND-02**: OpenNext uses an R2 incremental cache, a D1 tag cache and a Durable Object queue, so tag revalidation works across Worker isolates
+- [x] **FOUND-03**: Env vars `STORE_SLUG`, `HOWMANY_API_URL`, `HOWMANY_WEBHOOK_SECRET` and `SITE_URL` are validated with Zod, and a bad or missing value stops the app with a clear list of problems
+- [x] **FOUND-04**: CI runs lint, typecheck, tests and an OpenNext worker build on every PR
 - [x] **FOUND-05**: The project follows `C:\Git\vintage` conventions: `COPY` for all on-screen text (no em dashes, enforced by a test), `config.ts`, `routes.ts`, `definitions.ts`, feature component folders plus `ui/` primitives, and colocated Vitest tests
 - [x] **FOUND-06**: A guard test fails if `cacheComponents`, `'use cache'`, `cacheTag` or `cacheLife` appear in the code
 
@@ -20,8 +20,8 @@
 - [x] **DATA-02**: API responses are validated with lenient Zod schemas, so unknown fields or new code values never break a page
 - [x] **DATA-03**: API error responses are never cached. A failed refresh keeps showing the last good data or the error page, never a cached error
 - [x] **DATA-04**: A webhook route accepts How many's signed `store.updated` POST, checks the HMAC signature and the 5-minute timestamp window in constant time, and returns 401 for anything invalid (never 500)
-- [ ] **DATA-05**: A valid webhook revalidates the `store:<slug>` tag (taken from env, not the request body), so the next visitor sees updated stock within seconds on the deployed Worker
-- [ ] **DATA-06**: Page builds don't fan out API calls (item pages render on demand), keeping Blacktail well under the shared rate limit
+- [x] **DATA-05**: A valid webhook revalidates the `store:<slug>` tag (taken from env, not the request body), so the next visitor sees updated stock within seconds on the deployed Worker
+- [x] **DATA-06**: Page builds don't fan out API calls (item pages render on demand), keeping Blacktail well under the shared rate limit
 
 ### Design System and Shell
 
@@ -122,17 +122,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | FOUND-01 | Phase 1 | Pending |
-| FOUND-02 | Phase 1 | Pending |
-| FOUND-03 | Phase 1 | Pending |
-| FOUND-04 | Phase 1 | Pending |
+| FOUND-02 | Phase 1 | Complete |
+| FOUND-03 | Phase 1 | Complete |
+| FOUND-04 | Phase 1 | Complete |
 | FOUND-05 | Phase 1 | Complete |
 | FOUND-06 | Phase 1 | Complete |
 | DATA-01 | Phase 1 | Complete |
 | DATA-02 | Phase 1 | Complete |
 | DATA-03 | Phase 1 | Complete |
 | DATA-04 | Phase 1 | Complete |
-| DATA-05 | Phase 1 | Pending |
-| DATA-06 | Phase 1 | Pending |
+| DATA-05 | Phase 1 | Complete |
+| DATA-06 | Phase 1 | Complete |
 | SHELL-01 | Phase 2 | Pending |
 | SHELL-02 | Phase 2 | Pending |
 | SHELL-03 | Phase 2 | Pending |
