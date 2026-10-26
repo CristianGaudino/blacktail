@@ -1,0 +1,48 @@
+{
+	// Blacktail Archive on Cloudflare Workers, built by OpenNext (`npx opennextjs-cloudflare build`).
+	// HOWMANY_WEBHOOK_SECRET is a Worker secret (`npx wrangler secret put HOWMANY_WEBHOOK_SECRET`), never set here; the plain values are in "vars" below.
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "blacktail-archive",
+	// OpenNext's own worker, not a wrapper: it exports the DOQueueHandler class the queue binding below needs
+	"main": ".open-next/worker.js",
+	"compatibility_date": "2026-10-01",
+	"compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+	"assets": {
+		"directory": ".open-next/assets",
+		"binding": "ASSETS"
+	},
+	"services": [
+		// Self-reference, which OpenNext's caching uses: the name must match the Worker's
+		{ "binding": "WORKER_SELF_REFERENCE", "service": "blacktail-archive" }
+	],
+	"r2_buckets": [
+		// OpenNext's incremental cache (the cached How many responses)
+		{ "binding": "NEXT_INC_CACHE_R2_BUCKET", "bucket_name": "blacktail-archive-opennext-cache" }
+	],
+	"d1_databases": [
+		// OpenNext's tag cache: what the webhook's revalidateTag writes to. Replace the all-zero id with the real one from
+		// `npx wrangler d1 create blacktail-archive-tags` before the first deploy (an id is not a secret); local dev ignores it.
+		{ "binding": "NEXT_TAG_CACHE_D1", "database_name": "blacktail-archive-tags", "database_id": "00000000-0000-0000-0000-000000000000" }
+	],
+	"durable_objects": {
+		"bindings": [{ "name": "NEXT_CACHE_DO_QUEUE", "class_name": "DOQueueHandler" }]
+	},
+	"migrations": [
+		// The queue regenerates time-expired prerendered pages. Version 1 pages render per request, so it is configured but idle.
+		{ "tag": "v1", "new_sqlite_classes": ["DOQueueHandler"] }
+	],
+	// Plain values live here, not in the dashboard: every `wrangler deploy` replaces the dashboard's plain-text
+	// variables with these (only secrets survive a deploy). None of them is secret.
+	"vars": {
+		"STORE_SLUG": "blacktail-archive",
+		"HOWMANY_API_URL": "https://www.checkhowmany.com/api/v1/stores/blacktail-archive",
+		"SITE_URL": "https://www.blacktailarchive.cgaudino.com"
+	},
+	// The site. Cloudflare makes the DNS record and certificate (the hostname must have no record of its own first).
+	"routes": [
+		{ "pattern": "www.blacktailarchive.cgaudino.com", "custom_domain": true }
+	],
+	// On for now so the Worker is reachable before the domain is; Phase 4 turns it off once the custom domain is the only address
+	"workers_dev": true,
+	"observability": { "enabled": true }
+}
