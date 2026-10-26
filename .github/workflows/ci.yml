@@ -105,7 +105,12 @@ jobs:
           done
           echo "GET / without HOWMANY_WEBHOOK_SECRET: $code (want 500)"
           [ "$code" = 500 ] || exit 1
-          grep -q "Invalid environment variables" wrangler-bad.log || { echo 'the log does not name the invalid variables'; exit 1; }
+          # The Worker's console output reaches the log file a moment after the response
+          for i in $(seq 1 15); do
+            grep -q "Invalid environment variables" wrangler-bad.log && exit 0
+            sleep 1
+          done
+          echo 'the log does not name the invalid variables'; exit 1
       - name: Logs
         if: failure()
         run: |
