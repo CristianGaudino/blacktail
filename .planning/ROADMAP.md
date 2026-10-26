@@ -63,7 +63,28 @@ Plans:
   4. A filtered view's URL can be shared or bookmarked and reopens the same results; junk values in the URL are dropped instead of breaking the page; chosen filters show as removable chips with the result count; an empty result offers a way to clear filters; filtered, searched or sorted listings are `noindex,follow` with a canonical URL from `SITE_URL`
   5. On a phone, a menu opens the nav, filters open in a drawer with an Apply button, and no page scrolls sideways
 
-**Plans**: TBD
+**Plans:** 7 plans
+
+Plans:
+**Wave 1**
+- [ ] 02-01-PLAN.md — Tracer: / redirects to /shop; every catalogue param is cleaned against /filters into one canonical API query (mock and freshness proof on /shop)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 02-02-PLAN.md — Package check, Tailwind tokens and self-hosted fonts, All Items banner, src/shop seam, COPY deck, code labels and the shop-string guard
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 02-03-PLAN.md — Item cards (money, NEW badge, no layout shift), numbered pager, loading skeleton, streaming-aware outage proof
+- [ ] 02-04-PLAN.md — Header (logo, nav, Shop and Brands dropdowns, search), footer (contact, Vinted, eBay, socials, newsletter mock), phone menu
+
+**Wave 4** *(blocked on 02-03)*
+- [ ] 02-05-PLAN.md — Result count, removable chips, empty states, sort with pending state, noindex,follow and SITE_URL canonical
+
+**Wave 5** *(blocked on 02-04 and 02-05)*
+- [ ] 02-06-PLAN.md — Filter panel (checkbox groups, swatches, range sliders, instant apply) and the phone filter drawer
+
+**Wave 6** *(blocked on Wave 5 completion)*
+- [ ] 02-07-PLAN.md — CI worker job and deploy smoke follow /shop; phase PR opened with both checks green
+
 **UI hint**: yes
 
 ### Phase 3: Item and Brand Pages
@@ -106,6 +127,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Live Stock Skeleton | 4/4 | Complete    | 2026-10-26 |
-| 2. Branded Catalogue | 0/TBD | Not started | - |
+| 2. Branded Catalogue | 0/7 | Not started | - |
 | 3. Item and Brand Pages | 0/TBD | Not started | - |
 | 4. Home and Launch | 0/TBD | Not started | - |
