@@ -13,6 +13,8 @@ export const CACHE = {
 /** How the catalogue page reads its URL. Param names equal the API's, so a shared link is also an API query */
 export const CATALOGUE = {
     pageSize:      24,
+    /** The first row on the widest grid loads eagerly, the rest lazily */
+    eagerImages:   4,
     /** Pages past this are clamped, so a made-up page number cannot mint cache keys */
     maxPage:       500,
     /** Code points, so the cap never splits a character */
