@@ -1,7 +1,7 @@
 import 'server-only';
 import { cache } from 'react';
 import type { z } from 'zod';
-import { CACHE, CATALOGUE, STORE_API } from '@/lib/config';
+import { CACHE, CATALOGUE } from '@/lib/config';
 import type { Filters, ItemsPage, Store } from '@/lib/definitions';
 import { storeEnv } from '@/lib/env';
 import { filtersSchema, itemsPageSchema, storeSchema } from '@/lib/howmany/schemas';
@@ -36,20 +36,6 @@ async function howmanyFetch<S extends z.ZodType>(path: string, schema: S, params
 
 export async function getStore(): Promise<Store> {
     return (await howmanyFetch('', storeSchema)).data;
-}
-
-/**
- * Every shown item: pages 2.. up to the API's last-page rule (page * limit >= total), fetched together.
- * Each page is its own cache entry and can be a refresh apart, so an item that moved between pages is kept once.
- */
-export async function getItems(): Promise<{ page: ItemsPage; asOf: string | null }> {
-    const limit = String(STORE_API.listLimit);
-    const first = await howmanyFetch('/items', itemsPageSchema, new URLSearchParams({ limit }));
-    const pageCount = Math.ceil(first.data.total / STORE_API.listLimit);
-    const rest = await Promise.all(Array.from({ length: Math.max(0, pageCount - 1) }, (_, i) =>
-        howmanyFetch('/items', itemsPageSchema, new URLSearchParams({ limit, page: String(i + 2) }))));
-    const byCode = new Map([first, ...rest].flatMap(p => p.data.items).map(item => [item.code, item]));
-    return { page: { ...first.data, items: [...byCode.values()] }, asOf: first.asOf };
 }
 
 /**

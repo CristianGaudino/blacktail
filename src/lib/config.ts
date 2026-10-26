@@ -34,7 +34,6 @@ export const SEARCH_PARAMS = { q: 'q', sort: 'sort', page: 'page' } as const;
 
 /** The How many public API contract */
 export const STORE_API = {
-    listLimit:               100,
     webhookEvent:            'store.updated',
     webhookToleranceSeconds: 300,
     webhookMaxBytes:         8192,
