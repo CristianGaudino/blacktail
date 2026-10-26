@@ -1,29 +1,60 @@
+import Link from 'next/link';
 import { redirect } from 'next/navigation';
 import { connection } from 'next/server';
 import { CatalogueBanner } from '@/components/catalogue/CatalogueBanner';
+import { FilterChips } from '@/components/catalogue/FilterChips';
 import { ItemGrid } from '@/components/catalogue/ItemGrid';
 import { Pager } from '@/components/catalogue/Pager';
-import { getFilters, getItemsPage } from '@/lib/howmany/client';
+import { CATALOGUE } from '@/lib/config';
+import { COPY } from '@/lib/copy';
+import { getFilters, getItemsPage, getStore, HowManyError } from '@/lib/howmany/client';
 import { pageCountOf, resolvePage } from '@/lib/paging';
-import { pageHref, parseCatalogueQuery, toSearchString } from '@/lib/params';
+import { hasFilters, pageHref, parseCatalogueQuery, toSearchString } from '@/lib/params';
+import { ROUTES } from '@/lib/routes';
 
 export default async function ShopPage({ searchParams }: PageProps<'/shop'>) {
     // Render on each request, so nothing is fetched at build and the cached fetch is the only snapshot
     await connection();
-    const [raw, filters] = await Promise.all([searchParams, getFilters()]);
+    const [raw, filters, store] = await Promise.all([searchParams, getFilters(), getStore()]);
     const query = parseCatalogueQuery(raw, filters);
-    const { page, asOf } = await getItemsPage(toSearchString(query));
+    const { page, asOf } = await getItemsPage(toSearchString(query)).catch(error => {
+        // The cached /filters and the API can briefly disagree about a code: show "no match", not the error screen
+        if (!(error instanceof HowManyError) || error.status !== 400) throw error;
+        console.warn('How many API 400 for a cleaned query');
+        return { page: { items: [], page: 1, limit: CATALOGUE.pageSize, total: 0 }, asOf: null };
+    });
     // A page past the end goes to the last real page; the target is built from the cleaned query only
     const target = resolvePage(query.page, page.total);
     if (target !== query.page) redirect(pageHref(query, target));
     // One clock per render, so every card agrees about what is new. A server component runs once per request.
     // eslint-disable-next-line react-hooks/purity
     const now = Date.now();
+    const empty = hasFilters(query) ? (
+        <div className="py-16 text-center">
+            <h2 className="font-heading text-heading">{COPY.catalogue.emptyTitle}</h2>
+            <p className="mt-2">{COPY.catalogue.emptyBody}</p>
+            <Link href={ROUTES.shop} prefetch={false} className="mt-4 inline-block underline underline-offset-4">{COPY.catalogue.clearAll}</Link>
+        </div>
+    ) : undefined;
     return (
         <main>
             <CatalogueBanner />
             <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-12">
-                <ItemGrid items={page.items} asOf={asOf} now={now} />
+                <div id="results" className="flex scroll-mt-24 flex-wrap items-center justify-between gap-4">
+                    <p
+                        id="result-count"
+                        role="status"
+                        aria-live="polite"
+                        tabIndex={-1}
+                        className="order-last w-full text-label uppercase text-olive lg:order-first lg:w-auto"
+                    >
+                        {COPY.catalogue.count(page.total)}
+                    </p>
+                </div>
+                <FilterChips query={query} filters={filters} currency={store.currency} />
+                <div className="mt-6">
+                    <ItemGrid items={page.items} asOf={asOf} now={now} empty={empty} />
+                </div>
                 <Pager query={query} pageCount={pageCountOf(page.total)} />
             </div>
         </main>
