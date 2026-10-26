@@ -33,7 +33,7 @@
 
 ### Catalogue
 
-- [ ] **CAT-01**: The visitor can browse All Items as a grid of cards (cover thumbnail, brand, title, colour and size, price) with space reserved for each photo so nothing shifts
+- [x] **CAT-01**: The visitor can browse All Items as a grid of cards (cover thumbnail, brand, title, colour and size, price) with space reserved for each photo so nothing shifts
 - [x] **CAT-02**: The visitor can filter by type, brand, size, colour, era, condition, department and price range, choosing several values per filter
 - [x] **CAT-03**: The visitor can filter by pit-to-pit and length ranges. These filters hide when the shop has no measurements
 - [x] **CAT-04**: The visitor can search by words in the title, brand or colour
@@ -138,7 +138,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SHELL-03 | Phase 2 | Complete |
 | SHELL-04 | Phase 2 | Pending |
 | SHELL-05 | Phase 2 | Complete |
-| CAT-01 | Phase 2 | Pending |
+| CAT-01 | Phase 2 | Complete |
 | CAT-02 | Phase 2 | Complete |
 | CAT-03 | Phase 2 | Complete |
 | CAT-04 | Phase 2 | Complete |

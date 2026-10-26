@@ -63,7 +63,7 @@ Plans:
   4. A filtered view's URL can be shared or bookmarked and reopens the same results; junk values in the URL are dropped instead of breaking the page; chosen filters show as removable chips with the result count; an empty result offers a way to clear filters; filtered, searched or sorted listings are `noindex,follow` with a canonical URL from `SITE_URL`
   5. On a phone, a menu opens the nav, filters open in a drawer with an Apply button, and no page scrolls sideways
 
-**Plans:** 4/10 plans executed
+**Plans:** 5/10 plans executed
 
 Plans:
 **Wave 1**
@@ -77,7 +77,7 @@ Plans:
 - [x] 02-04-PLAN.md — One money formatter, the New-badge rule and the paging helpers, test first
 
 **Wave 4** *(blocked on Wave 3 completion)*
-- [ ] 02-05-PLAN.md — Item cards (NEW badge, no layout shift), numbered pager with past-the-end redirect, loading skeleton, streaming-aware outage proof
+- [x] 02-05-PLAN.md — Item cards (NEW badge, no layout shift), numbered pager with past-the-end redirect, loading skeleton, streaming-aware outage proof
 - [ ] 02-06-PLAN.md — Header (logo, nav, Shop and Brands dropdowns, search) and phone menu
 
 **Wave 5** *(blocked on 02-05 and 02-06)*
@@ -132,6 +132,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Live Stock Skeleton | 4/4 | Complete    | 2026-10-26 |
-| 2. Branded Catalogue | 4/10 | In Progress | - |
+| 2. Branded Catalogue | 5/10 | In Progress | - |
 | 3. Item and Brand Pages | 0/TBD | Not started | - |
 | 4. Home and Launch | 0/TBD | Not started | - |

@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 02
 current_phase_name: Branded Catalogue
 status: executing
-stopped_at: Completed 02-04-PLAN.md
-last_updated: "2026-10-26T20:44:19.622Z"
+stopped_at: Completed 02-05-PLAN.md
+last_updated: "2026-10-26T20:52:16.270Z"
 last_activity: 2026-10-26
 last_activity_desc: Phase 02 execution started
-state_head: ec79176189e370d1a5388f1d790e79704f036b15
+state_head: 30ae844bc3b2fde015cb97cb9b88ad9e43b6c69e
 progress:
   total_phases: 4
   completed_phases: 1
   total_plans: 14
-  completed_plans: 8
+  completed_plans: 9
   percent: 25
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-10-26)
 ## Current Position
 
 Phase: 02 (Branded Catalogue) — EXECUTING
-Plan: 5 of 10
+Plan: 6 of 10
 Status: Ready to execute
 Last activity: 2026-10-26 — Phase 02 execution started
 
@@ -64,6 +64,7 @@ Progress: [███░░░░░░░] 25%
 | Phase 02 P02 | 10min | 2 tasks | 14 files |
 | Phase 02 P03 | 5min | 2 tasks | 7 files |
 | Phase 02 P04 | 5min | 2 tasks | 6 files |
+| Phase 02 P05 | 25min | 3 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -86,6 +87,7 @@ Recent decisions affecting current work:
 - [Phase 02]: Bodoni woff2 and OFL licence taken from the @fontsource/bodoni-moda 5.3.0 tarball in an isolated scratch dir; not a dependency
 - [Phase 02]: Plan 02-03: owner-pending email/Vinted/eBay use .ie placeholders marked PENDING-OWNER; COPY groups.type is 'Category'; mock colour 'Ochre' left out of COLOURS to keep swatch fallback provable
 - [Phase 02]: 02-04: formatMoney picks 0 or 2 fraction digits per amount for both min and max (avoids 119.5)
+- [Phase 02]: 02-05: past-the-end redirect is a 307 only before loading.tsx; with the skeleton it is a meta refresh inside a 200 (accepted, owner to see in PR)
 
 ### Pending Todos
 
@@ -109,6 +111,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-26T20:44:19.536Z
-Stopped at: Completed 02-04-PLAN.md
+Last session: 2026-10-26T20:52:16.183Z
+Stopped at: Completed 02-05-PLAN.md
 Resume file: None
