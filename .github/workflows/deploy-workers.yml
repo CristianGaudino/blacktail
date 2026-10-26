@@ -1,0 +1,57 @@
+name: Deploy (Cloudflare Workers)
+
+# Production: every merge to main builds the app on Linux (OpenNext doesn't support building on Windows),
+# deploys the Blacktail Archive Worker, waits for the site, then smoke-checks it.
+on:
+  push:
+    branches: [main]
+    # Notes and docs don't change the site
+    paths-ignore: ['**.md', '.planning/**']
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-workers
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    env:
+      # Build-time values only. None is secret: the same plain values are in wrangler.jsonc "vars" for the running Worker.
+      STORE_SLUG: blacktail-archive
+      HOWMANY_API_URL: https://www.checkhowmany.com/api/v1/stores/blacktail-archive
+      SITE_URL: https://www.blacktailarchive.cgaudino.com
+      # Placeholder: the build neither fetches nor verifies anything. The Worker reads its own secret
+      # (`wrangler secret put`) at run time, and the real one never enters CI.
+      HOWMANY_WEBHOOK_SECRET: build-placeholder-not-the-real-secret
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      NEXT_TELEMETRY_DISABLED: 1
+      WRANGLER_SEND_METRICS: false
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      # CI no longer runs on main (the pull request ran it, on an older main): a merge of several pull requests is tested here
+      - name: Tests
+        run: npm test
+      - run: npx opennextjs-cloudflare build
+      # This is what creates the remote D1 revalidations table; the R2 bucket must already exist
+      - name: Prerendered pages into the cache bucket
+        run: npx opennextjs-cloudflare populateCache remote
+      - name: Deploy
+        run: npx wrangler deploy
+      # A first deploy waits a few minutes for the address's certificate
+      - name: Wait for the site
+        run: curl -fsS -o /dev/null --retry 40 --retry-delay 15 --retry-all-errors --max-time 20 https://www.blacktailarchive.cgaudino.com/
+      - name: Smoke
+        run: |
+          curl -sI https://www.blacktailarchive.cgaudino.com/ | grep -i '^x-robots-tag:.*noindex'
+          test "$(curl -s -o /dev/null -w '%{http_code}' -X POST https://www.blacktailarchive.cgaudino.com/api/webhooks/howmany)" = 401
