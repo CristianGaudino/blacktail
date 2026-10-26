@@ -10,12 +10,30 @@ const refuse = (reason: 'size' | 'signature' | 'body') => {
     return new Response(null, { status: 401 });
 };
 
+/** Reads the body but gives up as soon as it passes the limit, so a chunked request cannot make us buffer it all. null = too big */
+async function readCapped(request: Request): Promise<string | null> {
+    const reader = request.body?.getReader();
+    const chunks: Uint8Array[] = [];
+    let bytes = 0;
+    while (reader) {
+        const { done, value } = await reader.read();
+        if (done) break;
+        bytes += value.byteLength;
+        if (bytes > STORE_API.webhookMaxBytes) {
+            await reader.cancel();
+            return null;
+        }
+        chunks.push(value);
+    }
+    return new TextDecoder().decode(await new Blob(chunks as BlobPart[]).arrayBuffer());
+}
+
 export async function POST(request: Request): Promise<Response> {
     const { STORE_SLUG, HOWMANY_WEBHOOK_SECRET } = storeEnv();
 
     if (Number(request.headers.get('content-length')) > STORE_API.webhookMaxBytes) return refuse('size');
-    const body = await request.text();
-    if (body.length > STORE_API.webhookMaxBytes) return refuse('size');
+    const body = await readCapped(request);
+    if (body === null) return refuse('size');
 
     const verified = await verifyWebhook({
         secret:    HOWMANY_WEBHOOK_SECRET,

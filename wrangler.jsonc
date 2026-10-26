@@ -20,9 +20,9 @@
 		{ "binding": "NEXT_INC_CACHE_R2_BUCKET", "bucket_name": "blacktail-archive-opennext-cache" }
 	],
 	"d1_databases": [
-		// OpenNext's tag cache: what the webhook's revalidateTag writes to. Replace the all-zero id with the real one from
-		// `npx wrangler d1 create blacktail-archive-tags` before the first deploy (an id is not a secret); local dev ignores it.
-		{ "binding": "NEXT_TAG_CACHE_D1", "database_name": "blacktail-archive-tags", "database_id": "00000000-0000-0000-0000-000000000000" }
+		// OpenNext's tag cache: what the webhook's revalidateTag writes to. The id is from `npx wrangler d1 create blacktail-archive-tags`
+		// (an id is not a secret); local dev ignores it.
+		{ "binding": "NEXT_TAG_CACHE_D1", "database_name": "blacktail-archive-tags", "database_id": "b1ae8251-3527-4f7f-bedb-15575580c4fe" }
 	],
 	"durable_objects": {
 		"bindings": [{ "name": "NEXT_CACHE_DO_QUEUE", "class_name": "DOQueueHandler" }]

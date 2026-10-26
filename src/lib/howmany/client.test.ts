@@ -57,6 +57,31 @@ describe('how many client', () => {
         expect(parsed).not.toHaveProperty('future');
     });
 
+    it('keeps an item with a null brand, size, colour or era, and the other items', async () => {
+        fetchMock.mockResolvedValue(reply(page([{ ...item, brand: null, size: null, colour: null, era: null }, { ...item, code: 'BT-0002' }])));
+        const { page: parsed } = await getItems();
+        expect(parsed.items).toHaveLength(2);
+        expect(parsed.items[0]).toMatchObject({ brand: null, size: null, colour: null, era: null });
+    });
+
+    it('follows pages until page * limit >= total', async () => {
+        const mk = (code: string) => ({ ...item, code });
+        const reply2 = (items: unknown[], n: number) => reply({ items, page: n, limit: 100, total: 101 });
+        fetchMock.mockResolvedValueOnce(reply2(Array.from({ length: 100 }, (_, i) => mk(`A${i}`)), 1)).mockResolvedValueOnce(reply2([mk('B0')], 2));
+        const { page: parsed } = await getItems();
+        expect(parsed.items).toHaveLength(101);
+        expect(fetchMock.mock.calls.map(c => c[0])).toEqual([`${base}/items?limit=100`, `${base}/items?limit=100&page=2`]);
+    });
+
+    it('keeps an item once when it shows on two pages fetched a refresh apart', async () => {
+        const mk = (code: string) => ({ ...item, code });
+        const reply2 = (items: unknown[], n: number) => reply({ items, page: n, limit: 100, total: 101 });
+        fetchMock.mockResolvedValueOnce(reply2(Array.from({ length: 100 }, (_, i) => mk(`A${i}`)), 1)).mockResolvedValueOnce(reply2([mk('A99')], 2));
+        const codes = (await getItems()).page.items.map(i => i.code);
+        expect(codes).toHaveLength(100);
+        expect(new Set(codes).size).toBe(100);
+    });
+
     it('returns the response Date header as asOf', async () => {
         fetchMock.mockResolvedValue(reply(page([])));
         expect((await getItems()).asOf).toBe('Mon, 26 Oct 2026 14:00:00 GMT');

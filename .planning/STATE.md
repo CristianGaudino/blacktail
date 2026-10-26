@@ -2,17 +2,17 @@
 gsd_state_version: "1.0"
 current_phase: 01
 current_phase_name: Live Stock Skeleton
-status: executing
-stopped_at: Completed 01-03-PLAN.md
-last_updated: "2026-10-26T15:18:14.629Z"
+status: verifying
+stopped_at: Completed 01-04-PLAN.md (automated parts; owner end-of-phase live checks pending)
+last_updated: "2026-10-26T16:30:27.750Z"
 last_activity: 2026-10-26
 last_activity_desc: Phase 01 execution started
-state_head: e9894ef69c6fa07346f8229f5fcfc5c48360a649
+state_head: 8ef5cc0deca5c3d6ac182be3faa5d36c9901101e
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 4
-  completed_plans: 3
+  completed_plans: 4
   percent: 0
 ---
 
@@ -29,7 +29,7 @@ See: .planning/PROJECT.md (updated 2026-10-26)
 
 Phase: 01 (Live Stock Skeleton) — EXECUTING
 Plan: 4 of 4
-Status: Ready to execute
+Status: Phase complete — ready for verification
 Last activity: 2026-10-26 — Phase 01 execution started
 
 Progress: [░░░░░░░░░░] 0%
@@ -59,6 +59,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P01 | 12 min | 3 tasks | 17 files |
 | Phase 01 P02 | 3 min | 3 tasks | 15 files |
 | Phase 01 P03 | n/a | 2 tasks | 5 files |
+| Phase 01 P04 | 30min | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -75,6 +76,7 @@ Recent decisions affecting current work:
 - [Phase 01]: server-only mocked in vitest setupFiles, not aliased (empty.js is not an exported path)
 - [Phase 01]: Guard regex for one-argument revalidateTag tolerates nested parens so revalidateTag(storeTag(), opts) passes
 - [Phase 01]: D1 tag cache used plain (not wrapped) so populateCache creates the revalidations table; missing-env CI check polls the Worker log up to 15s
+- [Phase 01]: Deploy smoke check is a noindex header grep plus an unsigned webhook POST expecting 401, after a curl retry wait for the certificate
 
 ### Pending Todos
 
@@ -98,6 +100,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-26T15:18:14.612Z
-Stopped at: Completed 01-03-PLAN.md
+Last session: 2026-10-26T16:30:27.731Z
+Stopped at: Completed 01-04-PLAN.md (automated parts; owner end-of-phase live checks pending)
 Resume file: None

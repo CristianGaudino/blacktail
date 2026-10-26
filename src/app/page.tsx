@@ -9,7 +9,7 @@ export default async function HomePage() {
     return (
         <main>
             <h1>{store.name}</h1>
-            <ItemList items={page.items} currency={store.currency} asOf={asOf} />
+            <ItemList items={page.items} asOf={asOf} />
         </main>
     );
 }
