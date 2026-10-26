@@ -63,27 +63,32 @@ Plans:
   4. A filtered view's URL can be shared or bookmarked and reopens the same results; junk values in the URL are dropped instead of breaking the page; chosen filters show as removable chips with the result count; an empty result offers a way to clear filters; filtered, searched or sorted listings are `noindex,follow` with a canonical URL from `SITE_URL`
   5. On a phone, a menu opens the nav, filters open in a drawer with an Apply button, and no page scrolls sideways
 
-**Plans:** 7 plans
+**Plans:** 10 plans
 
 Plans:
 **Wave 1**
 - [ ] 02-01-PLAN.md — Tracer: / redirects to /shop; every catalogue param is cleaned against /filters into one canonical API query (mock and freshness proof on /shop)
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 02-02-PLAN.md — Package check, Tailwind tokens and self-hosted fonts, All Items banner, src/shop seam, COPY deck, code labels and the shop-string guard
+- [ ] 02-02-PLAN.md — Package check, Tailwind tokens and self-hosted fonts in src/shop, All Items banner
 
 **Wave 3** *(blocked on Wave 2 completion)*
-- [ ] 02-03-PLAN.md — Item cards (money, NEW badge, no layout shift), numbered pager, loading skeleton, streaming-aware outage proof
-- [ ] 02-04-PLAN.md — Header (logo, nav, Shop and Brands dropdowns, search), footer (contact, Vinted, eBay, socials, newsletter mock), phone menu
+- [ ] 02-03-PLAN.md — src/shop seam (contact, Vinted, eBay, socials, colours), COPY deck, code labels and the shop-string guard
+- [ ] 02-04-PLAN.md — One money formatter, the New-badge rule and the paging helpers, test first
 
-**Wave 4** *(blocked on 02-03)*
-- [ ] 02-05-PLAN.md — Result count, removable chips, empty states, sort with pending state, noindex,follow and SITE_URL canonical
+**Wave 4** *(blocked on Wave 3 completion)*
+- [ ] 02-05-PLAN.md — Item cards (NEW badge, no layout shift), numbered pager with past-the-end redirect, loading skeleton, streaming-aware outage proof
+- [ ] 02-06-PLAN.md — Header (logo, nav, Shop and Brands dropdowns, search) and phone menu
 
-**Wave 5** *(blocked on 02-04 and 02-05)*
-- [ ] 02-06-PLAN.md — Filter panel (checkbox groups, swatches, range sliders, instant apply) and the phone filter drawer
+**Wave 5** *(blocked on 02-05 and 02-06)*
+- [ ] 02-07-PLAN.md — Footer (contact, Vinted, eBay, socials, newsletter mock) and the on-brand error screen
+- [ ] 02-08-PLAN.md — Result count, removable chips, empty states, sort with pending state, noindex,follow and SITE_URL canonical
 
-**Wave 6** *(blocked on Wave 5 completion)*
-- [ ] 02-07-PLAN.md — CI worker job and deploy smoke follow /shop; phase PR opened with both checks green
+**Wave 6** *(blocked on 02-06 and 02-08)*
+- [ ] 02-09-PLAN.md — Filter panel (checkbox groups, swatches, range sliders, instant apply) and the phone filter drawer
+
+**Wave 7** *(blocked on Wave 6 completion and 02-07)*
+- [ ] 02-10-PLAN.md — CI worker job and deploy smoke follow /shop; phase PR opened with both checks green
 
 **UI hint**: yes
 

@@ -4,13 +4,13 @@
 
 | capability | decision | reason |
 |---|---|---|
-| GET / (store: slug, name, currency) | INTEGRATE | Plan 05: the store currency formats price chips and the price slider read-out; the shop name shown on screen comes from src/shop/config.ts (D-01) |
+| GET / (store: slug, name, currency) | INTEGRATE | Plans 08 and 09: the store currency formats price chips and the price slider read-out; the shop name shown on screen comes from src/shop/config.ts (D-01) |
 | GET /items limit | INTEGRATE | Always 24 (CAT-07), set inside getItemsPage |
-| GET /items page | INTEGRATE | Numbered pages (Plan 03) |
+| GET /items page | INTEGRATE | Numbered pages (Plans 04 and 05) |
 | GET /items sort (newest, price_asc, price_desc) | INTEGRATE | CAT-05; newest is the default and is left out of the query |
 | GET /items q | INTEGRATE | CAT-04; trimmed, collapsed, lowercased, capped |
 | GET /items list filters brand, size, colour, era, material, type, condition, department | INTEGRATE | CAT-02, D-20; values are cleaned against /filters before the call |
-| GET /items list filter category | OPT-OUT | The panel's "Category" group is the API type param (UI-SPEC, D-12); CAT-02 names no category filter and Blacktail Archive lists clothing only; the URL parser drops it |
+| GET /items list filter category | OPT-OUT | The panel's "Category" heading is the mockup's sidebar wording (docs/refs/misc-mockup.png) and the UI-SPEC's; it controls the API type param (its checkboxes are named type, Plan 09), not this one (D-12); CAT-02 names no category filter and Blacktail Archive lists clothing only; the URL parser drops it |
 | GET /items ranges minPrice/maxPrice, minPitToPitMm/maxPitToPitMm, minLengthMm/maxLengthMm | INTEGRATE | CAT-02, CAT-03, D-16; snapped and clamped to the /filters bounds, hidden when the range is null |
 | GET /items/{code} | OPT-OUT | not needed yet: Phase 3 item page (ITEM-01 to ITEM-06); cards link to /items/[code] now (D-23) |
 | GET /filters lists and ranges | INTEGRATE | Header dropdowns (D-12), URL cleaning (CAT-06), filter panel (CAT-02, CAT-03) |
