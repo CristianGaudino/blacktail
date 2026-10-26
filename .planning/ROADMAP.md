@@ -63,7 +63,7 @@ Plans:
   4. A filtered view's URL can be shared or bookmarked and reopens the same results; junk values in the URL are dropped instead of breaking the page; chosen filters show as removable chips with the result count; an empty result offers a way to clear filters; filtered, searched or sorted listings are `noindex,follow` with a canonical URL from `SITE_URL`
   5. On a phone, a menu opens the nav, filters open in a drawer with an Apply button, and no page scrolls sideways
 
-**Plans:** 2/10 plans executed
+**Plans:** 3/10 plans executed
 
 Plans:
 **Wave 1**
@@ -73,7 +73,7 @@ Plans:
 - [x] 02-02-PLAN.md — Package check, Tailwind tokens and self-hosted fonts in src/shop, All Items banner
 
 **Wave 3** *(blocked on Wave 2 completion)*
-- [ ] 02-03-PLAN.md — src/shop seam (contact, Vinted, eBay, socials, colours), COPY deck, code labels and the shop-string guard
+- [x] 02-03-PLAN.md — src/shop seam (contact, Vinted, eBay, socials, colours), COPY deck, code labels and the shop-string guard
 - [ ] 02-04-PLAN.md — One money formatter, the New-badge rule and the paging helpers, test first
 
 **Wave 4** *(blocked on Wave 3 completion)*
@@ -132,6 +132,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Live Stock Skeleton | 4/4 | Complete    | 2026-10-26 |
-| 2. Branded Catalogue | 2/10 | In Progress | - |
+| 2. Branded Catalogue | 3/10 | In Progress | - |
 | 3. Item and Brand Pages | 0/TBD | Not started | - |
 | 4. Home and Launch | 0/TBD | Not started | - |
