@@ -16,7 +16,7 @@
 
 ### Data and Freshness
 
-- [ ] **DATA-01**: All How many API calls go through one server-only client that caches each fetch under the tag `store:<slug>` with a 10-minute time-based fallback
+- [x] **DATA-01**: All How many API calls go through one server-only client that caches each fetch under the tag `store:<slug>` with a 10-minute time-based fallback
 - [ ] **DATA-02**: API responses are validated with lenient Zod schemas, so unknown fields or new code values never break a page
 - [ ] **DATA-03**: API error responses are never cached. A failed refresh keeps showing the last good data or the error page, never a cached error
 - [ ] **DATA-04**: A webhook route accepts How many's signed `store.updated` POST, checks the HMAC signature and the 5-minute timestamp window in constant time, and returns 401 for anything invalid (never 500)
@@ -127,7 +127,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FOUND-04 | Phase 1 | Pending |
 | FOUND-05 | Phase 1 | Pending |
 | FOUND-06 | Phase 1 | Pending |
-| DATA-01 | Phase 1 | Pending |
+| DATA-01 | Phase 1 | Complete |
 | DATA-02 | Phase 1 | Pending |
 | DATA-03 | Phase 1 | Pending |
 | DATA-04 | Phase 1 | Pending |
