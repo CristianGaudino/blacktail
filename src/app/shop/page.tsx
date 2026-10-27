@@ -5,6 +5,7 @@ import { connection } from 'next/server';
 import { CatalogueBanner } from '@/components/catalogue/CatalogueBanner';
 import { CatalogueShell, GridBusy } from '@/components/catalogue/CatalogueShell';
 import { FilterChips } from '@/components/catalogue/FilterChips';
+import { FilterDrawer } from '@/components/catalogue/FilterDrawer';
 import { FilterPanel } from '@/components/catalogue/FilterPanel';
 import { ItemGrid } from '@/components/catalogue/ItemGrid';
 import { Pager } from '@/components/catalogue/Pager';
@@ -72,6 +73,7 @@ export default async function ShopPage({ searchParams }: PageProps<'/shop'>) {
                             >
                                 {COPY.catalogue.count(page.total)}
                             </p>
+                            <FilterDrawer filters={filters} query={query} currency={store.currency} />
                             <SortSelect query={query} />
                         </div>
                         <FilterChips query={query} filters={filters} currency={store.currency} />

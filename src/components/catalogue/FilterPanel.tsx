@@ -7,7 +7,7 @@ import { COPY } from '@/lib/copy';
 import type { CatalogueQuery, Filters, ListKey, RangeKey } from '@/lib/definitions';
 import { label } from '@/lib/labels';
 import { formatMoney } from '@/lib/money';
-import { rangeBounds, shopHref, toSearchString } from '@/lib/params';
+import { clearFilters, rangeBounds, shopHref, toSearchString } from '@/lib/params';
 import { ROUTES } from '@/lib/routes';
 import { LABEL_MAPS } from './FilterChips';
 import { useCatalogueNavigate } from './CatalogueShell';
@@ -23,7 +23,7 @@ const OPEN_BY_DEFAULT: readonly string[] = ['brand', 'type', 'size', 'colour', '
  * of the query: `instant` pushes the draft after a short pause (desktop sidebar), `apply` waits for the
  * Apply button (phone drawer).
  */
-export function FilterPanel({ filters, query, currency, mode }: {
+export function FilterPanel({ filters, query, currency, mode, onApplied }: {
     filters:    Filters;
     query:      CatalogueQuery;
     currency:   string;
@@ -114,8 +114,16 @@ export function FilterPanel({ filters, query, currency, mode }: {
         );
     };
 
+    // Apply mode: nothing is pushed until Apply. An unchanged draft only closes, so Back gets no duplicate entry
+    const apply = (e: React.FormEvent) => {
+        e.preventDefault();
+        const href = shopHref(draft);
+        if (href !== shopHref(query)) navigate(href);
+        onApplied?.();
+    };
+
     return (
-        <form action={ROUTES.shop} method="get">
+        <form action={ROUTES.shop} method="get" onSubmit={mode === 'apply' ? apply : undefined} className={mode === 'apply' ? 'px-4' : undefined}>
             {draft.q && <input type="hidden" name={SEARCH_PARAMS.q} value={draft.q} />}
             {draft.sort !== DEFAULT_SORT && <input type="hidden" name={SEARCH_PARAMS.sort} value={draft.sort} />}
             {listGroup('brand')}
@@ -129,6 +137,12 @@ export function FilterPanel({ filters, query, currency, mode }: {
             {listGroup('material')}
             {rangeGroup('pitToPit')}
             {rangeGroup('length')}
+            {mode === 'apply' && (
+                <div className="sticky bottom-0 -mx-4 flex flex-col gap-2 border-t border-stone bg-ivory p-4">
+                    <Button variant="secondary" fullWidth onClick={() => setDraft(clearFilters(draft))}>{COPY.catalogue.clearAll}</Button>
+                    <Button type="submit" fullWidth>{COPY.catalogue.applyFilters}</Button>
+                </div>
+            )}
             {mode === 'instant' && <noscript><Button type="submit" fullWidth className="mt-6">{COPY.catalogue.applyFilters}</Button></noscript>}
         </form>
     );
