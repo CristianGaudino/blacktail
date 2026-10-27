@@ -47,6 +47,12 @@ describe('parseCatalogueQuery lists', () => {
         expect(query).toMatchObject({ q: 'wool', sort: 'price_asc', page: 2 });
     });
 
+    it('keeps at most maxSelectedPerGroup values per list, the first in /filters order', () => {
+        const brands = Array.from({ length: 12 }, (_, i) => `Brand${String(i).padStart(2, '0')}`);
+        const many = { ...filters, brand: facet(...brands) };
+        expect(parse({ brand: [...brands].reverse() }, many).lists.brand).toEqual(brands.slice(0, CATALOGUE.maxSelectedPerGroup));
+    });
+
     it('drops a list whose /filters list is empty', () => {
         expect(parse({ era: '1990s' }, { ...filters, era: [] }).lists.era).toEqual([]);
     });

@@ -4,6 +4,7 @@ import type { z } from 'zod';
 import { CACHE, CATALOGUE } from '@/lib/config';
 import type { Filters, ItemsPage, Store } from '@/lib/definitions';
 import { storeEnv } from '@/lib/env';
+import { sortEntries } from '@/lib/params';
 import { filtersSchema, itemsPageSchema, storeSchema } from '@/lib/howmany/schemas';
 
 /** The cache tag every How many read carries, and the webhook revalidates */
@@ -24,7 +25,7 @@ export class HowManyError extends Error {
  */
 async function howmanyFetch<S extends z.ZodType>(path: string, schema: S, params?: URLSearchParams): Promise<{ data: z.output<S>; asOf: string | null }> {
     // Sorted by key then value, so equal queries are one cache key
-    const query = params?.size ? `?${new URLSearchParams([...params].sort(([a, x], [b, y]) => a.localeCompare(b) || x.localeCompare(y))).toString()}` : '';
+    const query = params?.size ? `?${new URLSearchParams(sortEntries([...params])).toString()}` : '';
     const res = await fetch(`${storeEnv().HOWMANY_API_URL}${path}${query}`, {
         cache:  'force-cache',
         next:   { tags: [storeTag()], revalidate: CACHE.revalidateSeconds },
@@ -53,4 +54,4 @@ export const getItemsPage = cache(async (search: string): Promise<{ page: ItemsP
     params.set('limit', String(CATALOGUE.pageSize));
     const { data, asOf } = await howmanyFetch('/items', itemsPageSchema, params);
     return { page: data, asOf };
-});
+});

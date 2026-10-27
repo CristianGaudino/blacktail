@@ -1,4 +1,7 @@
-import { twMerge } from 'tailwind-merge';
+import { extendTailwindMerge } from 'tailwind-merge';
+
+// Without the custom sizes tailwind-merge reads an unknown `text-*` as a colour and drops it
+const twMerge = extendTailwindMerge({ extend: { classGroups: { 'font-size': [{ text: ['label', 'heading', 'display'] }] } } });
 
 /**
  * Joins class names, skipping falsy values. When two classes set the same

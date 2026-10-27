@@ -17,8 +17,10 @@ export const CATALOGUE = {
     eagerImages:   4,
     /** Pages past this are clamped, so a made-up page number cannot mint cache keys */
     maxPage:       500,
-    /** Code points, so the cap never splits a character */
-    maxQueryChars: 80,
+    /** Code points, so the cap never splits a character; every distinct search is a cache key and an API call against the shared rate limit */
+    maxQueryChars: 40,
+    /** Values kept per filter group, so combinations cannot mint cache keys without end */
+    maxSelectedPerGroup: 10,
     /** A filter group shows this many values before "Show more" (selected ones always show) */
     facetShowFirst: 8,
     /** Desktop filters apply this long after the last change, so a burst of clicks is one request */

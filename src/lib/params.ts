@@ -12,10 +12,10 @@ function single(value: string | string[] | undefined): string | undefined {
 
 const all = (value: string | string[] | undefined): string[] => (Array.isArray(value) ? value : value === undefined ? [] : [value]);
 
-/** Each /filters value, in /filters order and spelling, that any raw value matches case-insensitively */
+/** Each /filters value, in /filters order and spelling, that any raw value matches case-insensitively; the first maxSelectedPerGroup only */
 function pickList(raw: string | string[] | undefined, available: Filters[ListKey]): string[] {
     const wanted = new Set(all(raw).map(v => v.trim().toLowerCase()));
-    return available.map(f => f.value).filter(v => wanted.has(v.toLowerCase()));
+    return available.map(f => f.value).filter(v => wanted.has(v.toLowerCase())).slice(0, CATALOGUE.maxSelectedPerGroup);
 }
 
 function parsePage(raw: string | string[] | undefined): number {
@@ -67,6 +67,11 @@ export function parseCatalogueQuery(raw: RawParams, filters: Filters): Catalogue
     };
 }
 
+/** Sorted by key then value, so one selection is one string and one cache key; shared with the API client so the two never disagree */
+export function sortEntries(entries: [string, string][]): [string, string][] {
+    return entries.sort(([a, x], [b, y]) => a.localeCompare(b) || x.localeCompare(y));
+}
+
 /** The canonical query string: keys sorted, then values, so one selection is one string (and one cache entry) */
 export function toSearchString(query: CatalogueQuery): string {
     const entries: [string, string][] = [];
@@ -79,8 +84,7 @@ export function toSearchString(query: CatalogueQuery): string {
     if (query.q) entries.push([SEARCH_PARAMS.q, query.q]);
     if (query.sort !== DEFAULT_SORT) entries.push([SEARCH_PARAMS.sort, query.sort]);
     if (query.page > 1) entries.push([SEARCH_PARAMS.page, String(query.page)]);
-    entries.sort(([a, x], [b, y]) => a.localeCompare(b) || x.localeCompare(y));
-    return new URLSearchParams(entries).toString();
+    return new URLSearchParams(sortEntries(entries)).toString();
 }
 
 /**

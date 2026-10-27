@@ -3,18 +3,12 @@ import Link from 'next/link';
 import { CATALOGUE } from '@/lib/config';
 import { COPY } from '@/lib/copy';
 import type { CatalogueQuery, Filters, RangeKey } from '@/lib/definitions';
-import { label } from '@/lib/labels';
+import { LABEL_MAPS, label } from '@/lib/labels';
 import { formatMoney } from '@/lib/money';
 import { rangeBounds, shopHref } from '@/lib/params';
 import { ROUTES } from '@/lib/routes';
 
 type Chip = { key: string; text: string; href: string };
-
-export const LABEL_MAPS: Partial<Record<string, Readonly<Record<string, string>>>> = {
-    type:       COPY.labels.type,
-    department: COPY.labels.department,
-    condition:  COPY.labels.condition,
-};
 
 /** One removable chip per choice, each linking to the same URL minus that choice (and minus page) */
 function buildChips(query: CatalogueQuery, filters: Filters, currency: string): Chip[] {
