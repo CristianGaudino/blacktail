@@ -7,7 +7,7 @@
 
 ### Foundation
 
-- [ ] **FOUND-01**: The app builds with Next 16 and deploys to Cloudflare Workers through OpenNext, from CI on push to main
+- [x] **FOUND-01**: The app builds with Next 16 and deploys to Cloudflare Workers through OpenNext, from CI on push to main
 - [x] **FOUND-02**: OpenNext uses an R2 incremental cache, a D1 tag cache and a Durable Object queue, so tag revalidation works across Worker isolates
 - [x] **FOUND-03**: Env vars `STORE_SLUG`, `HOWMANY_API_URL`, `HOWMANY_WEBHOOK_SECRET` and `SITE_URL` are validated with Zod, and a bad or missing value stops the app with a clear list of problems
 - [x] **FOUND-04**: CI runs lint, typecheck, tests and an OpenNext worker build on every PR
@@ -25,24 +25,24 @@
 
 ### Design System and Shell
 
-- [ ] **SHELL-01**: The Blacktail palette (Forest, Olive, Stone, Sand, Ivory) and fonts (Bodoni Moda 700, Montserrat 400/500, self-hosted) are design tokens used across the site
-- [ ] **SHELL-02**: The header shows the Blacktail Archive logo and nav (Shop, Brands, Just Dropped, About, Contact), plus search, and bag, account and wishlist icons that are decorative only
-- [ ] **SHELL-03**: The footer shows the logo, nav links, contact details and shop links (Vinted and eBay profiles) from config
-- [ ] **SHELL-04**: On mobile, a menu opens the nav, and every page follows the mobile mockups with no horizontal scroll
-- [ ] **SHELL-05**: Prices are shown from integer cents in the shop's currency through one money formatter
+- [x] **SHELL-01**: The Blacktail palette (Forest, Olive, Stone, Sand, Ivory) and fonts (Bodoni Moda 700, Montserrat 400/500, self-hosted) are design tokens used across the site
+- [x] **SHELL-02**: The header shows the Blacktail Archive logo and nav (Shop, Brands, Just Dropped, About, Contact), plus search, and bag, account and wishlist icons that are decorative only
+- [x] **SHELL-03**: The footer shows the logo, nav links, contact details and shop links (Vinted and eBay profiles) from config
+- [x] **SHELL-04**: On mobile, a menu opens the nav, and every page follows the mobile mockups with no horizontal scroll
+- [x] **SHELL-05**: Prices are shown from integer cents in the shop's currency through one money formatter
 
 ### Catalogue
 
-- [ ] **CAT-01**: The visitor can browse All Items as a grid of cards (cover thumbnail, brand, title, colour and size, price) with space reserved for each photo so nothing shifts
-- [ ] **CAT-02**: The visitor can filter by type, brand, size, colour, era, condition, department and price range, choosing several values per filter
-- [ ] **CAT-03**: The visitor can filter by pit-to-pit and length ranges. These filters hide when the shop has no measurements
-- [ ] **CAT-04**: The visitor can search by words in the title, brand or colour
-- [ ] **CAT-05**: The visitor can sort by newest, price low to high and price high to low
-- [ ] **CAT-06**: Filters, search, sort and page live in the URL, so a filtered view can be shared or bookmarked, and invalid values are dropped instead of breaking the page
-- [ ] **CAT-07**: The visitor can move through results with numbered pages (24 per page), and any filter, search or sort change goes back to page 1
-- [ ] **CAT-08**: On mobile, filters open in a drawer with an Apply button
-- [ ] **CAT-09**: Chosen filters show as removable chips with the result count, and an empty result shows a helpful message with a way to clear filters
-- [ ] **CAT-10**: Recently added items show a "New" badge
+- [x] **CAT-01**: The visitor can browse All Items as a grid of cards (cover thumbnail, brand, title, colour and size, price) with space reserved for each photo so nothing shifts
+- [x] **CAT-02**: The visitor can filter by type, brand, size, colour, era, condition, department and price range, choosing several values per filter
+- [x] **CAT-03**: The visitor can filter by pit-to-pit and length ranges. These filters hide when the shop has no measurements
+- [x] **CAT-04**: The visitor can search by words in the title, brand or colour
+- [x] **CAT-05**: The visitor can sort by newest, price low to high and price high to low
+- [x] **CAT-06**: Filters, search, sort and page live in the URL, so a filtered view can be shared or bookmarked, and invalid values are dropped instead of breaking the page
+- [x] **CAT-07**: The visitor can move through results with numbered pages (24 per page), and any filter, search or sort change goes back to page 1
+- [x] **CAT-08**: On mobile, filters open in a drawer with an Apply button
+- [x] **CAT-09**: Chosen filters show as removable chips with the result count, and an empty result shows a helpful message with a way to clear filters
+- [x] **CAT-10**: Recently added items show a "New" badge
 - [ ] **CAT-11**: The visitor can see a Just Dropped page of the newest items
 
 ### Item Page
@@ -77,11 +77,11 @@
 - [ ] **SEO-01**: Every page has a title, description and Open Graph tags, and item pages use the item's name and cover photo
 - [ ] **SEO-02**: Item pages include JSON-LD `Product` data (name, image, price, currency, `InStock`, `UsedCondition`)
 - [ ] **SEO-03**: There is a sitemap of all pages and in-stock items, refreshed with the store tag, and a robots file that blocks indexing outside production
-- [ ] **SEO-04**: Filtered, searched or sorted listings are `noindex,follow`, with a canonical URL built from `SITE_URL`
+- [x] **SEO-04**: Filtered, searched or sorted listings are `noindex,follow`, with a canonical URL built from `SITE_URL`
 
 ### Template
 
-- [ ] **TMPL-01**: Everything shop-specific (name, copy, contact, platform links, theme tokens, fonts, images, default brand order, category tiles) lives in one per-shop folder and config, and a test fails if shop-specific strings appear elsewhere
+- [x] **TMPL-01**: Everything shop-specific (name, copy, contact, platform links, theme tokens, fonts, images, default brand order, category tiles) lives in one per-shop folder and config, and a test fails if shop-specific strings appear elsewhere *(Traceability note: Phase 2 delivers TMPL-01 except the default brand order and category tiles, which land in Phase 4 with BRAND-02, HOME-01 and HOME-03.)*
 - [ ] **TMPL-02**: A short onboarding doc explains how to deploy the template for another shop (env, Cloudflare R2, D1 and Worker setup, and assets)
 
 ## v2 Requirements
@@ -121,7 +121,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUND-01 | Phase 1 | Pending |
+| FOUND-01 | Phase 1 | Complete |
 | FOUND-02 | Phase 1 | Complete |
 | FOUND-03 | Phase 1 | Complete |
 | FOUND-04 | Phase 1 | Complete |
@@ -133,21 +133,21 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DATA-04 | Phase 1 | Complete |
 | DATA-05 | Phase 1 | Complete |
 | DATA-06 | Phase 1 | Complete |
-| SHELL-01 | Phase 2 | Pending |
-| SHELL-02 | Phase 2 | Pending |
-| SHELL-03 | Phase 2 | Pending |
-| SHELL-04 | Phase 2 | Pending |
-| SHELL-05 | Phase 2 | Pending |
-| CAT-01 | Phase 2 | Pending |
-| CAT-02 | Phase 2 | Pending |
-| CAT-03 | Phase 2 | Pending |
-| CAT-04 | Phase 2 | Pending |
-| CAT-05 | Phase 2 | Pending |
-| CAT-06 | Phase 2 | Pending |
-| CAT-07 | Phase 2 | Pending |
-| CAT-08 | Phase 2 | Pending |
-| CAT-09 | Phase 2 | Pending |
-| CAT-10 | Phase 2 | Pending |
+| SHELL-01 | Phase 2 | Complete |
+| SHELL-02 | Phase 2 | Complete |
+| SHELL-03 | Phase 2 | Complete |
+| SHELL-04 | Phase 2 | Complete |
+| SHELL-05 | Phase 2 | Complete |
+| CAT-01 | Phase 2 | Complete |
+| CAT-02 | Phase 2 | Complete |
+| CAT-03 | Phase 2 | Complete |
+| CAT-04 | Phase 2 | Complete |
+| CAT-05 | Phase 2 | Complete |
+| CAT-06 | Phase 2 | Complete |
+| CAT-07 | Phase 2 | Complete |
+| CAT-08 | Phase 2 | Complete |
+| CAT-09 | Phase 2 | Complete |
+| CAT-10 | Phase 2 | Complete |
 | CAT-11 | Phase 4 | Pending |
 | ITEM-01 | Phase 3 | Pending |
 | ITEM-02 | Phase 3 | Pending |
@@ -167,8 +167,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SEO-01 | Phase 4 | Pending |
 | SEO-02 | Phase 3 | Pending |
 | SEO-03 | Phase 4 | Pending |
-| SEO-04 | Phase 2 | Pending |
-| TMPL-01 | Phase 2 | Pending |
+| SEO-04 | Phase 2 | Complete |
+| TMPL-01 | Phase 2 | Complete |
 | TMPL-02 | Phase 4 | Pending |
 
 **Coverage:**

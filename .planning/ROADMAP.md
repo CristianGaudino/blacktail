@@ -12,7 +12,7 @@ Blacktail goes from an empty repo to a launched Blacktail Archive storefront in 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Live Stock Skeleton** - Deployed Worker shows real How many stock and refreshes within seconds of a signed webhook
+- [x] **Phase 1: Live Stock Skeleton** - Deployed Worker shows real How many stock and refreshes within seconds of a signed webhook (completed 2026-10-26)
 - [ ] **Phase 2: Branded Catalogue** - Blacktail Archive look, header and footer, and the full All Items browse, filter, search, sort and paging
 - [ ] **Phase 3: Item and Brand Pages** - Item page with gallery, details and where to buy, real 404s, JSON-LD, and Brands pages with logos
 - [ ] **Phase 4: Home and Launch** - Mockup home page, Just Dropped, About and Contact, site-wide SEO, and the second-shop onboarding doc
@@ -33,7 +33,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   5. Every PR runs lint, typecheck, tests and an OpenNext worker build, and fails if `cacheComponents`, `'use cache'`, `cacheTag`, `cacheLife` or an em dash in `COPY` appears
   6. Every page of the deployed site sends `noindex` (robots meta and `X-Robots-Tag`), so the unfinished site isn't indexed before Phase 4 makes indexing depend on the environment (SEO-03)
 
-**Plans:** 4/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 **Wave 1**
@@ -63,7 +63,33 @@ Plans:
   4. A filtered view's URL can be shared or bookmarked and reopens the same results; junk values in the URL are dropped instead of breaking the page; chosen filters show as removable chips with the result count; an empty result offers a way to clear filters; filtered, searched or sorted listings are `noindex,follow` with a canonical URL from `SITE_URL`
   5. On a phone, a menu opens the nav, filters open in a drawer with an Apply button, and no page scrolls sideways
 
-**Plans**: TBD
+**Plans:** 10/10 plans executed
+
+Plans:
+**Wave 1**
+- [x] 02-01-PLAN.md — Tracer: / redirects to /shop; every catalogue param is cleaned against /filters into one canonical API query (mock and freshness proof on /shop)
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [x] 02-02-PLAN.md — Package check, Tailwind tokens and self-hosted fonts in src/shop, All Items banner
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [x] 02-03-PLAN.md — src/shop seam (contact, Vinted, eBay, socials, colours), COPY deck, code labels and the shop-string guard
+- [x] 02-04-PLAN.md — One money formatter, the New-badge rule and the paging helpers, test first
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [x] 02-05-PLAN.md — Item cards (NEW badge, no layout shift), numbered pager with past-the-end redirect, loading skeleton, streaming-aware outage proof
+- [x] 02-06-PLAN.md — Header (logo, nav, Shop and Brands dropdowns, search) and phone menu
+
+**Wave 5** *(blocked on 02-05 and 02-06)*
+- [x] 02-07-PLAN.md — Footer (contact, Vinted, eBay, socials, newsletter mock) and the on-brand error screen
+- [x] 02-08-PLAN.md — Result count, removable chips, empty states, sort with pending state, noindex,follow and SITE_URL canonical
+
+**Wave 6** *(blocked on 02-06 and 02-08)*
+- [x] 02-09-PLAN.md — Filter panel (checkbox groups, swatches, range sliders, instant apply) and the phone filter drawer
+
+**Wave 7** *(blocked on Wave 6 completion and 02-07)*
+- [x] 02-10-PLAN.md — CI worker job and deploy smoke follow /shop; phase PR opened with both checks green
+
 **UI hint**: yes
 
 ### Phase 3: Item and Brand Pages
@@ -87,7 +113,7 @@ Plans:
 **Goal**: As a shopper, I want to land on a home page that matches the Blacktail Archive mockup, see the latest drops and read the shop's story and contact details, so that I trust the shop and come back for new pieces.
 **Mode:** mvp
 **Depends on**: Phase 3
-**Requirements**: HOME-01, HOME-02, HOME-03, BRAND-02, CAT-11, PAGE-01, PAGE-02, SEO-01, SEO-03, TMPL-02
+**Requirements**: HOME-01, HOME-02, HOME-03, BRAND-02, CAT-11, PAGE-01, PAGE-02, SEO-01, SEO-03, TMPL-01, TMPL-02
 **Success Criteria** (what must be TRUE):
   1. The home page matches the Just Dropped mockup on desktop and mobile: hero, brand strip, Just Dropped carousel, two promo banners, shop by category tiles, the "a more conscious way to shop" story band and the footer; a section with nothing to show is hidden, and lifestyle images come from `public/images/` slots with placeholders until real photos arrive
   2. The brand strip lists brands in stock first, then sold-before brands (empty until How many provides them), then the default order from config
@@ -105,7 +131,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Live Stock Skeleton | 4/4 | In Progress | - |
-| 2. Branded Catalogue | 0/TBD | Not started | - |
+| 1. Live Stock Skeleton | 4/4 | Complete    | 2026-10-26 |
+| 2. Branded Catalogue | 10/10 | In Progress | - |
 | 3. Item and Brand Pages | 0/TBD | Not started | - |
 | 4. Home and Launch | 0/TBD | Not started | - |

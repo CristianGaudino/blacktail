@@ -79,10 +79,20 @@ jobs:
           printf 'STORE_SLUG=%s\nHOWMANY_API_URL=%s\nHOWMANY_WEBHOOK_SECRET=%s\nSITE_URL=%s\n' \
             "$STORE_SLUG" "$HOWMANY_API_URL" "$HOWMANY_WEBHOOK_SECRET" "$SITE_URL" > .dev.vars
           npx wrangler dev --port 8787 --ip 127.0.0.1 > wrangler.log 2>&1 &
-          # Warm up on / (no robots.txt until Phase 4); the result is ignored, an error there still shows in the log
-          curl -s -o /dev/null --retry 60 --retry-connrefused --retry-delay 2 http://127.0.0.1:8787/ || true
+          # Warm up on /shop (/ is a redirect to it; no robots.txt until Phase 4); the result is ignored, an error there still shows in the log
+          curl -s -o /dev/null --retry 60 --retry-connrefused --retry-delay 2 http://127.0.0.1:8787/shop || true
       - name: Prove the freshness round trip on the Worker
         run: node scripts/prove-freshness.mjs http://127.0.0.1:8787 --mock http://127.0.0.1:4010
+      # SEO-04 on workerd. The site-wide X-Robots-Tag: noindex, nofollow header (SEO-03 pre-launch guard) stays until
+      # Phase 4, so a filtered URL carries both: the page says "noindex, follow", the wire says "nofollow". Intended; pinned here.
+      - name: Filtered listings are noindex, follow
+        run: |
+          res=$(curl -si --max-time 30 'http://127.0.0.1:8787/shop?sort=price_asc')
+          printf '%s' "$res" | grep -q 'content="noindex, follow"' || { echo 'the page has no meta noindex, follow'; exit 1; }
+          printf '%s' "$res" | grep -qi '^x-robots-tag: noindex, nofollow' || { echo 'the response has no X-Robots-Tag: noindex, nofollow header'; exit 1; }
+      # The mock's second cheapest piece costs 1250 cents: workerd's ICU must print it as en-IE
+      - name: Money is formatted as en-IE on the Worker
+        run: curl -s --max-time 30 'http://127.0.0.1:8787/shop?sort=price_asc' | grep -q '€12.50'
       - name: The Worker logged no error
         run: |
           if grep -q ERROR wrangler.log; then echo 'the Worker logged an error:'; grep ERROR wrangler.log | sort -u | head -20; exit 1; fi
@@ -96,14 +106,15 @@ jobs:
           sleep 3
           printf 'STORE_SLUG=%s\nHOWMANY_API_URL=%s\nSITE_URL=%s\n' "$STORE_SLUG" "$HOWMANY_API_URL" "$SITE_URL" > .dev.vars
           npx wrangler dev --port 8788 --ip 127.0.0.1 > wrangler-bad.log 2>&1 &
-          # Only wait for the port: curl's own retry would also retry the 500 we want
+          # Only wait for the port: curl's own retry would also retry the 500 we want.
+          # /shop, not /: the root is a config redirect that may answer before the server runs its env check
           code=000
           for i in $(seq 1 60); do
-            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 http://127.0.0.1:8788/ || true)
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 http://127.0.0.1:8788/shop || true)
             if [ "$code" != 000 ]; then break; fi
             sleep 2
           done
-          echo "GET / without HOWMANY_WEBHOOK_SECRET: $code (want 500)"
+          echo "GET /shop without HOWMANY_WEBHOOK_SECRET: $code (want 500)"
           [ "$code" = 500 ] || exit 1
           # The Worker's console output reaches the log file a moment after the response
           for i in $(seq 1 15); do

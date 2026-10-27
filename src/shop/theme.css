@@ -1,0 +1,14 @@
+/* The only CSS file with hex values. Another shop replaces this file with its own palette. */
+@theme {
+    --color-forest: #1F2A1F;
+    --color-olive: #4A5A46;
+    --color-stone: #A69D8F;
+    --color-sand: #CBB89E;
+    --color-ivory: #E8E5DD;
+}
+
+/* The CSS variables are set by next/font in src/shop/fonts.ts */
+@theme inline {
+    --font-heading: var(--font-bodoni);
+    --font-sans: var(--font-montserrat);
+}

@@ -6,12 +6,12 @@
     {
       "number": "1",
       "name": "Live Stock Skeleton",
-      "status": "in_progress"
+      "status": "complete"
     },
     {
       "number": "2",
       "name": "Branded Catalogue",
-      "status": "pending"
+      "status": "in_progress"
     },
     {
       "number": "3",
@@ -26,8 +26,8 @@
   ],
   "next": {
     "command": "/gsd-progress --next",
-    "label": "Advance to the next step (verify)",
-    "reason": "Phase 1 of 4 · 0% · ready to verify"
+    "label": "Advance to the next step",
+    "reason": "Phase 2 of 4 · 25% · executing"
   },
-  "updated_at": "2026-10-26T16:30:26.080Z"
+  "updated_at": "2026-10-27T00:06:04.447Z"
 }

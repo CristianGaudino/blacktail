@@ -1,6 +1,6 @@
 'use client';
 
-import Link from 'next/link';
+import { Button, ButtonLink } from '@/components/ui/buttons';
 import { StatusScreen } from '@/components/ui/StatusScreen';
 import { COPY } from '@/lib/copy';
 import { ROUTES } from '@/lib/routes';
@@ -13,8 +13,8 @@ export default function RootError({ error, retry }: { error: Error & { digest?: 
             message={COPY.status.errorMessage}
             detail={error.digest ? COPY.status.errorId(error.digest) : undefined}
         >
-            <button type="button" onClick={retry}>{COPY.common.tryAgain}</button>
-            <Link href={ROUTES.home}>{COPY.common.goHome}</Link>
+            <Button variant="primary" onClick={retry}>{COPY.common.tryAgain}</Button>
+            <ButtonLink variant="secondary" href={ROUTES.home}>{COPY.common.goHome}</ButtonLink>
         </StatusScreen>
     );
 }
