@@ -40,7 +40,7 @@
 - [x] **CAT-05**: The visitor can sort by newest, price low to high and price high to low
 - [x] **CAT-06**: Filters, search, sort and page live in the URL, so a filtered view can be shared or bookmarked, and invalid values are dropped instead of breaking the page
 - [x] **CAT-07**: The visitor can move through results with numbered pages (24 per page), and any filter, search or sort change goes back to page 1
-- [ ] **CAT-08**: On mobile, filters open in a drawer with an Apply button
+- [x] **CAT-08**: On mobile, filters open in a drawer with an Apply button
 - [x] **CAT-09**: Chosen filters show as removable chips with the result count, and an empty result shows a helpful message with a way to clear filters
 - [x] **CAT-10**: Recently added items show a "New" badge
 - [ ] **CAT-11**: The visitor can see a Just Dropped page of the newest items
@@ -145,7 +145,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CAT-05 | Phase 2 | Complete |
 | CAT-06 | Phase 2 | Complete |
 | CAT-07 | Phase 2 | Complete |
-| CAT-08 | Phase 2 | Pending |
+| CAT-08 | Phase 2 | Complete |
 | CAT-09 | Phase 2 | Complete |
 | CAT-10 | Phase 2 | Complete |
 | CAT-11 | Phase 4 | Pending |
