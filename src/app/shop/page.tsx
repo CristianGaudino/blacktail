@@ -5,6 +5,7 @@ import { connection } from 'next/server';
 import { CatalogueBanner } from '@/components/catalogue/CatalogueBanner';
 import { CatalogueShell, GridBusy } from '@/components/catalogue/CatalogueShell';
 import { FilterChips } from '@/components/catalogue/FilterChips';
+import { FilterPanel } from '@/components/catalogue/FilterPanel';
 import { ItemGrid } from '@/components/catalogue/ItemGrid';
 import { Pager } from '@/components/catalogue/Pager';
 import { SortSelect } from '@/components/catalogue/SortSelect';
@@ -55,26 +56,32 @@ export default async function ShopPage({ searchParams }: PageProps<'/shop'>) {
         <main>
             <CatalogueBanner />
             <CatalogueShell>
-                <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-12">
-                    <div id="results" className="flex scroll-mt-24 flex-wrap items-center justify-between gap-4">
-                        <p
-                            id="result-count"
-                            role="status"
-                            aria-live="polite"
-                            tabIndex={-1}
-                            className="order-last w-full text-label uppercase text-olive lg:order-first lg:w-auto"
-                        >
-                            {COPY.catalogue.count(page.total)}
-                        </p>
-                        <SortSelect query={query} />
-                    </div>
-                    <FilterChips query={query} filters={filters} currency={store.currency} />
-                    <GridBusy>
-                        <div className="mt-6">
-                            <ItemGrid items={page.items} asOf={asOf} now={now} empty={empty} />
+                <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:flex lg:gap-8 lg:py-12">
+                    <aside aria-label={COPY.catalogue.filter} className="hidden w-64 shrink-0 lg:block">
+                        <h2 className="border-b border-stone pb-4 text-label uppercase">{COPY.catalogue.filter}</h2>
+                        <FilterPanel filters={filters} query={query} currency={store.currency} mode="instant" />
+                    </aside>
+                    <div className="min-w-0 flex-1">
+                        <div id="results" className="flex scroll-mt-24 flex-wrap items-center justify-between gap-4">
+                            <p
+                                id="result-count"
+                                role="status"
+                                aria-live="polite"
+                                tabIndex={-1}
+                                className="order-last w-full text-label uppercase text-olive lg:order-first lg:w-auto"
+                            >
+                                {COPY.catalogue.count(page.total)}
+                            </p>
+                            <SortSelect query={query} />
                         </div>
-                        <Pager query={query} pageCount={pageCountOf(page.total)} />
-                    </GridBusy>
+                        <FilterChips query={query} filters={filters} currency={store.currency} />
+                        <GridBusy>
+                            <div className="mt-6">
+                                <ItemGrid items={page.items} asOf={asOf} now={now} empty={empty} />
+                            </div>
+                            <Pager query={query} pageCount={pageCountOf(page.total)} />
+                        </GridBusy>
+                    </div>
                 </div>
             </CatalogueShell>
         </main>

@@ -31,7 +31,7 @@ const items = () => Array.from({ length: 30 }, (_, n) => {
         brand:        i === 30 ? null : ['Mock Brand', 'Acme', 'Northwind'][n % 3],
         category:     'clothing',
         type:         ['shirt', 'knit', 'jacket'][n % 3],
-        size:         ['S', 'M', 'L', 'XL'][n % 4],
+        size:         ['XS', 'S', 'M', 'L', 'XL', 'XXL', '28', '30', '32', '34'][n % 10],
         condition:    ['A', 'AB', 'B'][n % 3],
         colour:       ['Blue', 'Navy', 'Green', 'Ochre'][n % 4],
         era:          ['1990s', '2000s'][n % 2],

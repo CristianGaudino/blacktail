@@ -19,6 +19,10 @@ export const CATALOGUE = {
     maxPage:       500,
     /** Code points, so the cap never splits a character */
     maxQueryChars: 80,
+    /** A filter group shows this many values before "Show more" (selected ones always show) */
+    facetShowFirst: 8,
+    /** Desktop filters apply this long after the last change, so a burst of clicks is one request */
+    applyDebounceMs: 250,
     /** Panel group order, without the ranges */
     lists:         ['brand', 'type', 'size', 'colour', 'era', 'condition', 'department', 'material'],
     /** `filter` is the /filters key; step is the snap unit (cents for price, mm for measurements) */

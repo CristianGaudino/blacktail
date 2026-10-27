@@ -10,7 +10,7 @@ import { ROUTES } from '@/lib/routes';
 
 type Chip = { key: string; text: string; href: string };
 
-const LABEL_MAPS: Partial<Record<string, Readonly<Record<string, string>>>> = {
+export const LABEL_MAPS: Partial<Record<string, Readonly<Record<string, string>>>> = {
     type:       COPY.labels.type,
     department: COPY.labels.department,
     condition:  COPY.labels.condition,
