@@ -57,8 +57,15 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       # A first deploy waits a few minutes for the address's certificate
       - name: Wait for the site
-        run: curl -fsS -o /dev/null --retry 40 --retry-delay 15 --retry-all-errors --max-time 20 https://www.blacktailarchive.cgaudino.com/
+        run: curl -fsS -o /dev/null --retry 40 --retry-delay 15 --retry-all-errors --max-time 20 https://www.blacktailarchive.cgaudino.com/shop
       - name: Smoke
         run: |
-          curl -sI https://www.blacktailarchive.cgaudino.com/ | grep -i '^x-robots-tag:.*noindex'
+          # The header check uses /shop: headers on the config redirect at / are not guaranteed
+          curl -sI https://www.blacktailarchive.cgaudino.com/shop | grep -i '^x-robots-tag:.*noindex'
+          test "$(curl -s -o /dev/null -w '%{http_code}' https://www.blacktailarchive.cgaudino.com/)" = 307
           test "$(curl -s -o /dev/null -w '%{http_code}' -X POST https://www.blacktailarchive.cgaudino.com/api/webhooks/howmany)" = 401
+          # SEO-04 in production. The site-wide X-Robots-Tag: noindex, nofollow header (SEO-03 pre-launch guard)
+          # stays until Phase 4, so a filtered URL carries both: page "noindex, follow", wire "nofollow". Intended.
+          res=$(curl -si "https://www.blacktailarchive.cgaudino.com/shop?sort=price_asc")
+          printf '%s' "$res" | grep -q 'content="noindex, follow"'
+          printf '%s' "$res" | grep -qi '^x-robots-tag: noindex, nofollow'
