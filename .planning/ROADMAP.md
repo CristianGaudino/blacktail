@@ -63,7 +63,7 @@ Plans:
   4. A filtered view's URL can be shared or bookmarked and reopens the same results; junk values in the URL are dropped instead of breaking the page; chosen filters show as removable chips with the result count; an empty result offers a way to clear filters; filtered, searched or sorted listings are `noindex,follow` with a canonical URL from `SITE_URL`
   5. On a phone, a menu opens the nav, filters open in a drawer with an Apply button, and no page scrolls sideways
 
-**Plans:** 9/10 plans executed
+**Plans:** 10/10 plans executed
 
 Plans:
 **Wave 1**
@@ -88,7 +88,7 @@ Plans:
 - [x] 02-09-PLAN.md — Filter panel (checkbox groups, swatches, range sliders, instant apply) and the phone filter drawer
 
 **Wave 7** *(blocked on Wave 6 completion and 02-07)*
-- [ ] 02-10-PLAN.md — CI worker job and deploy smoke follow /shop; phase PR opened with both checks green
+- [x] 02-10-PLAN.md — CI worker job and deploy smoke follow /shop; phase PR opened with both checks green
 
 **UI hint**: yes
 
@@ -132,6 +132,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Live Stock Skeleton | 4/4 | Complete    | 2026-10-26 |
-| 2. Branded Catalogue | 9/10 | In Progress | - |
+| 2. Branded Catalogue | 10/10 | In Progress | - |
 | 3. Item and Brand Pages | 0/TBD | Not started | - |
 | 4. Home and Launch | 0/TBD | Not started | - |
