@@ -25,8 +25,6 @@ const render = (f: Filters, q: CatalogueQuery, mode: 'instant' | 'apply' = 'inst
     renderToStaticMarkup(createElement(FilterPanel, { filters: f, query: q, currency: 'EUR', mode }));
 
 const ORDER = ['Brand', 'Category', 'Size', 'Colour', 'Price', 'Era', 'Condition', 'Department', 'Material', 'Pit to pit', 'Length'];
-// Task 2 adds Colour and the sliders to this set
-const CHECKBOX = new Set(['Brand', 'Category', 'Size', 'Era', 'Condition', 'Department', 'Material']);
 const headings = (html: string) => [...html.matchAll(/<summary[^>]*>\s*<span[^>]*>([^<]+)<\/span>/g)].map(m => m[1]).filter(h => ORDER.includes(h));
 
 describe('splitFacet', () => {
@@ -44,7 +42,7 @@ describe('splitFacet', () => {
 describe('FilterPanel', () => {
     it('lists the groups in the mockup order', () => {
         const got = headings(render(filters(), query()));
-        expect(got).toEqual(ORDER.filter(g => g !== 'Length' && CHECKBOX.has(g)));
+        expect(got).toEqual(ORDER.filter(g => g !== 'Length'));
     });
 
     it('renders no group for an empty facet or a null range', () => {
@@ -92,5 +90,59 @@ describe('FilterPanel', () => {
         expect(html).toContain('action="/shop"');
         expect(html).toContain('method="get"');
         expect(html).toMatch(/<noscript>.*Apply filters/);
+    });
+});
+
+describe('FilterPanel colour swatches', () => {
+    const html = render(filters(), query());
+    const input = (value: string) => html.match(new RegExp(`<input[^>]*value="${value}"[^>]*>`))?.[0] ?? '';
+
+    it('draws a known colour from the shop map with its name as the accessible name', () => {
+        expect(input('Navy')).toContain('aria-label="Navy"');
+        expect(input('Navy')).toContain('title="Navy"');
+        expect(html).toMatch(/style="background-color:#[0-9A-Fa-f]{6}"/);
+    });
+
+    it('shows an unknown colour as a neutral swatch followed by its name', () => {
+        expect(html).toMatch(/bg-sand[^>]*><\/span><span[^>]*>Ochre<\/span>/);
+    });
+
+    it('shows the first 8 colours and a Show more for the rest', () => {
+        const many = filters({ colour: facet('Navy', 'Black', 'Blue', 'Green', 'Grey', 'Red', 'Pink', 'Brown', 'Tan', 'Camel') });
+        const out = render(many, query());
+        expect(out.indexOf('value="Brown"')).toBeLessThan(out.lastIndexOf('Show more'));
+        expect(out.indexOf('Show more', out.indexOf('title="Brown"'))).toBeLessThan(out.indexOf('value="Tan"'));
+    });
+});
+
+describe('FilterPanel sliders', () => {
+    it('renders a price slider bounded by the /filters range with its read-out', () => {
+        const html = render(filters(), query());
+        expect(html).toMatch(/<input[^>]*name="minPrice"[^>]*>/);
+        expect(html).toMatch(/<input[^>]*max="8500"[^>]*name="maxPrice"|<input[^>]*name="maxPrice"[^>]*max="8500"/);
+        expect(html).toContain('min="1200"');
+        expect(html).toContain('step="100"');
+        expect(html).toContain('€12 to €85');
+    });
+
+    it('renders pit to pit in cm and no Length when its range is null', () => {
+        const html = render(filters(), query());
+        expect(html).toContain('name="minPitToPitMm"');
+        expect(html).toContain('step="10"');
+        expect(html).toContain('50 to 56 cm');
+        expect(html).not.toContain('minLengthMm');
+    });
+
+    it('shows a chosen minimum in the input value and the read-out', () => {
+        const html = render(filters(), query({}, { price: { min: 2000, max: null } }));
+        expect(html).toMatch(/<input[^>]*name="minPrice"[^>]*value="2000"|<input[^>]*value="2000"[^>]*name="minPrice"/);
+        expect(html).toContain('€20 to €85');
+    });
+
+    it('names the handles for a screen reader with the value as text', () => {
+        const html = render(filters(), query({}, { price: { min: 2000, max: null } }));
+        expect(html).toContain('aria-label="Price, lowest"');
+        expect(html).toContain('aria-label="Price, highest"');
+        expect(html).toContain('aria-valuetext="€20"');
     });
 });

@@ -61,6 +61,8 @@ export const COPY = {
             length:     'Length',
         },
         range:         (from: string, to: string) => `${from} to ${to}`,
+        rangeMin:      (group: string) => `${group}, lowest`,
+        rangeMax:      (group: string) => `${group}, highest`,
         cmRange:       (from: string, to: string) => `${from} to ${to} cm`,
         pitToPitChip:  (from: string, to: string) => `Pit to pit ${from} to ${to} cm`,
         lengthChip:    (from: string, to: string) => `Length ${from} to ${to} cm`,
