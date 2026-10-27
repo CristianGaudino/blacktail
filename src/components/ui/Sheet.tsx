@@ -32,13 +32,13 @@ export function Sheet({ open, onClose, title, closeLabel, footer, className, chi
                 className,
             )}
         >
-            <header className="flex h-16 shrink-0 items-center justify-between gap-3 border-b border-stone px-4">
+            <header className="flex h-16 shrink-0 items-center justify-between gap-4 border-b border-stone px-4">
                 <div id={titleId} className="min-w-0">{title}</div>
                 <IconButton icon={X} label={closeLabel} onClick={onClose} className="-mr-2" />
             </header>
             {/* Not flex-1: from a zero basis, iOS Safari can size the sheet to the header and footer alone */}
             <div className="min-h-0 flex-auto overflow-y-auto overscroll-contain">{children}</div>
-            {footer && <footer className="shrink-0 border-t border-stone px-4 py-3">{footer}</footer>}
+            {footer && <footer className="shrink-0 border-t border-stone px-4 py-4">{footer}</footer>}
         </dialog>
     );
 }

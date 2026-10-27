@@ -63,7 +63,7 @@ export default async function ShopPage({ searchParams }: PageProps<'/shop'>) {
                         <FilterPanel filters={filters} query={query} currency={store.currency} mode="instant" />
                     </aside>
                     <div className="min-w-0 flex-1">
-                        <div id="results" className="flex scroll-mt-24 flex-wrap items-center justify-between gap-4">
+                        <div id="results" className="flex scroll-mt-16 lg:scroll-mt-20 flex-wrap items-center justify-between gap-4">
                             <p
                                 id="result-count"
                                 role="status"

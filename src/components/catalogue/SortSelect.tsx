@@ -24,13 +24,13 @@ export function SortSelect({ query }: { query: CatalogueQuery }) {
                     name="sort"
                     value={query.sort}
                     onChange={e => navigate(shopHref({ ...query, sort: e.target.value as Sort }))}
-                    className="min-h-11 appearance-none border border-stone bg-ivory pl-3 pr-9 text-label uppercase"
+                    className="min-h-11 appearance-none border border-olive bg-ivory pl-4 pr-9 text-label uppercase"
                 >
                     {SORTS.map(sort => <option key={sort} value={sort}>{COPY.catalogue.sorts[sort]}</option>)}
                 </select>
                 <ChevronDown aria-hidden="true" className="pointer-events-none absolute right-3 top-1/2 size-4 -translate-y-1/2" />
             </div>
-            <noscript><button type="submit" className="min-h-11 border border-stone px-3 text-label uppercase">{COPY.catalogue.sort}</button></noscript>
+            <noscript><button type="submit" className="min-h-11 border border-olive px-4 text-label uppercase">{COPY.catalogue.sort}</button></noscript>
         </form>
     );
 }

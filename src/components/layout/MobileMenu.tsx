@@ -76,9 +76,9 @@ export function MobileMenu({ typeLinks, brandLinks }: { typeLinks: NavItem[]; br
                 </nav>
                 {/* Decorative, like the mockup: not focusable, no handler (D-08) */}
                 <div aria-hidden className="flex flex-col gap-4 px-4 py-6 text-label uppercase">
-                    <span className="flex items-center gap-3"><User size={20} />{COPY.header.account}</span>
-                    <span className="flex items-center gap-3"><Heart size={20} />{COPY.header.wishlist}</span>
-                    <span className="flex items-center gap-3"><ShoppingBag size={20} />{COPY.header.bag} {COPY.header.bagCount(0)}</span>
+                    <span className="flex items-center gap-2"><User size={20} />{COPY.header.account}</span>
+                    <span className="flex items-center gap-2"><Heart size={20} />{COPY.header.wishlist}</span>
+                    <span className="flex items-center gap-2"><ShoppingBag size={20} />{COPY.header.bag} {COPY.header.bagCount(0)}</span>
                 </div>
             </Sheet>
         </>

@@ -17,7 +17,7 @@ export function FilterDrawer({ filters, query, currency }: { filters: Filters; q
             <button
                 type="button"
                 onClick={() => setOpen(true)}
-                className="inline-flex min-h-11 items-center gap-2 border border-stone px-4 text-label uppercase lg:hidden"
+                className="inline-flex min-h-11 items-center gap-2 border border-olive px-4 text-label uppercase lg:hidden"
             >
                 <SlidersHorizontal aria-hidden="true" className="size-4" />
                 {COPY.catalogue.filter}

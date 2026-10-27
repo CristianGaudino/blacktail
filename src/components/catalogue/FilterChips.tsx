@@ -54,7 +54,7 @@ export function FilterChips({ query, filters, currency }: { query: CatalogueQuer
                         href={chip.href}
                         prefetch={false}
                         aria-label={COPY.catalogue.removeChip(chip.text)}
-                        className="inline-flex min-h-10 items-center gap-2 bg-sand/40 px-3 text-base text-forest"
+                        className="inline-flex min-h-10 items-center gap-2 bg-sand/40 px-4 text-base text-forest"
                     >
                         <span className="[overflow-wrap:anywhere]">{chip.text}</span>
                         <X aria-hidden="true" className="size-4 shrink-0" />

@@ -46,7 +46,7 @@ export function RangeSlider({ names, bounds, step, value, label, format, readout
             <p className="text-base">{readout(format(lo), format(hi))}</p>
             <div ref={track} className="range-dual relative mt-2 h-11">
                 {/* The inputs' thumbs are 44px, so their centres travel 22px in from each edge: the visual track does too */}
-                <div aria-hidden="true" className="absolute inset-x-[22px] top-1/2 h-1 -translate-y-1/2 bg-stone">
+                <div aria-hidden="true" className="absolute inset-x-[22px] top-1/2 h-1 -translate-y-1/2 bg-olive">
                     <div className="absolute inset-y-0 bg-forest" style={{ left: `${left}%`, right: `${right}%` }} />
                 </div>
                 <input
