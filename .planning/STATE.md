@@ -88,7 +88,7 @@ Recent decisions affecting current work:
 - [Phase 01]: D1 tag cache used plain (not wrapped) so populateCache creates the revalidations table; missing-env CI check polls the Worker log up to 15s
 - [Phase 01]: Deploy smoke check is a noindex header grep plus an unsigned webhook POST expecting 401, after a curl retry wait for the certificate
 - [Phase 02]: A price or measurement bound equal to its own /filters bound is dropped after the min/max swap, so it never mints a second cache key
-- [Phase 02]: Search q is capped at 80 code points with Array.from so the cap never splits a character
+- [Phase 02]: Search q is capped at 40 code points (was 80; lowered in quick 261027-aab) with Array.from so the cap never splits a character
 - [Phase 02]: Bodoni woff2 and OFL licence taken from the @fontsource/bodoni-moda 5.3.0 tarball in an isolated scratch dir; not a dependency
 - [Phase 02]: Plan 02-03: owner-pending email/Vinted/eBay use .ie placeholders marked PENDING-OWNER; COPY groups.type is 'Category'; mock colour 'Ochre' left out of COLOURS to keep swatch fallback provable
 - [Phase 02]: 02-04: formatMoney picks 0 or 2 fraction digits per amount for both min and max (avoids 119.5)
