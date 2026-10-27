@@ -21,6 +21,8 @@ export function NavDropdown({ label, href, links, columns = 1 }: {
     const wrapper   = useRef<HTMLDivElement>(null);
     const button    = useRef<HTMLButtonElement>(null);
     const timer     = useRef<ReturnType<typeof setTimeout>>(undefined);
+    // A panel opened by hover must survive the click that usually follows
+    const hoverOpened = useRef(false);
     const panelId   = useId();
     const active    = isNavActive(usePathname(), href);
 
@@ -44,11 +46,12 @@ export function NavDropdown({ label, href, links, columns = 1 }: {
             onPointerEnter={e => {
                 if (e.pointerType !== 'mouse' || !window.matchMedia(DESKTOP).matches) return;
                 clearTimer();
-                timer.current = setTimeout(() => setOpen(true), HOVER_OPEN_DELAY_MS);
+                timer.current = setTimeout(() => { hoverOpened.current = true; setOpen(true); }, HOVER_OPEN_DELAY_MS);
             }}
             onPointerLeave={e => {
                 if (e.pointerType !== 'mouse' || !window.matchMedia(DESKTOP).matches) return;
                 clearTimer();
+                hoverOpened.current = false;
                 setOpen(false);
             }}
             onKeyDown={e => {
@@ -66,7 +69,13 @@ export function NavDropdown({ label, href, links, columns = 1 }: {
                 type="button"
                 aria-expanded={open}
                 aria-controls={panelId}
-                onClick={() => { clearTimer(); setOpen(o => !o); }}
+                onClick={() => {
+                    clearTimer();
+                    // Read before the reset: React may run the updater after it
+                    const keepOpen = hoverOpened.current;
+                    hoverOpened.current = false;
+                    setOpen(o => keepOpen || !o);
+                }}
                 className={cn('inline-flex min-h-11 items-center gap-1 uppercase underline-offset-8', active && 'underline decoration-1')}
             >
                 {label}

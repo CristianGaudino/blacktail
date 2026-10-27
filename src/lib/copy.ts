@@ -8,6 +8,7 @@ export const COPY = {
         opensInNewTab:  '(opens in a new tab)',
     },
     nav: {
+        label:      'Main',
         shop:       'Shop',
         brands:     'Brands',
         justDropped: 'Just Dropped',

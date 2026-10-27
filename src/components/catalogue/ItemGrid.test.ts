@@ -3,6 +3,8 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { COPY } from '@/lib/copy';
 import type { Item } from '@/lib/definitions';
+import { ROUTES } from '@/lib/routes';
+import { isBuilt } from '@/lib/utils';
 import { ItemGrid } from './ItemGrid';
 
 const NOW = Date.parse('2026-06-10T12:00:00Z');
@@ -30,9 +32,9 @@ describe('ItemGrid', () => {
         expect(html).not.toContain(COPY.stock.empty);
     });
 
-    it('links a card to its item and never prints "null" for missing fields', () => {
+    it('links a card to its item once the page is built, and never prints "null" for missing fields', () => {
         const html = render([{ ...item, brand: null, size: null, colour: null, era: null }]);
-        expect(html).toContain('href="/items/BT-0001"');
+        expect(html.includes('href="/items/BT-0001"')).toBe(isBuilt(ROUTES.item('BT-0001')));
         expect(html).toContain('alt="Wool coat"');
         expect(html).not.toContain('null');
     });
@@ -85,8 +87,8 @@ describe('ItemGrid', () => {
     });
 
     it('keeps the order it was given', () => {
-        const html = render([{ ...item, code: 'B-2' }, { ...item, code: 'A-1' }]);
-        expect(html.indexOf('/items/B-2')).toBeLessThan(html.indexOf('/items/A-1'));
+        const html = render([{ ...item, code: 'B-2', title: 'Second coat' }, { ...item, code: 'A-1', title: 'First coat' }]);
+        expect(html.indexOf('Second coat')).toBeLessThan(html.indexOf('First coat'));
     });
 
     it('never shows fields outside the schema', () => {

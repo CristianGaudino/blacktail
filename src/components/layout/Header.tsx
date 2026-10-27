@@ -11,6 +11,7 @@ import { getFilters } from '@/lib/howmany/client';
 import { COPY } from '@/lib/copy';
 import { label } from '@/lib/labels';
 import { ROUTES } from '@/lib/routes';
+import { isBuilt } from '@/lib/utils';
 import logo from '@/shop/logo.svg';
 import { SHOP } from '@/shop/config';
 
@@ -31,7 +32,8 @@ export async function Header() {
         const filters = await getFilters();
         types  = filters.type.map(f => f.value);
         brands = filters.brand.map(f => f.value);
-    } catch {
+    } catch (error) {
+        console.warn('Header: /filters failed', error);
         // The dropdowns fall back to their fixed link; the page itself still shows the error
     }
 
@@ -42,7 +44,7 @@ export async function Header() {
     const brandLinks: NavItem[] = [
         ...brands.map(value => ({ label: value, href: shopHref('brand', value) })),
         { label: COPY.nav.allBrands, href: ROUTES.brands },
-    ];
+    ].filter(link => isBuilt(link.href));
 
     return (
         <header className="sticky top-0 z-40 border-b border-stone bg-ivory">
@@ -53,7 +55,7 @@ export async function Header() {
                 <Link href={ROUTES.home} className="justify-self-center">
                     <Image src={logo} alt={SHOP.name} loading="eager" className="h-8 w-auto lg:h-10" />
                 </Link>
-                <nav className="hidden lg:flex items-center gap-8 text-label uppercase">
+                <nav aria-label={COPY.nav.label} className="hidden lg:flex items-center gap-8 text-label uppercase">
                     <NavDropdown label={COPY.nav.shop} href={ROUTES.shop} links={typeLinks} />
                     <NavDropdown label={COPY.nav.brands} href={ROUTES.brands} links={brandLinks} columns={2} />
                     <NavLink href={ROUTES.justDropped}>{COPY.nav.justDropped}</NavLink>

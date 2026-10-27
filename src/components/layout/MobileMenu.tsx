@@ -8,7 +8,7 @@ import { IconButton } from '@/components/ui/buttons';
 import { Sheet } from '@/components/ui/Sheet';
 import { COPY } from '@/lib/copy';
 import { ROUTES } from '@/lib/routes';
-import { cn } from '@/lib/utils';
+import { cn, isBuilt } from '@/lib/utils';
 import { SHOP } from '@/shop/config';
 import logo from '@/shop/logo.svg';
 
@@ -46,7 +46,7 @@ export function MobileMenu({ typeLinks, brandLinks }: { typeLinks: NavItem[]; br
         </li>
     );
 
-    const link = (href: string, text: string) => (
+    const link = (href: string, text: string) => isBuilt(href) && (
         <li>
             <Link href={href} prefetch={false} onClick={close} className={ROW}>
                 {text}
@@ -65,7 +65,7 @@ export function MobileMenu({ typeLinks, brandLinks }: { typeLinks: NavItem[]; br
                 closeLabel={COPY.header.closeMenu}
                 className="min-[480px]:w-96"
             >
-                <nav>
+                <nav aria-label={COPY.nav.label}>
                     <ul>
                         {group('shop', COPY.nav.shop, typeLinks)}
                         {group('brands', COPY.nav.brands, brandLinks)}
