@@ -90,6 +90,9 @@ jobs:
           res=$(curl -si --max-time 30 'http://127.0.0.1:8787/shop?sort=price_asc')
           printf '%s' "$res" | grep -q 'content="noindex, follow"' || { echo 'the page has no meta noindex, follow'; exit 1; }
           printf '%s' "$res" | grep -qi '^x-robots-tag: noindex, nofollow' || { echo 'the response has no X-Robots-Tag: noindex, nofollow header'; exit 1; }
+      # The mock's second cheapest piece costs 1250 cents: workerd's ICU must print it as en-IE
+      - name: Money is formatted as en-IE on the Worker
+        run: curl -s --max-time 30 'http://127.0.0.1:8787/shop?sort=price_asc' | grep -q '€12.50'
       - name: The Worker logged no error
         run: |
           if grep -q ERROR wrangler.log; then echo 'the Worker logged an error:'; grep ERROR wrangler.log | sort -u | head -20; exit 1; fi
