@@ -1,4 +1,5 @@
 import { Check, Minus, Plus } from 'lucide-react';
+import { useState } from 'react';
 import { COPY } from '@/lib/copy';
 
 /** The first `first` values in /filters order, plus any selected value beyond them; the rest are `more` (D-18) */
@@ -11,8 +12,11 @@ export function splitFacet(values: string[], selected: string[], first: number):
 
 /** One collapsible filter group. A details element, so it also opens and closes without JavaScript */
 export function FilterGroup({ title, open, children }: { title: string; open: boolean; children: React.ReactNode }) {
+    // Once a group has been open it stays open, so unticking its last value does not collapse it under the shopper
+    const [wasOpen, setWasOpen] = useState(open);
+    if (open && !wasOpen) setWasOpen(true);
     return (
-        <details open={open} className="group/group border-b border-stone py-6">
+        <details open={open || wasOpen}className="group/group border-b border-stone py-6">
             <summary className="flex min-h-11 cursor-pointer list-none items-center justify-between gap-2 [&::-webkit-details-marker]:hidden">
                 <span className="text-label uppercase">{title}</span>
                 <Plus aria-hidden="true" className="size-4 shrink-0 group-open/group:hidden" />

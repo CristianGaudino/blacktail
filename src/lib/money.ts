@@ -24,3 +24,6 @@ export function formatMoney(cents: number, currency: string): string {
     }
     return formatter.format(cents / CENTS_PER_UNIT);
 }
+
+/** Millimetres from the API as a centimetre string: 305 -> "30.5", 300 -> "30" */
+export const cm = (mm: number): string => String(mm / 10);

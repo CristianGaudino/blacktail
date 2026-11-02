@@ -11,8 +11,6 @@ export type ButtonProps = ButtonStyleProps & React.ButtonHTMLAttributes<HTMLButt
 
 export type ButtonLinkProps = ButtonStyleProps & {
     href:       string;
-    /** Opens in a new tab as a plain anchor with noopener noreferrer */
-    newTab?:    boolean;
     className?: string;
     children:   React.ReactNode;
 };
@@ -42,11 +40,8 @@ export function Button({ variant, fullWidth, type = 'button', className, ...prop
     return <button type={type} className={buttonClassName({ variant, fullWidth }, className)} {...props} />;
 }
 
-export function ButtonLink({ href, newTab, variant, fullWidth, className, children }: ButtonLinkProps) {
-    const classes = buttonClassName({ variant, fullWidth }, className);
-    return newTab
-        ? <a href={href} target="_blank" rel="noopener noreferrer" className={classes}>{children}</a>
-        : <Link href={href} className={classes}>{children}</Link>;
+export function ButtonLink({ href, variant, fullWidth, className, children }: ButtonLinkProps) {
+    return <Link href={href} className={buttonClassName({ variant, fullWidth }, className)}>{children}</Link>;
 }
 
 export function IconButton({ icon: Icon, label, className, type = 'button', ...props }: IconButtonProps) {

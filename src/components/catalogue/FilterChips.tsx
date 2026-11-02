@@ -4,7 +4,7 @@ import { CATALOGUE } from '@/lib/config';
 import { COPY } from '@/lib/copy';
 import type { CatalogueQuery, Filters, RangeKey } from '@/lib/definitions';
 import { LABEL_MAPS, label } from '@/lib/labels';
-import { formatMoney } from '@/lib/money';
+import { cm, formatMoney } from '@/lib/money';
 import { rangeBounds, shopHref } from '@/lib/params';
 import { ROUTES } from '@/lib/routes';
 
@@ -25,8 +25,8 @@ function buildChips(query: CatalogueQuery, filters: Filters, currency: string): 
     }
     const rangeText: Record<RangeKey, (from: number, to: number) => string> = {
         price:    (from, to) => COPY.catalogue.range(formatMoney(from, currency), formatMoney(to, currency)),
-        pitToPit: (from, to) => COPY.catalogue.pitToPitChip(String(from / 10), String(to / 10)),
-        length:   (from, to) => COPY.catalogue.lengthChip(String(from / 10), String(to / 10)),
+        pitToPit: (from, to) => COPY.catalogue.pitToPitChip(cm(from), cm(to)),
+        length:   (from, to) => COPY.catalogue.lengthChip(cm(from), cm(to)),
     };
     for (const key of Object.keys(CATALOGUE.ranges) as RangeKey[]) {
         const { min, max } = query.ranges[key];

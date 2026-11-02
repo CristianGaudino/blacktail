@@ -35,12 +35,15 @@ describe('ItemGrid', () => {
     it('links a card to its item once the page is built, and never prints "null" for missing fields', () => {
         const html = render([{ ...item, brand: null, size: null, colour: null, era: null }]);
         expect(html.includes('href="/items/BT-0001"')).toBe(isBuilt(ROUTES.item('BT-0001')));
-        expect(html).toContain('alt="Wool coat"');
+        expect(html).toContain('>Wool coat<');
         expect(html).not.toContain('null');
     });
 
-    it('joins brand and title for the alt text', () => {
-        expect(render([item])).toContain('alt="Acme Wool coat"');
+    it('leaves the image alt empty because the brand and title are printed beside it', () => {
+        const html = render([item]);
+        expect(html).toContain('alt=""');
+        expect(html).toContain('>Acme<');
+        expect(html).toContain('>Wool coat<');
     });
 
     it('formats prices from cents in the item\'s own currency, dropping empty cents', () => {

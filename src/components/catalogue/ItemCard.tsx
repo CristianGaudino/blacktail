@@ -22,7 +22,7 @@ export function ItemCard({ item, eager, now }: { item: Item; eager: boolean; now
                         src={cover.thumbUrl}
                         width={cover.width}
                         height={cover.height}
-                        alt={[item.brand, item.title].filter(Boolean).join(' ')}
+                        alt=""
                         className="size-full object-cover transition-transform duration-200 ease-out motion-safe:group-hover:scale-[1.02]"
                         {...(eager ? { loading: 'eager' as const, fetchPriority: 'high' as const } : {})}
                     />
