@@ -13,7 +13,8 @@ export function ColourSwatches({ values, selected, onToggle, first }: {
 }) {
     const { shown, more } = splitFacet(values, selected, first);
     const swatch = (value: string) => {
-        const hex = SHOP.colours[value.toLowerCase()];
+        const key = value.toLowerCase();
+        const hex = Object.hasOwn(SHOP.colours, key) ? SHOP.colours[key] : undefined;
         return (
             <label key={value} className="flex min-h-11 min-w-11 items-center justify-center gap-2">
                 <input

@@ -17,6 +17,11 @@ describe('label', () => {
         expect(label('unisex', COPY.labels.department)).toBe('Unisex');
     });
 
+    it('ignores inherited object keys', () => {
+        expect(label('constructor', COPY.labels.type)).toBe('Constructor');
+        expect(label('toString', COPY.labels.type)).toBe('ToString');
+    });
+
     it('returns an empty string for an empty code', () => {
         expect(label('', COPY.labels.type)).toBe('');
     });
