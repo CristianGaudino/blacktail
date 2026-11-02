@@ -4,6 +4,7 @@ import { Search, X } from 'lucide-react';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useRef } from 'react';
 import { IconButton } from '@/components/ui/buttons';
+import { CATALOGUE } from '@/lib/config';
 import { COPY } from '@/lib/copy';
 import { ROUTES } from '@/lib/routes';
 
@@ -47,6 +48,7 @@ export function HeaderSearch() {
                         id="header-search"
                         type="search"
                         name="q"
+                        maxLength={CATALOGUE.maxQueryChars}
                         defaultValue={prefill}
                         placeholder={COPY.header.searchHint}
                         className="h-11 min-w-0 flex-1 bg-transparent text-base placeholder:text-olive"
