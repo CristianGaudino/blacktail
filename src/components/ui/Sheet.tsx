@@ -11,12 +11,11 @@ import { cn } from '@/lib/utils';
  * so focus trapping, Esc and stacking come from the browser. The dialog has no padding, so a click on
  * the panel never counts as a backdrop click. Callers set the width through `className`.
  */
-export function Sheet({ open, onClose, title, closeLabel, footer, className, children }: {
+export function Sheet({ open, onClose, title, closeLabel, className, children }: {
     open:       boolean;
     onClose:    () => void;
     title:      React.ReactNode;
     closeLabel: string;
-    footer?:    React.ReactNode;
     className?: string;
     children:   React.ReactNode;
 }) {
@@ -36,9 +35,8 @@ export function Sheet({ open, onClose, title, closeLabel, footer, className, chi
                 <div id={titleId} className="min-w-0">{title}</div>
                 <IconButton icon={X} label={closeLabel} onClick={onClose} className="-mr-2" />
             </header>
-            {/* Not flex-1: from a zero basis, iOS Safari can size the sheet to the header and footer alone */}
+            {/* Not flex-1: from a zero basis, iOS Safari can size the sheet to the header alone */}
             <div className="min-h-0 flex-auto overflow-y-auto overscroll-contain">{children}</div>
-            {footer && <footer className="shrink-0 border-t border-stone px-4 py-4">{footer}</footer>}
         </dialog>
     );
 }

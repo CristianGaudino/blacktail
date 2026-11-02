@@ -6,7 +6,7 @@ import { CATALOGUE, DEFAULT_SORT, SEARCH_PARAMS } from '@/lib/config';
 import { COPY } from '@/lib/copy';
 import type { CatalogueQuery, Filters, ListKey, RangeKey } from '@/lib/definitions';
 import { LABEL_MAPS, label } from '@/lib/labels';
-import { formatMoney } from '@/lib/money';
+import { cm, formatMoney } from '@/lib/money';
 import { clearFilters, rangeBounds, shopHref, toSearchString } from '@/lib/params';
 import { ROUTES } from '@/lib/routes';
 import { useCatalogueNavigate } from './CatalogueShell';
@@ -18,9 +18,9 @@ import { RangeSlider } from './RangeSlider';
 const OPEN_BY_DEFAULT: readonly string[] = ['brand', 'type', 'size', 'colour', 'price'];
 
 /**
- * The filter form. A GET form to /shop, so it works without JavaScript. With JavaScript it keeps a draft
- * of the query: `instant` pushes the draft after a short pause (desktop sidebar), `apply` waits for the
- * Apply button (phone drawer).
+ * The filter form. A GET form to /shop. It works without JavaScript for the desktop sidebar only; the
+ * phone drawer needs JavaScript to open. With JavaScript it keeps a draft of the query: `instant` pushes
+ * the draft after a short pause (desktop sidebar), `apply` waits for the Apply button (phone drawer).
  */
 export function FilterPanel({ filters, query, currency, mode, onApplied }: {
     filters:    Filters;
@@ -97,7 +97,7 @@ export function FilterPanel({ filters, query, currency, mode, onApplied }: {
                     step={step}
                     value={value}
                     label={title}
-                    format={n => (price ? formatMoney(n, currency) : String(n / 10))}
+                    format={n => (price ? formatMoney(n, currency) : cm(n))}
                     readout={price ? COPY.catalogue.range : COPY.catalogue.cmRange}
                     onDraft={v => setDraft(withRange(range, v))}
                     onCommit={v => {
