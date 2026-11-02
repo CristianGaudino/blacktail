@@ -11,7 +11,7 @@
     {
       "number": "2",
       "name": "Branded Catalogue",
-      "status": "in_progress"
+      "status": "complete"
     },
     {
       "number": "3",
@@ -26,8 +26,8 @@
   ],
   "next": {
     "command": "/gsd-progress --next",
-    "label": "Advance to the next step",
-    "reason": "Phase 2 of 4 · 25% · executing"
+    "label": "Advance to the next step (plan phase 3)",
+    "reason": "Phase 3 of 4 — needs a plan"
   },
-  "updated_at": "2026-10-27T00:06:04.447Z"
+  "updated_at": "2026-11-02T23:09:48.230Z"
 }
