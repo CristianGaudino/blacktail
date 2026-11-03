@@ -12,9 +12,10 @@ Blacktail goes from an empty repo to a launched Blacktail Archive storefront in 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [x] **Phase 1: Live Stock Skeleton** - Deployed Worker shows real How many stock and refreshes within seconds of a signed webhook (completed 2026-10-26)
+- [x] **Phase 1: Live Stock Skeleton** - Deployed Worker shows real How many stock and refreshes within seconds of a signed webhook
+ (completed 2026-10-26)
 - [x] **Phase 2: Branded Catalogue** - Blacktail Archive look, header and footer, and the full All Items browse, filter, search, sort and paging (completed 2026-11-02)
-- [ ] **Phase 3: Item and Brand Pages** - Item page with gallery, details and where to buy, real 404s, JSON-LD, and Brands pages with logos
+- [x] **Phase 3: Item and Brand Pages** - Item page with gallery, details and where to buy, real 404s, JSON-LD, and Brands pages with logos (completed 2026-11-03)
 - [ ] **Phase 4: Home and Launch** - Mockup home page, Just Dropped, About and Contact, site-wide SEO, and the second-shop onboarding doc
 
 ## Phase Details
@@ -150,5 +151,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Live Stock Skeleton | 4/4 | Complete    | 2026-10-26 |
 | 2. Branded Catalogue | 10/10 | Complete    | 2026-11-02 |
-| 3. Item and Brand Pages | 1/4 | In Progress | - |
+| 3. Item and Brand Pages | 4/4 | Complete    | 2026-11-03 |
 | 4. Home and Launch | 5/5 | In Progress | - |
