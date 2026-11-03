@@ -2,6 +2,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import RootError from '@/app/error';
+import NotFound from '@/app/not-found';
 import { COPY } from '@/lib/copy';
 import { StatusScreen } from './StatusScreen';
 
@@ -45,5 +46,16 @@ describe('error page', () => {
 
     it('shows no reference without a digest', () => {
         expect(errorPage()).not.toContain('Reference:');
+    });
+});
+
+describe('not-found page', () => {
+    const html = renderToStaticMarkup(createElement(NotFound));
+
+    it('shows the words, a Shop all items link and a Go home link', () => {
+        expect(html).toContain(COPY.notFound.title);
+        expect(html).toContain(COPY.notFound.body);
+        expect(html).toMatch(new RegExp(`<a [^>]*href="/shop"[^>]*>${COPY.common.shopAll}</a>`));
+        expect(html).toMatch(new RegExp(`<a [^>]*href="/"[^>]*>${COPY.common.goHome}</a>`));
     });
 });

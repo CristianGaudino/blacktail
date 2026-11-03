@@ -1,7 +1,24 @@
+import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
+import { ItemDetails } from '@/components/item/ItemDetails';
+import { ItemJsonLd } from '@/components/item/ItemJsonLd';
+import { WhereToBuy } from '@/components/item/WhereToBuy';
+import { storeEnv } from '@/lib/env';
 import { getItem } from '@/lib/howmany/client';
 import { formatMoney } from '@/lib/money';
+import { ROUTES } from '@/lib/routes';
+
+const nameOf = (item: { brand: string | null; title: string }) => [item.brand, item.title].filter(Boolean).join(' ');
+// SITE_URL is read per call, never at module scope and never from the Host header
+const itemUrl = (code: string) => new URL(ROUTES.item(code), storeEnv().SITE_URL).toString();
+
+export async function generateMetadata({ params }: PageProps<'/items/[code]'>): Promise<Metadata> {
+    const item = await getItem((await params).code);
+    // a 404 thrown from metadata would answer 200 (Pitfall 1): the page body decides the status
+    if (!item) return {};
+    return { title: nameOf(item), alternates: { canonical: itemUrl(item.code) } };
+}
 
 export default async function ItemPage({ params }: PageProps<'/items/[code]'>) {
     // Render on each request over the tagged fetch cache: no generateStaticParams, nothing fetched at build (D-11)
@@ -15,7 +32,10 @@ export default async function ItemPage({ params }: PageProps<'/items/[code]'>) {
                 {item.brand && <p className="mb-2 text-label uppercase">{item.brand}</p>}
                 <h1 className="font-heading text-heading leading-[1.2] break-words lg:text-display">{item.title}</h1>
                 <p className="mt-4 font-heading text-heading tabular-nums">{formatMoney(item.priceCents, item.currency)}</p>
+                <div className="mt-6"><WhereToBuy /></div>
+                <div className="mt-8"><ItemDetails item={item} /></div>
             </div>
+            <ItemJsonLd item={item} url={itemUrl(item.code)} />
         </main>
     );
 }

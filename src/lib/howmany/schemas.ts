@@ -27,6 +27,8 @@ export const itemSchema = z.object({
     colour:       z.string().nullable(),
     era:          z.string().nullable(),
     department:   z.string().nullable(),
+    // Optional: no live item carries it yet (it is a top-level /filters facet, so this is its likely home)
+    material:     z.string().nullish(),
     measurements: z.object({ pitToPitMm: z.number().nullable(), lengthMm: z.number().nullable() }),
     details:      z.record(z.string(), z.unknown()),
     priceCents:   z.number().int(),
