@@ -384,7 +384,7 @@ Next 16: "the `priority` property has been deprecated in favor of the `preload` 
 `getFilters` and `getItemsPage` are React `cache()`d; a rejection is cached for the request, so the strip and the tiles fail together. That is fine, but write each section's `catch` to log one `console.warn` line (like `Header`/`MoreFromBrand`) so CI's "no ERROR in the Worker log" check still passes in the outage proof, which hits `/shop`.
 
 ### Pitfall 7: Sold-before brands link to a 404
-`/brands/[slug]` returns 404 unless the slug exists in `/filters` [VERIFIED: src/app/brands/[slug]/page.tsx `if (!name) notFound();`]. When BRAND-05 provides sold-before names, the strip must either skip names without stock or the brand page must tolerate them. Phase 4 ships the list empty; leave a comment at the seam and an Open Question.
+`/brands/[slug]` returns 404 unless the slug exists in `/filters` [VERIFIED: src/app/brands/[slug]/page.tsx `if (!name) notFound();`]. When BRAND-05 provides sold-before names, the strip must either skip names without stock or the brand page must tolerate them. Phase 4 ships the list empty; leave a comment at the seam and an Open Question. Resolved by CONTEXT D-21: the brand page tolerates them (empty catalogue, not a 404).
 
 ### Pitfall 8: Shop-guard collisions
 `shop-guard.test.ts` lowercases and substring-matches needles [VERIFIED: file read]. If you extend it with `SHOP.home` strings as needles (recommended for D-03 enforcement), do not add short phrases that also appear in `COPY` ("Just dropped" = `COPY.nav.justDropped` case-insensitively, "Pre-loved", "Our story"); add only the long sentences (promo body, story body, About copy) and the image filenames. Also `SHOP` is scanned for em dashes already (`copy.test.ts`), so the new `home/about/seo` strings are covered.
@@ -463,16 +463,18 @@ export async function generateMetadata({ params }: PageProps<'/items/[code]'>): 
 | A6 | Shipping with the flag off is the intended launch posture (placeholders are still in the repo) | Summary | If the owner wants indexing on at merge, set the repo variable to `true` |
 | A7 | The cover `url` is acceptable as `og:image` size-wise (real photo byte sizes unknown, STACK open item) | Pattern 6 | Heavy images may be dropped by some scrapers; switch to `thumbUrl` for the OG image |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Does the sold-before brand tier include brands with no stock?**
    - Known: D-07 orders in stock, sold-before, then default; the UI-SPEC shows only `/filters` brands and flags this as unresolved.
    - Unclear: whether a future sold-before brand should appear even though `/brands/[slug]` 404s for it (Pitfall 7).
-   - Recommendation: ship with the list empty and the planner's assumption (only in-stock brands are shown, the default order only ranks); record it in a code comment at the seam.
+   - **RESOLVED (owner, CONTEXT D-21):** sold-before brands are shown even with no stock; a default-order brand with no stock and no sold history is omitted. `/brands/[slug]` renders the empty brand catalogue for a sold-before slug and still 404s for any other unknown slug (Plan 03, with a unit test). The list ships empty until How many provides it (BRAND-05).
 2. **Should the repo ship with indexing on?**
-   - Recommendation: off. Contact values, photos and the brand order are still PENDING-OWNER, so the owner sets the repository variable at launch (documented in the onboarding doc and PR).
-3. **Fourth category tile.** Default `shirt` (UI-SPEC says the planner picks from live `/filters` types and marks PENDING-OWNER).
-4. **OG image weight.** Verify real `url` sizes once real photos exist (STACK open item); switch to `thumbUrl` if heavy.
+   - **RESOLVED:** off. `ALLOW_INDEXING` unset means false; contact values, photos and the brand order are still PENDING-OWNER, so the owner sets the repository variable at launch (documented in the onboarding doc and PR, Plan 05).
+3. **Fourth category tile.**
+   - **RESOLVED:** `shirt` (Shirts), marked PENDING-OWNER in `src/shop/config.ts` (Plan 03); the owner can swap it with one config entry.
+4. **OG image weight.**
+   - **RESOLVED:** item pages use the cover `url` as `og:image` (Plan 01); switch to `thumbUrl` if real photos prove heavy. Verified in the end-of-phase UAT link-preview check (Plan 05).
 
 ## Environment Availability
 

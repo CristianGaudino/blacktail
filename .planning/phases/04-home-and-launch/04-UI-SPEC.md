@@ -208,7 +208,7 @@ The default words above are Blacktail Archive's, taken from the mockup. "They're
 | Carousel previous / next (aria-label) | Previous items / Next items |
 | Carousel region | `role="region"`, `aria-roledescription="carousel"`, `aria-labelledby` the carousel heading |
 | Brand strip link (to `ROUTES.brands`) | View all brands (new `COPY.home.viewAllBrands`; the visible text and the accessible name are the same string, so no `aria-label` override) |
-| Category section link (to `ROUTES.shop`) | Explore all pieces (new `COPY.home.exploreAll`; visible text and accessible name are the same) |
+| Category section link (to `ROUTES.shop`) | Explore all pieces (shop words, so `SHOP.home.categories.exploreAll` per D-03; visible text and accessible name are the same) |
 | Brand logo link | `<img alt="{brand}">` or the brand name as text (existing Phase 3 rule), link to `ROUTES.brand(slug)` |
 | Category tile accessible name | The label text (the image is decorative, the arrow is `aria-hidden`) |
 
@@ -227,7 +227,7 @@ The default words above are Blacktail Archive's, taken from the mockup. "They're
 
 | Element | Copy |
 |---------|------|
-| Banner title `<h1>` | About Blacktail Archive (the shop name is joined to the generic "About" label by the page, never typed as one string in a component) |
+| Banner title `<h1>` | About Blacktail Archive (`SHOP.about.title`, written in `src/shop/` per D-14, never typed in a component) |
 | Banner lead | A curated collection of pre-loved clothing from iconic brands. |
 | Banner body | Blacktail Archive was created for those who appreciate timeless style, quality craftsmanship and a more conscious way of shopping. |
 | Section eyebrow | Pre-loved |
@@ -240,11 +240,11 @@ The default words above are Blacktail Archive's, taken from the mockup. "They're
 | Element | Copy |
 |---------|------|
 | Banner title `<h1>` | Contact (existing `COPY.nav.contact`) |
-| Left column heading `<h2>` | Get in touch (`COPY.contact.heading`) |
+| Left column heading `<h2>` | Get in touch (`SHOP.contact.heading`, D-14) |
 | Intro paragraph | `SHOP.contact.intro`, a PENDING-OWNER placeholder, for example: "Questions about a piece, a size or a measurement? Send us an email and we will get back to you." |
 | Group label: email | Email (existing `COPY.footer.email`); value is `SHOP.contact.email` as a `mailto:` link |
-| Group label: platforms | Shop with us (`COPY.contact.shopWith`); one secondary `ButtonLink` per `SHOP.platforms` entry, text `Visit us on {name}` (existing `COPY.item.visitOn`), external, trailing `ExternalLink` |
-| Group label: socials | Follow us (`COPY.contact.follow`); the linked icons from `SHOP.socials` only |
+| Group label: platforms | Shop with us (`SHOP.contact.shopWith`, D-14); one secondary `ButtonLink` per `SHOP.platforms` entry, text `Visit us on {name}` (existing `COPY.item.visitOn`), external, trailing `ExternalLink` |
+| Group label: socials | Follow us (`SHOP.contact.follow`, D-14); the linked icons from `SHOP.socials` only |
 | Form | none. No form, no field, no submit |
 
 Every contact value, platform URL and social URL is read from `SHOP.contact`, `SHOP.platforms` and `SHOP.socials` (D-15), the same objects the footer and item page use. A page must not contain an address, a URL or a handle typed into the component.
@@ -291,7 +291,7 @@ Data section failure (default, recorded): each of the three data sections reads 
 - Band with the Stone rules, then a flex row as in Spacing. The scrolling area is a `<ul>` with `overflow-x-auto`, `snap-x`, `snap-mandatory` (each cell `snap-start`), scrollbar hidden, `overscroll-x-contain`. It scrolls only inside its own frame; the page never scrolls sideways.
 - The strip scrolls when the logos do not fit; when they fit they are left aligned with no empty scroll. There is no auto-scroll and no arrows (one-row scroll-snap, D-06). Keyboard users move through the logo links with Tab and the strip scrolls the focused logo into view.
 - Cell: a link to `ROUTES.brand(slug)` (`prefetch={false}`), 112 x 44px, logo `next/image` with `fill`, `object-contain`, `mix-blend-multiply`, `unoptimized`, lazy, shown only when `BRAND_LOGOS` lists the slug (Phase 3 rule, same slug function). A brand without a logo shows its name as Bodoni 700 16px text, vertically centred, `whitespace-nowrap`, with 8px padding either side so the 44px hit area stays. Hover: the cell fills Sand 40% (150ms; none under reduced motion). Focus: the 2px ring on the cell.
-- Order (D-07, one tested function; the UI only renders its output): brands in stock, then sold-before brands (the list is empty for now), then the default order from `src/shop/` (D-08, PENDING-OWNER). The strip shows brands that exist in `/filters` (so every logo opens a brand page that has stock). The default order is a sort key, not a source of out-of-stock brands.
+- Order (D-07, one tested function; the UI only renders its output): brands in stock, then sold-before brands (the list is empty for now), then the default order from `src/shop/` (D-08, PENDING-OWNER). The strip shows brands that exist in `/filters` plus sold-before brands even with no stock (CONTEXT D-21; a sold-before brand page shows the empty catalogue, not a 404). The default order is a sort key, not a source of out-of-stock brands.
 - Cap: the first 16 brands (so the DOM stays small); "View all brands" reaches the full Brands page.
 - "View all brands": a link to `ROUTES.brands`. It stays outside the scrolling area so it is always visible.
 - Zero brands in `/filters` (or a failed read): the whole band is hidden (HOME-02).
@@ -372,7 +372,7 @@ Data section failure (default, recorded): each of the three data sections reads 
 | `CataloguePage` | `src/components/catalogue/` | Add `lockedSort` (default none): hides `SortSelect` in the toolbar and the phone bar, ignores the `sort` URL param, forces `newest` in the API call |
 | `SocialIcons` | `src/components/ui/` | Add `linkedOnly` (default false) so the contact page omits icons without a URL |
 | `SHOP.home`, `SHOP.about`, `SHOP.contact.intro`, `SHOP.seo`, default brand order | `src/shop/config.ts` (and `src/shop/` files) | Only place with shop words and the placeholder order. `SHOP.newBadgeDays` becomes 14 |
-| `COPY.home`, `COPY.contact` | `src/lib/copy.ts` | Generic labels only |
+| `COPY.home` | `src/lib/copy.ts` | Generic labels only (About and Contact words, headings included, live in `SHOP.about` and `SHOP.contact`, D-14) |
 | Brand ordering function, category-tile visibility function | `src/lib/` | Pure, unit-tested: strip order with a fake sold-before list; a tile hides when its type has no in-stock item |
 | `ROUTES` | `src/lib/routes.ts` | Delete `BUILT_PAGES`; `isBuilt` in `src/lib/utils.ts` goes too, and the footer, header and mobile menu stop calling it |
 
@@ -380,7 +380,7 @@ Data section failure (default, recorded): each of the three data sections reads 
 
 ## UI Considerations
 
-Applicable state considerations resolved: 26 covered, 3 backstop, 1 unresolved
+Applicable state considerations resolved: 27 covered, 3 backstop, 0 unresolved
 
 | Category | Element(s) | Status | Resolution / Reason |
 |----------|------------|--------|---------------------|
@@ -414,7 +414,7 @@ Applicable state considerations resolved: 26 covered, 3 backstop, 1 unresolved
 | long-text | static-content (hero headline longer than two sentences) | 🧪 backstop | Visual check at 320px and 1280px with a 5-line headline: it must not overflow the 420px frame |
 | overflow | media (all 30 shipped logos in a 112 x 44px cell) | 🧪 backstop | Contain-fit inside a fixed cell; needs a visual pass because the SVGs range from square marks to a 1000 x 200 wide mark (same open item as Phase 3) |
 | partial | list-collection (carousel scroll end detection on a fractional-pixel width) | 🧪 backstop | The disabled state uses a 1px tolerance; verify on a 125% and a 150% Windows display scale |
-| partial | list-collection (strip sold-before and default-order brands that have no stock) | ⚠ unresolved | D-07 does not say whether an out-of-stock brand from the default order appears. The contract shows only brands in `/filters`, so no logo links to an empty brand page; the planner assumes this and records it, and the owner can revisit when BRAND-05 has data |
+| partial | list-collection (strip sold-before and default-order brands that have no stock) | ✅ covered | Owner decision CONTEXT D-21: a default-order brand with no stock and no sold history is omitted; a sold-before brand shows even with no stock and its brand page renders the empty catalogue instead of a 404; any other unknown slug still 404s |
 
 <!-- Status vocabulary (locked by probe-core projectTruths):
      ✅ covered   -> a plain truth string lifted into must_haves.truths
