@@ -138,6 +138,10 @@ export const COPY = {
         showPhoto:      (n: number) => `Show photo ${n}`,
         photoAlt:       (name: string, n: number) => (n === 1 ? name : `${name}, photo ${n}`),
         position:       (n: number, total: number) => `${n} / ${total}`,
+        viewer:         (name: string) => `${name}, photos`,
+        previousPhoto:  'Previous photo',
+        nextPhoto:      'Next photo',
+        closeViewer:    'Close photo viewer',
     },
     notFound: {
         title: 'Page not found',

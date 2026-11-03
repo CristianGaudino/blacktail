@@ -66,7 +66,26 @@ describe('ItemGallery', () => {
         const html = render(photos(1));
         expect(html).not.toContain(COPY.item.showPhoto(1));
         expect(html).not.toContain('size-2 rounded-full');
-        expect(html).not.toContain('aria-live');
+        expect(html).not.toContain('sr-only');
+    });
+
+    it('has the lightbox in the markup but the full-size photo only in the slide while closed', () => {
+        const html = render(photos(3));
+        expect(html).toContain('<dialog');
+        expect(html).toContain(`aria-label="${COPY.item.viewer('Acme Wool coat')}"`);
+        expect(html).toContain(`aria-label="${COPY.item.closeViewer}"`);
+        expect(html).toContain(`>${COPY.item.photoOf(1, 3)}<`);
+        expect(fullSize(html).filter(t => t.includes('%2F1.jpg&'))).toHaveLength(1);
+    });
+
+    it('offers previous and next for several photos, and neither for one', () => {
+        const many = render(photos(3));
+        expect(many).toContain(`aria-label="${COPY.item.previousPhoto}"`);
+        expect(many).toContain(`aria-label="${COPY.item.nextPhoto}"`);
+        const one = render(photos(1));
+        expect(one).not.toContain(COPY.item.previousPhoto);
+        expect(one).not.toContain(COPY.item.nextPhoto);
+        expect(one).toContain(COPY.item.closeViewer);
     });
 
     it('shows a 4:5 frame and no image or button without photos', () => {

@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { COPY } from '@/lib/copy';
 import type { ItemPhoto } from '@/lib/definitions';
 import { cn } from '@/lib/utils';
+import { PhotoLightbox } from './PhotoLightbox';
 
 /** Past this many photos the dots become a "n / total" text */
 const MAX_DOTS = 10;
@@ -16,8 +17,10 @@ const MAX_DOTS = 10;
  */
 export function ItemGallery({ photos, name }: { photos: ItemPhoto[]; name: string }) {
     const [index, setIndex] = useState(0);
+    const [open, setOpen] = useState(false);
     const track = useRef<HTMLDivElement>(null);
     const slides = useRef<(HTMLDivElement | null)[]>([]);
+    const openers = useRef<(HTMLButtonElement | null)[]>([]);
     // The slide a thumbnail jump is heading to: updates for the slides passed on the way are ignored
     const pending = useRef<number | null>(null);
     const total = photos.length;
@@ -51,6 +54,14 @@ export function ItemGallery({ photos, name }: { photos: ItemPhoto[]; name: strin
         pending.current = Math.abs(root.scrollLeft - slide.offsetLeft) < 1 ? null : i;
         const calm = !window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         root.scrollTo({ left: slide.offsetLeft, behavior: smooth && calm ? 'smooth' : 'instant' });
+    }
+
+    function closeLightbox() {
+        setOpen(false);
+        // The page shows the photo the lightbox ended on
+        scrollToPhoto(index, false);
+        // Safari does not focus a clicked button, so the dialog may not hand focus back (RESEARCH Pitfall 7)
+        requestAnimationFrame(() => openers.current[index]?.focus({ preventScroll: true }));
     }
 
     return (
@@ -94,7 +105,13 @@ export function ItemGallery({ photos, name }: { photos: ItemPhoto[]; name: strin
                                 aria-label={COPY.item.photoOf(i + 1, total)}
                                 className="h-full w-full shrink-0 snap-center bg-sand/40"
                             >
-                                <button type="button" aria-label={COPY.item.openPhoto(i + 1, total)} className="block size-full cursor-zoom-in">
+                                <button
+                                    type="button"
+                                    ref={el => { openers.current[i] = el; }}
+                                    aria-label={COPY.item.openPhoto(i + 1, total)}
+                                    onClick={() => { setIndex(i); setOpen(true); }}
+                                    className="block size-full cursor-zoom-in"
+                                >
                                     <Image
                                         src={photo.url}
                                         width={photo.width}
@@ -110,6 +127,7 @@ export function ItemGallery({ photos, name }: { photos: ItemPhoto[]; name: strin
                 ) : (
                     <div className="aspect-[4/5] bg-sand/40" />
                 )}
+                {cover && <PhotoLightbox photos={photos} index={index} open={open} name={name} onIndex={setIndex} onClose={closeLightbox} />}
                 {total > 1 && (
                     <>
                         <div aria-hidden="true" className="mt-4 flex justify-center gap-2 lg:hidden">
