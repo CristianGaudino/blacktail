@@ -61,7 +61,7 @@ Layout constants (all multiples of 4):
 | Hero height | 420px below 768px, 480px from 768px. Full bleed (no container); the text block sits inside the container |
 | Hero text block | max width 576px (`max-w-xl`), vertically centred, left aligned to the container edge. Order: eyebrow, 4px, headline, 24px, 1px 48px-wide rule, 24px, button |
 | Brand strip | Full-bleed band with a 1px Stone rule above and below, padding-y 24px. Logo cell 112px wide by 44px high (text-only brands: auto width, same 44px height). Cell gap 16px below 1024px, 32px from 1024px |
-| Brand strip row | Phones: a header row (label left, View all right, 44px high) above the scrolling logo row. From 1024px: one row: label (96px wide), 1px Stone divider (40px high), the scrolling logos (flex-1), View all |
+| Brand strip row | Phones: a header row (label left, "View all brands" right, 44px high) above the scrolling logo row. From 1024px: one row: label (96px wide), 1px Stone divider (40px high), the scrolling logos (flex-1), "View all brands" |
 | Carousel cards visible | 2 below 640px (gap 16px, card basis `(100% - 16px) / 2`), 3 from 640px (gap 24px, basis `(100% - 48px) / 3`), 5 from 1024px (gap 24px, basis `(100% - 96px) / 5`) |
 | Carousel header row | Heading (Heading role) left, then a flex-1 1px Stone rule (from 640px), then the eyebrow (from 768px), then the two 44px arrow buttons. 24px above the track |
 | Promo banners | Edge to edge, no gap. Stacked below 768px (256px high each), side by side from 768px (50% each, 288px high). Text padding 24px on phones, 32px from 768px |
@@ -74,7 +74,7 @@ Layout constants (all multiples of 4):
 | Contact panel | Ivory fill, 1px Stone border, padding 24px (phones) / 32px (768px). Three groups separated by 32px and a 1px Stone rule |
 
 Exceptions:
-- Touch targets stay 44px (a multiple of 4): carousel arrows, hero and banner buttons (`min-h-11`), brand strip logo cells (44px high), View all and Explore all links (`min-h-11` through padding), category tiles (always larger), contact links (`min-h-11`).
+- Touch targets stay 44px (a multiple of 4): carousel arrows, hero and banner buttons (`min-h-11`), brand strip logo cells (44px high), "View all brands" and "Explore all pieces" links (`min-h-11` through padding), category tiles (always larger), contact links (`min-h-11`).
 - Hairlines (brand strip rules, divider, hero rule, tile and panel borders) and the 2px focus ring are strokes, not spacing steps (same rule as Phases 2 and 3). The 8px photo-frame border is on the scale.
 - The 420px, 480px, 256px and 288px heights are fixed frames for image slots (multiples of 4), not spacing steps; they keep every photo from shifting the page while it loads.
 
@@ -90,10 +90,10 @@ Inherited: four sizes (Label 12, Body 16, Heading 24, Display 40) and two weight
 | Hero headline `<h1>` | Heading 24px below 768px, Display 40px from 768px | Bodoni 700, line-height 1.2, caps, Ivory, `break-words`, one `<span class="block">` per sentence |
 | Hero, banner and Just Dropped page button text | Label (button role) | Caps, 0.16em, min-height 44px |
 | Brand strip label ("Shop by brand") `<h2>` | Label | Caps, Olive |
-| Brand strip View all | Label | Caps, Forest, trailing `ChevronRight` 16px |
+| Brand strip "View all brands" link | Label | Caps, Forest, trailing `ChevronRight` 16px |
 | Text-only brand name in the strip | Body | Bodoni 700 16px (the same Body-size-with-heading-face exception as the card title in Phase 2), `whitespace-nowrap`, Forest |
 | Section headings (Just dropped, Shop by category) `<h2>` | Heading | Bodoni 700 24px, caps, Forest |
-| Carousel eyebrow (New arrivals weekly), Explore all | Label | Caps, Olive (eyebrow) / Forest (link) |
+| Carousel eyebrow (New arrivals weekly), "Explore all pieces" link | Label | Caps, Olive (eyebrow) / Forest (link) |
 | Promo banner eyebrow | Label | Caps, Ivory |
 | Promo banner title | Heading 24px below 1024px, Display 40px from 1024px | Bodoni 700, caps, Ivory, `break-words` |
 | Promo banner body | Body | Montserrat 400, Ivory, max width 36ch |
@@ -108,6 +108,10 @@ Inherited: four sizes (Label 12, Body 16, Heading 24, Display 40) and two weight
 | Contact "Get in touch" `<h2>` | Heading | Bodoni 700 24px |
 | Contact intro, email value | Body | Montserrat 400, Forest; email is a link with underline offset 4px |
 | Contact group labels | Label | Caps, Olive (on the Ivory panel only) |
+
+Line heights (inherited from Phase 2, restated so the Montserrat 400 roles are explicit): Montserrat 400 Body (16px) is 1.5; Montserrat 400 Label (12px, caps, 0.16em) is 1.5 (18px) for any text that can wrap, and a button label sits centred in its 44px box; Bodoni 700 Heading and Display are 1.2.
+
+Forest on headings is typography (text colour for legibility on Ivory and Sand), not accent use. The accent list in Color covers only fills, overlays and the focus ring.
 
 No new weights, no italics, Montserrat never bolder than 400.
 
@@ -189,7 +193,6 @@ Shop words (D-03) go in `src/shop/` (new `SHOP.home`, `SHOP.about`, `SHOP.contac
 | Promo banner 2 title | Iconic brands. Real style. |
 | Promo banner 2 button (to `ROUTES.brands`) | Shop all brands |
 | Category section heading (`<h2>`) | Shop by category |
-| Category section link (to `ROUTES.shop`) | Explore all |
 | Category tiles (`SHOP.home.categories`, up to 4, D-05) | Each `{ type, label, image }`. Default list: `jacket` Jackets, `knit` Knitwear, `jeans` Denim, `shirt` Shirts (the mockup's fourth tile is Accessories, but `COPY.labels.type` has no accessories code; the planner picks the fourth from the live `/filters` types and marks it PENDING-OWNER). Each tile links to `ROUTES.shop` plus `?type=<code>` |
 | Story band heading (`<h2>`) | A more conscious way to shop. |
 | Story band body | Pre-loved pieces. Longer lives. Better choices. |
@@ -203,7 +206,8 @@ The default words above are Blacktail Archive's, taken from the mockup. "They're
 |---------|------|
 | Carousel previous / next (aria-label) | Previous items / Next items |
 | Carousel region | `role="region"`, `aria-roledescription="carousel"`, `aria-labelledby` the carousel heading |
-| Brand strip View all (to `ROUTES.brands`) | View all (existing `COPY.item.viewAll`; aria-label "View all brands") |
+| Brand strip link (to `ROUTES.brands`) | View all brands (new `COPY.home.viewAllBrands`; the visible text and the accessible name are the same string, so no `aria-label` override) |
+| Category section link (to `ROUTES.shop`) | Explore all pieces (new `COPY.home.exploreAll`; visible text and accessible name are the same) |
 | Brand logo link | `<img alt="{brand}">` or the brand name as text (existing Phase 3 rule), link to `ROUTES.brand(slug)` |
 | Category tile accessible name | The label text (the image is decorative, the arrow is `aria-hidden`) |
 
@@ -214,8 +218,9 @@ The default words above are Blacktail Archive's, taken from the mockup. "They're
 | Banner title `<h1>` | Just Dropped (existing `COPY.nav.justDropped`) |
 | Result count, chips, pager, filters, drawer | Existing Phase 2 copy, unchanged |
 | Sort control | Not shown (sort is locked to newest, D-09). The phone toolbar shows only the Filter button |
-| Filtered-empty | Existing Phase 2 copy, "Clear all filters" links to `/just-dropped` |
-| No stock at all | `COPY.stock.empty` (existing), no CTA |
+| Filtered-empty | Existing Phase 2 copy (`COPY.catalogue.emptyTitle` / `emptyBody` / `clearAll`): title "No pieces match those filters", body "Try removing a filter or searching for something else.", link "Clear all filters" (to `/just-dropped`) |
+| No stock at all | `COPY.stock.empty` (existing): "Nothing is in stock right now. Please check back soon." No CTA (the sentence itself is the path forward: check back) |
+| API outage (error state) | The existing root `error.tsx` screen, unchanged, stated in full here: title "Something went wrong" (`COPY.status.errorTitle`), message "The shop could not be loaded. Please try again in a moment." (`COPY.status.errorMessage`), optional "Reference: {digest}" (`COPY.status.errorId`), a primary button "Try again" (`COPY.common.tryAgain`, re-renders the segment) and a secondary link "Go home" (`COPY.common.goHome`, to `ROUTES.home`, whose static sections render during an outage). No new component and no new string. A link to `ROUTES.shop` is deliberately not added: `/shop` reads the same API and would fail the same way, so Go home is the route that still works |
 
 ### About (`SHOP.about`, a PENDING-OWNER placeholder story, D-14)
 
@@ -286,8 +291,8 @@ Data section failure (default, recorded): each of the three data sections reads 
 - The strip scrolls when the logos do not fit; when they fit they are left aligned with no empty scroll. There is no auto-scroll and no arrows (one-row scroll-snap, D-06). Keyboard users move through the logo links with Tab and the strip scrolls the focused logo into view.
 - Cell: a link to `ROUTES.brand(slug)` (`prefetch={false}`), 112 x 44px, logo `next/image` with `fill`, `object-contain`, `mix-blend-multiply`, `unoptimized`, lazy, shown only when `BRAND_LOGOS` lists the slug (Phase 3 rule, same slug function). A brand without a logo shows its name as Bodoni 700 16px text, vertically centred, `whitespace-nowrap`, with 8px padding either side so the 44px hit area stays. Hover: the cell fills Sand 40% (150ms; none under reduced motion). Focus: the 2px ring on the cell.
 - Order (D-07, one tested function; the UI only renders its output): brands in stock, then sold-before brands (the list is empty for now), then the default order from `src/shop/` (D-08, PENDING-OWNER). The strip shows brands that exist in `/filters` (so every logo opens a brand page that has stock). The default order is a sort key, not a source of out-of-stock brands.
-- Cap: the first 16 brands (so the DOM stays small); "View all" reaches the full Brands page.
-- View all: a link to `ROUTES.brands`. It stays outside the scrolling area so it is always visible.
+- Cap: the first 16 brands (so the DOM stays small); "View all brands" reaches the full Brands page.
+- "View all brands": a link to `ROUTES.brands`. It stays outside the scrolling area so it is always visible.
 - Zero brands in `/filters` (or a failed read): the whole band is hidden (HOME-02).
 
 #### Just Dropped carousel (HOME-01, D-10, D-12)
@@ -309,7 +314,7 @@ Data section failure (default, recorded): each of the three data sections reads 
 
 #### Shop by category (HOME-01, D-05)
 
-- Header row: heading left, a flex-1 1px Stone rule (from 640px), "Explore all" link to `ROUTES.shop` right (Label, caps, 44px hit area, trailing `ChevronRight`). No arrows (the tiles never scroll).
+- Header row: heading left, a flex-1 1px Stone rule (from 640px), "Explore all pieces" link to `ROUTES.shop` right (Label, caps, 44px hit area, trailing `ChevronRight`). No arrows (the tiles never scroll).
 - Tiles: each is one `<a href>` (`prefetch={false}`) to `ROUTES.shop` plus `?type=<code>`, image `fill` `object-cover`, a Forest 70% to 0% bottom gradient, label bottom-left at 16px inset (Ivory), `ArrowRight` 20px bottom-right at 16px inset (`aria-hidden`; hidden below 640px so a long label such as ACCESSORIES fits a 164px tile). Hover: image scales to 102% over 200ms (off under reduced motion). Focus: the 2px ring wraps the tile.
 - A tile is hidden when `/filters` shows no in-stock item of its type (D-05); the remaining tiles fill the columns (see Spacing). If none remain, or the configured list is empty, or the read fails, the whole section is hidden.
 
@@ -389,10 +394,10 @@ Applicable state considerations resolved: 26 covered, 3 backstop, 1 unresolved
 | loading | list-collection (/just-dropped filter change) | ✅ covered | The Phase 2 shell keeps the old grid at 60% opacity with `aria-busy` while results load; no `loading.tsx` so a past-the-end redirect stays a real 307 |
 | loading | interactive-control (carousel arrows before the script runs) | ✅ covered | The arrows are hidden until the track is measured; the track stays swipeable and keyboard focusable |
 | error | list-collection (API outage on the home page) | ✅ covered | Each data section hides itself on a failed read; hero, promo banners, story band and footer still render; the last good cache is kept (DATA-03) |
-| error | page (API outage on /just-dropped) | ✅ covered | The existing `error.tsx` "Something went wrong" screen (the page is a catalogue, so the outage is the page's whole content) |
+| error | page (API outage on /just-dropped) | ✅ covered | The existing `error.tsx` screen with the copy quoted in the Copywriting Contract: "Something went wrong" / "The shop could not be loaded. Please try again in a moment.", with a "Try again" button and a "Go home" link to `ROUTES.home` (the page is a catalogue, so the outage is the page's whole content) |
 | error | page (About and Contact) | ✅ covered | Static: they make no API read, so an outage cannot break them |
 | populated | list-collection (carousel with 10 cards) | ✅ covered | 5 visible on desktop, 3 from 640px, 2 on phones; arrows page through, snap aligns each card |
-| populated | list-collection (brand strip with many logos) | ✅ covered | First 16 brands, scroll-snap inside the row, View all outside the scroller |
+| populated | list-collection (brand strip with many logos) | ✅ covered | First 16 brands, scroll-snap inside the row, "View all brands" outside the scroller |
 | zero-one-many | list-collection (carousel with 1 to 5 items) | ✅ covered | Shows what exists at normal card width, left aligned, no arrows when nothing overflows |
 | zero-one-many | list-collection (1 to 3 category tiles) | ✅ covered | Columns equal the visible tile count from 1024px; below 1024px an odd last tile spans both columns |
 | zero-one-many | list-collection (1 or 2 brands in the strip) | ✅ covered | Left aligned cells, no scroll |
