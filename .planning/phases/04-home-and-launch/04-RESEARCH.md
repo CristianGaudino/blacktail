@@ -459,7 +459,7 @@ export async function generateMetadata({ params }: PageProps<'/items/[code]'>): 
 | A2 | Workers limit subrequests per invocation (a 13-page sitemap fan-out at limit 24 might be near a plan limit on the free plan; the account is on Workers Paid per Phase 1 setup) | Pattern 9 | If wrong, nothing breaks; limit 100 is simply cheaper. R2/D1 binding calls may or may not count |
 | A3 | `next.config.ts headers()` values are fixed at build time on OpenNext | Pitfall 1 | If headers were request-time, the single run-time var would suffice; the two-place setup is harmless but redundant. The deploy smoke proves the real behaviour |
 | A4 | `await connection()` inside a metadata route handler (`robots.ts`/`sitemap.ts`) makes it dynamic under OpenNext | Pattern 9 | If not, they are built statically: CI "build made no calls" fails, which is the safety net. Fallback: `export const dynamic = 'force-dynamic'` [CITED: caching-without-cache-components.md `dynamic`] |
-| A5 | Fourth default category tile is `shirt` (mockup's "Accessories" has no type code) | Open Questions | Owner picks another; one config entry |
+| A5 | Fourth default category tile is `shirt` (mockup's "Accessories" has no type code) | Open Questions | Confirmed by the owner (CONTEXT D-22); one config entry if it changes |
 | A6 | Shipping with the flag off is the intended launch posture (placeholders are still in the repo) | Summary | If the owner wants indexing on at merge, set the repo variable to `true` |
 | A7 | The cover `url` is acceptable as `og:image` size-wise (real photo byte sizes unknown, STACK open item) | Pattern 6 | Heavy images may be dropped by some scrapers; switch to `thumbUrl` for the OG image |
 
@@ -472,7 +472,7 @@ export async function generateMetadata({ params }: PageProps<'/items/[code]'>): 
 2. **Should the repo ship with indexing on?**
    - **RESOLVED:** off. `ALLOW_INDEXING` unset means false; contact values, photos and the brand order are still PENDING-OWNER, so the owner sets the repository variable at launch (documented in the onboarding doc and PR, Plan 05).
 3. **Fourth category tile.**
-   - **RESOLVED:** `shirt` (Shirts), marked PENDING-OWNER in `src/shop/config.ts` (Plan 03); the owner can swap it with one config entry.
+   - **RESOLVED (owner, CONTEXT D-22):** `shirt` (Shirts), in the order Jackets, Knitwear, Denim, Shirts, set in `src/shop/config.ts` (Plan 03); still one config entry to change.
 4. **OG image weight.**
    - **RESOLVED:** item pages use the cover `url` as `og:image` (Plan 01); switch to `thumbUrl` if real photos prove heavy. Verified in the end-of-phase UAT link-preview check (Plan 05).
 

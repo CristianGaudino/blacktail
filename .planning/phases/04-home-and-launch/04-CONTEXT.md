@@ -23,6 +23,7 @@ Checkout, accounts, a working wishlist, a newsletter, spotlighted items and sold
 
 ### Category tiles (HOME-01, HOME-02, TMPL-01)
 - **D-05:** The tile list is in shop config: up to 4 entries, each with a type code, a label and an image filename. A tile is **hidden when `/filters` shows no in-stock items of that type**, so it never links to an empty page. If no tile remains, the whole section is hidden. (This is the "category tiles" part of TMPL-01 that Phase 2 deferred to here.)
+- **D-22:** (Owner, 2026-11-03, after the second plan check.) The fourth category tile is **Shirts (`shirt`)**, in the order Jackets, Knitwear, Denim, Shirts. The mockup's fourth tile, Accessories, has no type code, so it cannot link to a filtered page. The tile list stays one config entry to change.
 
 ### Brand strip (BRAND-02, HOME-01)
 - **D-06:** The strip is **one row of logos that scrolls horizontally** (scroll-snap) when it does not fit, with a "View all" link to `/brands`. A brand without an SVG shows its name in Bodoni Moda. Logos are matched by the Phase 3 slug rule.
