@@ -2,7 +2,7 @@ import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { BRAND_LOGOS } from '@/shop/brand-logos';
-import { brandIndex, brandSlug } from './brands';
+import { brandIndex, brandSlug, linkableSlug } from './brands';
 
 describe('brandSlug', () => {
     it.each([
@@ -45,4 +45,12 @@ describe('BRAND_LOGOS', () => {
         expect([...BRAND_LOGOS].sort()).toEqual(files);
         for (const slug of BRAND_LOGOS) expect(brandSlug(slug)).toBe(slug);
     });
+});
+
+describe('linkableSlug', () => {
+    const names = ["Arc'teryx", 'Arcteryx', 'Acme', '日本'];
+    it('links the name that owns the slug', () => expect(linkableSlug("Arc'teryx", names)).toBe('arcteryx'));
+    it('gives the name that lost a collision no link', () => expect(linkableSlug('Arcteryx', names)).toBe(''));
+    it('gives a name with no slug no link', () => expect(linkableSlug('日本', names)).toBe(''));
+    it('gives a brand missing from the list no link', () => expect(linkableSlug('Nike', names)).toBe(''));
 });

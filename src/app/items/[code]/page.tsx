@@ -7,7 +7,7 @@ import { ItemGallery } from '@/components/item/ItemGallery';
 import { ItemJsonLd } from '@/components/item/ItemJsonLd';
 import { MoreFromBrand } from '@/components/item/MoreFromBrand';
 import { WhereToBuy } from '@/components/item/WhereToBuy';
-import { brandIndex, brandSlug } from '@/lib/brands';
+import { brandSlug, linkableSlug } from '@/lib/brands';
 import { storeEnv } from '@/lib/env';
 import { getFilters, getItem, getItemsPage } from '@/lib/howmany/client';
 import { formatMoney } from '@/lib/money';
@@ -27,13 +27,14 @@ export async function generateMetadata({ params }: PageProps<'/items/[code]'>): 
 export default async function ItemPage({ params }: PageProps<'/items/[code]'>) {
     // Render on each request over the tagged fetch cache: no generateStaticParams, nothing fetched at build (D-11)
     await connection();
+    // Started now: the Header asks for the same list, so this is one cached read that overlaps the item read
+    const filtersRead = getFilters().catch(() => null);
     const item = await getItem((await params).code);
     // Thrown from the page body, before any output, this is a real 404 (from generateMetadata it would be a 200)
     if (!item) notFound();
-    // Two names can share a slug (Arc'teryx, Arcteryx): only link to a brand page that shows this brand. A failed /filters read keeps the link.
-    const own = item.brand ? brandSlug(item.brand) : '';
-    const filters = own ? await getFilters().catch(() => null) : null;
-    const slug = !filters || brandIndex(filters.brand.map(f => f.value)).find(b => b.slug === own)?.name === item.brand ? own : '';
+    // Two names can share a slug (Arc'teryx, Arcteryx): link only to a brand page that shows this brand. A failed /filters read keeps the link.
+    const filters = await filtersRead;
+    const slug = !item.brand ? '' : filters ? linkableSlug(item.brand, filters.brand.map(f => f.value)) : brandSlug(item.brand);
     // Exactly the query of page 1 of the brand page (never a limit of our own), so this shares its cache entry and adds no API call.
     // A failed read hides the row instead of showing the error screen.
     const more = item.brand
