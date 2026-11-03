@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
  (completed 2026-10-26)
 - [x] **Phase 2: Branded Catalogue** - Blacktail Archive look, header and footer, and the full All Items browse, filter, search, sort and paging (completed 2026-11-02)
 - [x] **Phase 3: Item and Brand Pages** - Item page with gallery, details and where to buy, real 404s, JSON-LD, and Brands pages with logos (completed 2026-11-03)
-- [ ] **Phase 4: Home and Launch** - Mockup home page, Just Dropped, About and Contact, site-wide SEO, and the second-shop onboarding doc
+- [x] **Phase 4: Home and Launch** - Mockup home page, Just Dropped, About and Contact, site-wide SEO, and the second-shop onboarding doc (completed 2026-11-03)
 
 ## Phase Details
 
@@ -122,7 +122,7 @@ Plans:
   4. Every page has its own title, description and Open Graph tags (item links preview with the item's name and cover photo); a sitemap lists all pages and in-stock items and refreshes with the store tag; robots blocks indexing outside production
   5. Following the onboarding doc, someone can deploy the template for another shop (env, Cloudflare R2, D1 and Worker setup, assets) without editing any component
 
-**Plans:** 5/5 plans executed
+**Plans:** 5/5 plans complete
 
 Plans:
 **Wave 1**
@@ -152,4 +152,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Live Stock Skeleton | 4/4 | Complete    | 2026-10-26 |
 | 2. Branded Catalogue | 10/10 | Complete    | 2026-11-02 |
 | 3. Item and Brand Pages | 4/4 | Complete    | 2026-11-03 |
-| 4. Home and Launch | 5/5 | In Progress | - |
+| 4. Home and Launch | 5/5 | Complete    | 2026-11-03 |

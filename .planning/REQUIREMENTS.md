@@ -43,7 +43,7 @@
 - [x] **CAT-08**: On mobile, filters open in a drawer with an Apply button
 - [x] **CAT-09**: Chosen filters show as removable chips with the result count, and an empty result shows a helpful message with a way to clear filters
 - [x] **CAT-10**: Recently added items show a "New" badge
-- [ ] **CAT-11**: The visitor can see a Just Dropped page of the newest items
+- [x] **CAT-11**: The visitor can see a Just Dropped page of the newest items
 
 ### Item Page
 
@@ -57,32 +57,32 @@
 ### Brands
 
 - [x] **BRAND-01**: Brand logos come from `public/brands/<slug>.svg` matched by slug, with the brand name as text when there is no logo
-- [ ] **BRAND-02**: The brand strip is ordered in stock first, then sold before (empty until How many provides it), then the default order from config
+- [x] **BRAND-02**: The brand strip is ordered in stock first, then sold before (empty until How many provides it), then the default order from config
 - [x] **BRAND-03**: The visitor can see a Brands page of the brands in stock
 - [x] **BRAND-04**: The visitor can open a brand page (`/brands/[slug]`) that lists that brand's in-stock items
 
 ### Home
 
-- [ ] **HOME-01**: The home page matches the Just Dropped mockup: hero, brand strip, Just Dropped carousel, two promo banners, shop by category tiles, the "a more conscious way to shop" story band, and the footer
-- [ ] **HOME-02**: Home sections with no items to show are hidden rather than shown empty
-- [ ] **HOME-03**: Lifestyle images (hero, banners, category tiles, story band) come from `public/images/` slots, with placeholders until the real photos are supplied
+- [x] **HOME-01**: The home page matches the Just Dropped mockup: hero, brand strip, Just Dropped carousel, two promo banners, shop by category tiles, the "a more conscious way to shop" story band, and the footer
+- [x] **HOME-02**: Home sections with no items to show are hidden rather than shown empty
+- [x] **HOME-03**: Lifestyle images (hero, banners, category tiles, story band) come from `public/images/` slots, with placeholders until the real photos are supplied
 
 ### Pages
 
-- [ ] **PAGE-01**: The visitor can read an About / Our story page
-- [ ] **PAGE-02**: The visitor can read a Contact page with the shop's contact details and shop links (no form)
+- [x] **PAGE-01**: The visitor can read an About / Our story page
+- [x] **PAGE-02**: The visitor can read a Contact page with the shop's contact details and shop links (no form)
 
 ### SEO
 
-- [ ] **SEO-01**: Every page has a title, description and Open Graph tags, and item pages use the item's name and cover photo
+- [x] **SEO-01**: Every page has a title, description and Open Graph tags, and item pages use the item's name and cover photo
 - [x] **SEO-02**: Item pages include JSON-LD `Product` data (name, image, price, currency, `InStock`, `UsedCondition`)
-- [ ] **SEO-03**: There is a sitemap of all pages and in-stock items, refreshed with the store tag, and a robots file that blocks indexing outside production
+- [x] **SEO-03**: There is a sitemap of all pages and in-stock items, refreshed with the store tag, and a robots file that blocks indexing outside production
 - [x] **SEO-04**: Filtered, searched or sorted listings are `noindex,follow`, with a canonical URL built from `SITE_URL`
 
 ### Template
 
 - [x] **TMPL-01**: Everything shop-specific (name, copy, contact, platform links, theme tokens, fonts, images, default brand order, category tiles) lives in one per-shop folder and config, and a test fails if shop-specific strings appear elsewhere *(Traceability note: Phase 2 delivers TMPL-01 except the default brand order and category tiles, which land in Phase 4 with BRAND-02, HOME-01 and HOME-03.)*
-- [ ] **TMPL-02**: A short onboarding doc explains how to deploy the template for another shop (env, Cloudflare R2, D1 and Worker setup, and assets)
+- [x] **TMPL-02**: A short onboarding doc explains how to deploy the template for another shop (env, Cloudflare R2, D1 and Worker setup, and assets)
 
 ## v2 Requirements
 
@@ -148,7 +148,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CAT-08 | Phase 2 | Complete |
 | CAT-09 | Phase 2 | Complete |
 | CAT-10 | Phase 2 | Complete |
-| CAT-11 | Phase 4 | Pending |
+| CAT-11 | Phase 4 | Complete |
 | ITEM-01 | Phase 3 | Complete |
 | ITEM-02 | Phase 3 | Complete |
 | ITEM-03 | Phase 3 | Complete |
@@ -156,20 +156,20 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ITEM-05 | Phase 3 | Complete |
 | ITEM-06 | Phase 3 | Complete |
 | BRAND-01 | Phase 3 | Complete |
-| BRAND-02 | Phase 4 | Pending |
+| BRAND-02 | Phase 4 | Complete |
 | BRAND-03 | Phase 3 | Complete |
 | BRAND-04 | Phase 3 | Complete |
-| HOME-01 | Phase 4 | Pending |
-| HOME-02 | Phase 4 | Pending |
-| HOME-03 | Phase 4 | Pending |
-| PAGE-01 | Phase 4 | Pending |
-| PAGE-02 | Phase 4 | Pending |
-| SEO-01 | Phase 4 | Pending |
+| HOME-01 | Phase 4 | Complete |
+| HOME-02 | Phase 4 | Complete |
+| HOME-03 | Phase 4 | Complete |
+| PAGE-01 | Phase 4 | Complete |
+| PAGE-02 | Phase 4 | Complete |
+| SEO-01 | Phase 4 | Complete |
 | SEO-02 | Phase 3 | Complete |
-| SEO-03 | Phase 4 | Pending |
+| SEO-03 | Phase 4 | Complete |
 | SEO-04 | Phase 2 | Complete |
 | TMPL-01 | Phase 2 | Complete |
-| TMPL-02 | Phase 4 | Pending |
+| TMPL-02 | Phase 4 | Complete |
 
 **Coverage:**
 - v1 requirements: 49 total
