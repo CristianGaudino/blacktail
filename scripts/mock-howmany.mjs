@@ -45,7 +45,14 @@ const allItems = () => Array.from({ length: 30 }, (_, n) => {
         details:      {},
         priceCents:   1000 + i * 250,
         currency:     'EUR',
-        photos:       i === 29 ? [] : [{ url: `https://example.com/photo-${i}.jpg`, thumbUrl: `https://example.com/thumb-${i}.jpg`, width: 1500, height: 2000 }],
+        photos:       i === 29 ? [] : [
+            { url: `https://example.com/photo-${i}.jpg`, thumbUrl: `https://example.com/thumb-${i}.jpg`, width: 1500, height: 2000 },
+            // MOCK-0001 has three photos (the second landscape) to exercise the gallery
+            ...(i === 1 ? [
+                { url: 'https://example.com/photo-1b.jpg', thumbUrl: 'https://example.com/thumb-1b.jpg', width: 2000, height: 1500 },
+                { url: 'https://example.com/photo-1c.jpg', thumbUrl: 'https://example.com/thumb-1c.jpg', width: 1500, height: 2000 },
+            ] : []),
+        ],
         publishedAt:  new Date(startedAt - n * DAY).toISOString(),
         futureField:  'ignored',
     };

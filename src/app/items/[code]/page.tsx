@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
+import { ItemGallery } from '@/components/item/ItemGallery';
 import { ItemDetails } from '@/components/item/ItemDetails';
 import { ItemJsonLd } from '@/components/item/ItemJsonLd';
 import { WhereToBuy } from '@/components/item/WhereToBuy';
@@ -28,12 +29,17 @@ export default async function ItemPage({ params }: PageProps<'/items/[code]'>) {
     if (!item) notFound();
     return (
         <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-12">
-            <div className="flex flex-col">
-                {item.brand && <p className="mb-2 text-label uppercase">{item.brand}</p>}
-                <h1 className="font-heading text-heading leading-[1.2] break-words lg:text-display">{item.title}</h1>
-                <p className="mt-4 font-heading text-heading tabular-nums">{formatMoney(item.priceCents, item.currency)}</p>
-                <div className="mt-6"><WhereToBuy /></div>
-                <div className="mt-8"><ItemDetails item={item} /></div>
+            <div className="lg:grid lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
+                <div className="-mx-4 sm:-mx-6 lg:mx-0">
+                    <ItemGallery photos={item.photos} name={nameOf(item)} />
+                </div>
+                <div className="mt-6 flex flex-col lg:mt-0">
+                    {item.brand && <p className="mb-2 text-label uppercase">{item.brand}</p>}
+                    <h1 className="font-heading text-heading leading-[1.2] break-words lg:text-display">{item.title}</h1>
+                    <p className="mt-4 font-heading text-heading tabular-nums">{formatMoney(item.priceCents, item.currency)}</p>
+                    <div className="mt-6"><WhereToBuy /></div>
+                    <div className="mt-8"><ItemDetails item={item} /></div>
+                </div>
             </div>
             <ItemJsonLd item={item} url={itemUrl(item.code)} />
         </main>

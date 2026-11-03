@@ -132,6 +132,12 @@ export const COPY = {
         listedOn:       (names: string) => `This piece is listed on ${names}`,
         whereToBuyHelp: 'Find this piece in our shop on each platform.',
         visitOn:        (name: string) => `Visit us on ${name}`,
+        photos:         'Photos',
+        photoOf:        (n: number, total: number) => `Photo ${n} of ${total}`,
+        openPhoto:      (n: number, total: number) => `Open photo ${n} of ${total} full size`,
+        showPhoto:      (n: number) => `Show photo ${n}`,
+        photoAlt:       (name: string, n: number) => (n === 1 ? name : `${name}, photo ${n}`),
+        position:       (n: number, total: number) => `${n} / ${total}`,
     },
     notFound: {
         title: 'Page not found',
