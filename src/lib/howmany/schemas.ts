@@ -35,6 +35,8 @@ export const itemSchema = z.object({
     currency:     z.string(),
     photos:       z.array(photoSchema),
     publishedAt:  z.string(),
+    // "inStock" or "sold" on /items/{code}; a plain string, like every API code. A reader without it (older API) sees an in-stock piece.
+    status:       z.string().optional(),
 });
 
 export const itemsPageSchema = z.object({

@@ -49,14 +49,16 @@ export const getFilters = cache(async (): Promise<Filters> => (await howmanyFetc
 const ITEM_CODE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
 
 /**
- * One /items/{code} read. null = the API does not show it (sold, hidden, unknown, or a badly shaped code);
+ * One /items/{code} read. null = nothing to show: the API says it is sold (status "sold", a 200 so a refresh replaces the cached copy),
+ * or answers 404 (hidden, unknown), or the code is badly shaped;
  * every other failure still throws, so a 429 or 500 reaches error.tsx and is never shown as a not-found.
  * React cache() dedupes generateMetadata and the page (the AbortSignal opts out of Next's memoization).
  */
 export const getItem = cache(async (code: string): Promise<Item | null> => {
     if (!ITEM_CODE.test(code)) return null;
     try {
-        return (await howmanyFetch(`/items/${encodeURIComponent(code)}`, itemSchema)).data;
+        const item = (await howmanyFetch(`/items/${encodeURIComponent(code)}`, itemSchema)).data;
+        return item.status === 'sold' ? null : item;
     } catch (error) {
         if (error instanceof HowManyError && error.status === 404) return null;
         throw error;
