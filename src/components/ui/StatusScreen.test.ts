@@ -2,6 +2,7 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import RootError from '@/app/error';
+import NotFound from '@/app/not-found';
 import { COPY } from '@/lib/copy';
 import { StatusScreen } from './StatusScreen';
 
@@ -22,6 +23,13 @@ describe('StatusScreen', () => {
         expect(screen()).not.toContain('text-olive');
     });
 
+    it('renders a main by default, and a div with the same h1 when bare', () => {
+        expect(screen()).toContain('<main');
+        const bare = renderToStaticMarkup(createElement(StatusScreen, { title: 'T', message: 'M', bare: true }));
+        expect(bare).not.toContain('<main');
+        expect(bare).toContain('>T</h1>');
+    });
+
     it('lays children out in a flex row with a gap', () => {
         expect(screen({ children: createElement('i', null, 'x') })).toMatch(/<div class="[^"]*flex[^"]*gap-4[^"]*"><i>x<\/i><\/div>/);
     });
@@ -38,5 +46,16 @@ describe('error page', () => {
 
     it('shows no reference without a digest', () => {
         expect(errorPage()).not.toContain('Reference:');
+    });
+});
+
+describe('not-found page', () => {
+    const html = renderToStaticMarkup(createElement(NotFound));
+
+    it('shows the words, a Shop all items link and a Go home link', () => {
+        expect(html).toContain(COPY.notFound.title);
+        expect(html).toContain(COPY.notFound.body);
+        expect(html).toMatch(new RegExp(`<a [^>]*href="/shop"[^>]*>${COPY.common.shopAll}</a>`));
+        expect(html).toMatch(new RegExp(`<a [^>]*href="/"[^>]*>${COPY.common.goHome}</a>`));
     });
 });

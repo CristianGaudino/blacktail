@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { cm, formatMoney } from './money';
+import { cm, formatMoney, inches } from './money';
 
 describe('formatMoney', () => {
     it('shows no cents for whole amounts', () => {
@@ -24,5 +24,12 @@ describe('cm', () => {
     it('turns millimetres into centimetres, dropping an empty decimal', () => {
         expect(cm(300)).toBe('30');
         expect(cm(305)).toBe('30.5');
+    });
+});
+
+describe('inches', () => {
+    it('turns millimetres into whole inches', () => {
+        expect(inches(560)).toBe('22');
+        expect(inches(510)).toBe('20');
     });
 });

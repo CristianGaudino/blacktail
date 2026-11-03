@@ -2,11 +2,13 @@
 // Usage: node scripts/mock-howmany.mjs [--port 4010] [--host 127.0.0.1]
 //   GET <anything>/items    -> 30 items, filtered, sorted and paged by the query (brand, ...; page, limit)
 //   GET <anything>/filters  -> the facets and ranges of those 30 items
+//   GET <anything>/items/<code> -> that item (200), or 404 no-store when it does not exist or is gone
 //   GET <anything else>     -> the store
-//   GET /__count            -> {"store":n,"items":n} of non-control GETs so far (/filters counts as store)
-//   GET /__last             -> the raw query string (no "?") of the last /items request
-//   POST /__set             -> JSON { title?: string, status?: number }: change the first item's title,
-//                              and/or make every non-control GET answer that status with an error body
+//   GET /__count            -> {"store":n,"items":n} of non-control GETs so far (/filters counts as store; a single item counts as items)
+//   GET /__last             -> the raw query string (no "?") of the last /items list request
+//   POST /__set             -> JSON { title?: string, status?: number, gone?: string[] }: change the first item's title,
+//                              make every non-control GET answer that status with an error body, and/or
+//                              replace the set of sold codes (they leave the list, /filters and the single read)
 import { createServer } from 'node:http';
 
 const arg = (name, fallback) => {
@@ -21,9 +23,11 @@ const startedAt = Date.now();
 let title = 'Mock oxford shirt';
 let failStatus = 0;
 let last = '';
+let gone = [];
 
 const DAY = 24 * 60 * 60 * 1000;
-const items = () => Array.from({ length: 30 }, (_, n) => {
+const items = () => allItems().filter(x => !gone.includes(x.code));
+const allItems = () => Array.from({ length: 30 }, (_, n) => {
     const i = n + 1;
     return {
         code:         `MOCK-${String(i).padStart(4, '0')}`,
@@ -37,7 +41,8 @@ const items = () => Array.from({ length: 30 }, (_, n) => {
         era:          ['1990s', '2000s'][n % 2],
         department:   i % 2 ? 'mens' : 'womens',
         measurements: { pitToPitMm: 500 + (i % 7) * 10, lengthMm: null },
-        details:      { material: ['Cotton', 'Wool'][n % 2] },
+        material:     ['Cotton', 'Wool'][n % 2],
+        details:      {},
         priceCents:   1000 + i * 250,
         currency:     'EUR',
         photos:       i === 29 ? [] : [{ url: `https://example.com/photo-${i}.jpg`, thumbUrl: `https://example.com/thumb-${i}.jpg`, width: 1500, height: 2000 }],
@@ -68,7 +73,7 @@ function filters() {
         size:       facet(all.map(x => x.size)),
         colour:     facet(all.map(x => x.colour)),
         era:        facet(all.map(x => x.era)),
-        material:   facet(all.map(x => x.details.material)),
+        material:   facet(all.map(x => x.material)),
         category:   facet(all.map(x => x.category)),
         type:       facet(all.map(x => x.type)),
         condition:  facet(all.map(x => x.condition)),
@@ -99,7 +104,7 @@ function listItems(search) {
     const matched = items().filter(x => listMatch(search, 'brand', x.brand)
         && listMatch(search, 'type', x.type) && listMatch(search, 'size', x.size) && listMatch(search, 'colour', x.colour)
         && listMatch(search, 'era', x.era) && listMatch(search, 'condition', x.condition) && listMatch(search, 'department', x.department)
-        && listMatch(search, 'category', x.category) && listMatch(search, 'material', x.details.material)
+        && listMatch(search, 'category', x.category) && listMatch(search, 'material', x.material)
         && rangeMatch(search, 'minPrice', 'maxPrice', x.priceCents)
         && rangeMatch(search, 'minPitToPitMm', 'maxPitToPitMm', x.measurements.pitToPitMm)
         && rangeMatch(search, 'minLengthMm', 'maxLengthMm', x.measurements.lengthMm)
@@ -130,6 +135,7 @@ createServer((req, res) => {
                 const set = JSON.parse(raw);
                 if (typeof set.title === 'string') title = set.title;
                 if (typeof set.status === 'number') failStatus = set.status === 200 ? 0 : set.status;
+                if (Array.isArray(set.gone)) gone = set.gone.filter(code => typeof code === 'string');
                 send(res, 200, { ok: true });
             } catch {
                 send(res, 400, { error: 'Bad body' });
@@ -140,12 +146,17 @@ createServer((req, res) => {
     if (req.method !== 'GET') return send(res, 405, { error: 'Method not allowed' });
 
     const isItems = pathname.endsWith('/items');
-    counts[isItems ? 'items' : 'store']++;
+    const single = pathname.match(/\/items\/([^/]+)$/);
+    counts[isItems || single ? 'items' : 'store']++;
     if (isItems) last = search.replace(/^\?/, '');
     if (failStatus) return send(res, failStatus, { error: 'Mock failure' }, { 'cache-control': 'no-store' });
 
     const cache = { 'cache-control': 'public, s-maxage=60, stale-while-revalidate=600' };
     if (isItems) return send(res, 200, listItems(searchParams), cache);
+    if (single) {
+        const found = items().find(x => x.code === decodeURIComponent(single[1]));
+        return found ? send(res, 200, found, cache) : send(res, 404, { error: 'Not found' }, { 'cache-control': 'no-store' });
+    }
     if (pathname.endsWith('/filters')) return send(res, 200, filters(), cache);
     send(res, 200, { slug: pathname.split('/').filter(Boolean).pop(), name: 'Mock Store', currency: 'EUR', futureField: 'ignored' }, cache);
 }).listen(port, host, () => console.log(`Mock How many API on http://${host}:${port}`));

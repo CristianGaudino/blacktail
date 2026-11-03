@@ -4,6 +4,7 @@ export const COPY = {
     common: {
         tryAgain:       'Try again',
         goHome:         'Go home',
+        shopAll:        'Shop all items',
         close:          'Close',
         opensInNewTab:  '(opens in a new tab)',
     },
@@ -124,8 +125,25 @@ export const COPY = {
     stock: {
         empty: 'Nothing is in stock right now. Please check back soon.',
     },
+    item: {
+        details:        'Details',
+        measurements:   'Measurements',
+        measurement:    (cm: string, inches: string) => `${cm} cm / ${inches} in`,
+        listedOn:       (names: string) => `This piece is listed on ${names}`,
+        whereToBuyHelp: 'Find this piece in our shop on each platform.',
+        visitOn:        (name: string) => `Visit us on ${name}`,
+    },
+    notFound: {
+        title: 'Page not found',
+        body:  'We could not find that page. It may have moved, or the link may be wrong.',
+    },
+    gone: {
+        title:  'This piece has found a new home',
+        body:   'It has sold or is no longer available. Here are our newest pieces.',
+        newest: 'Newest drops',
+    },
     status: {
-        errorTitle:   'Something went wrong',
+        errorTitle:  'Something went wrong',
         errorMessage: 'The shop could not be loaded. Please try again in a moment.',
         errorId:      (digest: string) => `Reference: ${digest}`,
     },

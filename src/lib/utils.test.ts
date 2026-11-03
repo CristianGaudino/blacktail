@@ -16,14 +16,15 @@ describe('isNavActive', () => {
 });
 
 describe('isBuilt', () => {
-    it('is true for the home and shop pages, with or without a query', () => {
+    it('is true for the home, shop and item pages, with or without a query', () => {
         expect(isBuilt('/')).toBe(true);
         expect(isBuilt('/shop')).toBe(true);
         expect(isBuilt('/shop?brand=Acme')).toBe(true);
+        expect(isBuilt(ROUTES.item('BT-1'))).toBe(true);
     });
 
     it('is false for pages that do not exist yet', () => {
-        for (const href of [ROUTES.item('BT-1'), ROUTES.brands, ROUTES.justDropped, ROUTES.about, ROUTES.contact]) expect(isBuilt(href)).toBe(false);
+        for (const href of [ROUTES.brands,ROUTES.justDropped, ROUTES.about, ROUTES.contact]) expect(isBuilt(href)).toBe(false);
     });
 });
 

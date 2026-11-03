@@ -3,8 +3,6 @@ import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { COPY } from '@/lib/copy';
 import type { Item } from '@/lib/definitions';
-import { ROUTES } from '@/lib/routes';
-import { isBuilt } from '@/lib/utils';
 import { ItemGrid } from './ItemGrid';
 
 const NOW = Date.parse('2026-06-10T12:00:00Z');
@@ -32,9 +30,9 @@ describe('ItemGrid', () => {
         expect(html).not.toContain(COPY.stock.empty);
     });
 
-    it('links a card to its item once the page is built, and never prints "null" for missing fields', () => {
+    it('links a card to its item, and never prints "null" for missing fields', () => {
         const html = render([{ ...item, brand: null, size: null, colour: null, era: null }]);
-        expect(html.includes('href="/items/BT-0001"')).toBe(isBuilt(ROUTES.item('BT-0001')));
+        expect(html).toContain('href="/items/BT-0001"');
         expect(html).toContain('>Wool coat<');
         expect(html).not.toContain('null');
     });
@@ -66,6 +64,13 @@ describe('ItemGrid', () => {
         expect(imgs).toHaveLength(5);
         expect(imgs.filter(tag => tag.includes('loading="eager"') && /fetchpriority="high"/i.test(tag))).toHaveLength(4);
         expect(imgs.filter(tag => tag.includes('loading="lazy"'))).toHaveLength(1);
+    });
+
+    it('a row grid has four columns from 1024px and no eager image', () => {
+        const html = renderToStaticMarkup(createElement(ItemGrid, { items: many(5), asOf: null, now: NOW, row: true }));
+        expect(html).toContain('lg:grid-cols-4');
+        expect(html).not.toContain('loading="eager"');
+        expect(render(many(2))).not.toContain('lg:grid-cols-4');
     });
 
     it('keeps the frame and drops the img when an item has no photo', () => {

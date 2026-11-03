@@ -12,6 +12,8 @@ export type ButtonProps = ButtonStyleProps & React.ButtonHTMLAttributes<HTMLButt
 export type ButtonLinkProps = ButtonStyleProps & {
     href:       string;
     className?: string;
+    /** A link to another site: a plain anchor that opens a new tab (next/link is for in-app routes) */
+    external?:  boolean;
     children:   React.ReactNode;
 };
 
@@ -40,8 +42,10 @@ export function Button({ variant, fullWidth, type = 'button', className, ...prop
     return <button type={type} className={buttonClassName({ variant, fullWidth }, className)} {...props} />;
 }
 
-export function ButtonLink({ href, variant, fullWidth, className, children }: ButtonLinkProps) {
-    return <Link href={href} className={buttonClassName({ variant, fullWidth }, className)}>{children}</Link>;
+export function ButtonLink({ href, variant, fullWidth, className, external, children }: ButtonLinkProps) {
+    const classes = buttonClassName({ variant, fullWidth }, className);
+    if (external) return <a href={href} target="_blank" rel="noopener noreferrer" className={classes}>{children}</a>;
+    return <Link href={href} className={classes}>{children}</Link>;
 }
 
 export function IconButton({ icon: Icon, label, className, type = 'button', ...props }: IconButtonProps) {
