@@ -69,6 +69,14 @@ describe('how many client', () => {
         expect(fetchMock.mock.calls[0][0]).toBe(`${base}/items?brand=A&brand=B&limit=24&type=knit`);
     });
 
+    it('getItemsPage sends a given limit, with or without other params', async () => {
+        fetchMock.mockImplementation(async () => reply(page([item])));
+        await getItemsPage('', 100);
+        expect(fetchMock.mock.calls[0][0]).toBe(`${base}/items?limit=100`);
+        await getItemsPage('page=2', 100);
+        expect(fetchMock.mock.calls[1][0]).toBe(`${base}/items?limit=100&page=2`);
+    });
+
     it('getFilters fetches /filters, defaults missing facets to [] and ranges to null, and strips unknown keys', async () => {
         fetchMock.mockResolvedValue(reply(filtersBody));
         const filters = await getFilters();
