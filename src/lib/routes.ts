@@ -5,6 +5,7 @@ export const ROUTES = {
     shop:        '/shop',
     item:        (code: string) => `/items/${encodeURIComponent(code)}`,
     brands:      '/brands',
+    brand:       (slug: string) => `/brands/${encodeURIComponent(slug)}`,
     justDropped: '/just-dropped',
     about:       '/about',
     contact:     '/contact',

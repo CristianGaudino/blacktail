@@ -142,6 +142,9 @@ export const COPY = {
         previousPhoto:  'Previous photo',
         nextPhoto:      'Next photo',
         closeViewer:    'Close photo viewer',
+        moreFrom:       (brand: string) => `More from ${brand}`,
+        viewAll:        'View all',
+        viewAllLabel:   (brand: string) => `View all ${brand} pieces`,
     },
     notFound: {
         title: 'Page not found',
