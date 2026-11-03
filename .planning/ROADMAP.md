@@ -105,7 +105,21 @@ Plans:
   4. Item pages carry JSON-LD `Product` data (name, image, price, currency, `InStock`, `UsedCondition`) that passes Google's Rich Results Test
   5. A shopper can open a Brands page of in-stock brands shown as their logos (or the brand name as text when there is no logo), and open `/brands/[slug]` to see that brand's in-stock items
 
-**Plans**: TBD
+**Plans:** 4 plans
+
+Plans:
+**Wave 1**
+- [ ] 03-01-PLAN.md — Tracer: item page over getItem with a real 404 and newest drops for a gone piece (mock gone toggle, prove-freshness item checks), then details, measurements, where to buy, JSON-LD and the generic 404
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 03-02-PLAN.md — Gallery (scroll-snap track, thumbnails, dots), lightbox, brand link and More from this brand
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 03-03-PLAN.md — Tracer: /brands/[slug] as the /shop catalogue locked to one brand (basePath, CataloguePage), then the Brands tile page, the logo manifest and the header repoint
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [ ] 03-04-PLAN.md — CI worker job proves item and brand pages and the just-sold 404 on workerd, live smoke, phase PR
+
 **UI hint**: yes
 
 ### Phase 4: Home and Launch
@@ -133,5 +147,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Live Stock Skeleton | 4/4 | Complete    | 2026-10-26 |
 | 2. Branded Catalogue | 10/10 | In Progress | - |
-| 3. Item and Brand Pages | 0/TBD | Not started | - |
+| 3. Item and Brand Pages | 0/4 | Planned | - |
 | 4. Home and Launch | 0/TBD | Not started | - |
