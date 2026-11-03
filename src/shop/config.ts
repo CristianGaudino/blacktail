@@ -12,6 +12,21 @@ export const SHOP = {
     bannerImage: null as string | null,
     contact: {
         email: 'pending-owner@blacktailarchive.example', // PENDING-OWNER (D-05): real value from the owner; only this line changes
+        heading: 'Get in touch',
+        intro: 'Questions about a piece, a size or a measurement? Send us an email and we will get back to you.', // PENDING-OWNER (D-14): the owner's own words; only this line changes
+        shopWith: 'Shop with us',
+        follow: 'Follow us',
+    },
+    /** The About page (D-14). PENDING-OWNER: placeholder story; the owner replaces the strings. */
+    about: {
+        title: 'About Blacktail Archive',
+        lead: 'A curated collection of pre-loved clothing from iconic brands.',
+        body: 'Blacktail Archive was created for those who appreciate timeless style, quality craftsmanship and a more conscious way of shopping.',
+        eyebrow: 'Pre-loved',
+        heading: 'Good clothes. A brighter tomorrow.',
+        paragraphs: [
+            'We believe in giving great clothing a second life. By choosing pre-loved, you are not only investing in timeless pieces, but also supporting a more sustainable future.',
+        ] as readonly string[],
     },
     platforms: [
         { name: 'Vinted', url: 'https://www.vinted.ie/member/pending-owner' }, // PENDING-OWNER (D-05): real value from the owner; only this line changes

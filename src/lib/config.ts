@@ -62,7 +62,7 @@ export const CATALOGUE = {
 
 export const SORTS = ['newest', 'price_asc', 'price_desc'] as const;
 /** The API default, so it is left out of URLs and API calls */
-export const DEFAULT_SORT = 'newest';
+export const DEFAULT_SORT = 'newest' as const;
 export const SEARCH_PARAMS = { q: 'q', sort: 'sort', page: 'page' } as const;
 
 /** The How many public API contract */
