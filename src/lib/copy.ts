@@ -151,6 +151,10 @@ export const COPY = {
         size:      (size: string) => `Size ${size}`,
         condition: (condition: string) => `Condition ${condition}`,
     },
+    home: {
+        previous: 'Previous items',
+        next:     'Next items',
+    },
     notFound: {
         title: 'Page not found',
         body:  'We could not find that page. It may have moved, or the link may be wrong.',

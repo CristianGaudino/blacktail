@@ -56,7 +56,7 @@ export function IconButton({ icon: Icon, label, className, type = 'button', ...p
             type={type}
             aria-label={label}
             title={label}
-            className={cn('inline-flex size-11 shrink-0 items-center justify-center text-forest', className)}
+            className={cn('inline-flex size-11 shrink-0 items-center justify-center text-forest disabled:cursor-not-allowed disabled:opacity-50', className)}
             {...props}
         >
             <Icon size={20} aria-hidden />
