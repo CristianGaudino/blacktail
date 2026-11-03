@@ -8,7 +8,7 @@ import type { CatalogueQuery, Filters } from '@/lib/definitions';
 import { FilterPanel } from './FilterPanel';
 
 /** The phone filter button and its left drawer. The panel is mounted only while open, so closing discards the draft */
-export function FilterDrawer({ filters, query, currency }: { filters: Filters; query: CatalogueQuery; currency: string }) {
+export function FilterDrawer({ filters, query, currency, basePath }: { filters: Filters; query: CatalogueQuery; currency: string; basePath?: string }) {
     const [open, setOpen] = useState(false);
     const close = () => setOpen(false);
 
@@ -34,6 +34,7 @@ export function FilterDrawer({ filters, query, currency }: { filters: Filters; q
                     query={query}
                     currency={currency}
                     mode="apply"
+                    basePath={basePath}
                     onApplied={() => {
                         close();
                         // After the dialog has closed and returned focus to the Filter button

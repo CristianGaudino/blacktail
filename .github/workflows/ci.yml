@@ -93,6 +93,26 @@ jobs:
       # The mock's second cheapest piece costs 1250 cents: workerd's ICU must print it as en-IE
       - name: Money is formatted as en-IE on the Worker
         run: curl -s --max-time 30 'http://127.0.0.1:8787/shop?sort=price_asc' | grep -q '€12.50'
+      # The just-sold 404 right after the webhook is proven by the prove-freshness item-gone check in the runs around this step
+      - name: Item and brand pages on the Worker
+        run: |
+          B=http://127.0.0.1:8787
+          code() { curl -s -o /dev/null -w '%{http_code}' --max-time 30 "$B$1"; }
+          body() { curl -s --max-time 30 "$B$1"; }
+          item=$(body /items/MOCK-0001)
+          for s in 'application/ld+json' 'https://schema.org/InStock' 'More from Mock Brand'; do printf '%s' "$item" | grep -qF "$s" || { echo "item page lacks: $s"; exit 1; }; done
+          test "$(code /items/MOCK-0001)" = 200 || { echo 'item page is not 200'; exit 1; }
+          test "$(code /items/NOPE-0000)" = 404 || { echo 'unknown item is not 404'; exit 1; }
+          test "$(code /no-such-page)" = 404 || { echo 'unknown page is not 404'; exit 1; }
+          test "$(code /brands)" = 200 || { echo '/brands is not 200'; exit 1; }
+          body /brands | grep -qF 'href="/brands/mock-brand"' || { echo '/brands has no mock-brand tile'; exit 1; }
+          test "$(code /brands/mock-brand)" = 200 || { echo 'brand page is not 200'; exit 1; }
+          brand=$(body /brands/mock-brand)
+          printf '%s' "$brand" | grep -qF 'action="/brands/mock-brand"' || { echo 'brand page forms do not post to the brand path'; exit 1; }
+          printf '%s' "$brand" | grep -qF 'id="catalogue-search"' || { echo 'brand page has no search box'; exit 1; }
+          test "$(code /brands/not-a-brand)" = 404 || { echo 'unknown brand is not 404'; exit 1; }
+          test "$(code '/brands/mock-brand?page=99')" = 307 || { echo 'out-of-range brand page is not 307'; exit 1; }
+          curl -si --max-time 30 "$B/brands/nike.svg" | grep -qi '^content-type: image/svg+xml' || { echo 'logo is not served as svg'; exit 1; }
       - name: The Worker logged no error
         run: |
           if grep -q ERROR wrangler.log; then echo 'the Worker logged an error:'; grep ERROR wrangler.log | sort -u | head -20; exit 1; fi

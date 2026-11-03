@@ -28,6 +28,12 @@ describe('Pager', () => {
         expect(render(query({}, ['Acme']), 3)).toContain('href="/shop?brand=Acme&amp;page=2#results"');
     });
 
+    it('links under a brand base path', () => {
+        const html = renderToStaticMarkup(createElement(Pager, { query: query(), pageCount: 3, basePath: '/brands/acme' }));
+        expect(html).toContain('href="/brands/acme?page=2#results"');
+        expect(html).not.toContain('href="/shop');
+    });
+
     it('shows the gap twice on page 5 of 9 and never writes page=1', () => {
         const html = render(query({ page: 5 }), 9);
         expect(html.match(/…/g)).toHaveLength(2);

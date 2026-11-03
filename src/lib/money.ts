@@ -27,3 +27,6 @@ export function formatMoney(cents: number, currency: string): string {
 
 /** Millimetres from the API as a centimetre string: 305 -> "30.5", 300 -> "30" */
 export const cm = (mm: number): string => String(mm / 10);
+
+/** Millimetres from the API as whole inches: 560 -> "22", 510 -> "20" */
+export const inches = (mm: number): string => String(Math.round(mm / 25.4));

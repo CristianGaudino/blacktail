@@ -1,5 +1,6 @@
 // Freshness round trip: a signed How many webhook must refresh the list within seconds.
 // Usage: node scripts/prove-freshness.mjs <baseUrl> [--mock <mockUrl>] [--outage]
+// Item pages: item-page, item-unknown, code-gate (mock only) and item-gone (mock only) check /items/<code>.
 // Needs HOWMANY_WEBHOOK_SECRET and STORE_SLUG in the environment. No dependencies.
 // The stock page is /shop; / only redirects to it (307).
 // Runs against `next start`, `wrangler dev` and the deployed Worker. Without --mock only the
@@ -100,6 +101,36 @@ await check('cache-hit', async () => {
     current = a;
 });
 
+await check('item-page', async () => {
+    const href = current.html.match(/href="(\/items\/[^"]+)"/)?.[1];
+    assert(href, 'no /items/<code> link on /shop');
+    const res = await fetch(`${base}${href}`);
+    const html = await res.text();
+    assert(res.status === 200, `GET ${href} returned ${res.status}, expected 200`);
+    assert(html.includes('<h1'), `GET ${href} has no h1`);
+});
+
+await check('item-unknown', async () => {
+    const missing = await fetch(`${base}/items/NOPE-0000`);
+    const html = await missing.text();
+    assert(missing.status === 404, `GET /items/NOPE-0000 returned ${missing.status}, expected 404`);
+    assert(/<meta[^>]*name="robots"[^>]*noindex/i.test(html) || /<meta[^>]*noindex[^>]*name="robots"/i.test(html), 'the 404 has no robots noindex meta tag');
+    const other = await fetch(`${base}/no-such-page`);
+    assert(other.status === 404, `GET /no-such-page returned ${other.status}, expected 404`);
+});
+
+if (mock) {
+    await check('code-gate', async () => {
+        const before = await counts();
+        for (const path of ['/items/..%2Ffilters', '/items/bad%20code']) {
+            const res = await fetch(`${base}${path}`);
+            assert(res.status === 404, `GET ${path} returned ${res.status}, expected 404`);
+        }
+        const after = await counts();
+        assert(before === after, `a junk code reached the API (${before} -> ${after})`);
+    });
+}
+
 await check('rejects', async () => {
     const body = valid();
     const ts = String(now());
@@ -138,6 +169,33 @@ await check('ignored', async () => {
     assert(p.asOf === current.asOf, `data-as-of changed (${current.asOf} -> ${p.asOf}): an ignored webhook revalidated`);
     if (mock) assert(before === (await counts()), 'upstream was called after an ignored webhook');
 });
+
+if (mock) {
+    await check('item-gone', async () => {
+        const code = 'MOCK-0002';
+        const view = () => fetch(`${base}/items/${code}`);
+        for (let i = 0; i < 2; i++) {
+            const res = await view();
+            assert(res.status === 200, `GET /items/${code} returned ${res.status}, expected 200`);
+        }
+        try {
+            await setMock({ gone: [code] });
+            await sleep(1200);
+            const status = await post(valid());
+            assert(status === 204, `signed webhook returned ${status}, expected 204`);
+            // COPY.gone.title in src/lib/copy.ts
+            const sold = await poll(async () => {
+                const res = await view();
+                const html = await res.text();
+                return res.status === 404 && html.includes('This piece has found a new home') ? html : null;
+            });
+            assert(sold, `/items/${code} was not a 404 with the gone message within 10 s of the webhook`);
+        } finally {
+            // So a second run starts with the piece back; a 404 is never cached, so the next read sees it again
+            await setMock({ gone: [] });
+        }
+    });
+}
 
 await check('round-trip', async () => {
     const title = `Freshness ${Date.now()}`;

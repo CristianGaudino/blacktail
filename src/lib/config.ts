@@ -15,6 +15,10 @@ export const CATALOGUE = {
     pageSize:      24,
     /** The first row on the widest grid loads eagerly, the rest lazily */
     eagerImages:   4,
+    /** Newest pieces shown on the gone-item page (D-09) */
+    goneDrops:     8,
+    /** Other pieces of the same brand shown under an item (D-08) */
+    moreFromBrand: 4,
     /** Pages past this are clamped, so a made-up page number cannot mint cache keys */
     maxPage:       500,
     /** Code points, so the cap never splits a character; every distinct search is a cache key and an API call against the shared rate limit */

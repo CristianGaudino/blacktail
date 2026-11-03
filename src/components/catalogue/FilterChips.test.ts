@@ -30,6 +30,14 @@ describe('FilterChips', () => {
         expect(html).toContain(`href="/shop">${COPY.catalogue.clearAll}<`);
     });
 
+    it('links its chips and Clear all under a brand base path', () => {
+        const html = renderToStaticMarkup(createElement(FilterChips, { query: query({}, { colour: ['Navy'], size: ['M'] }), filters, currency: 'EUR', basePath: '/brands/acme' }));
+        expect(html).toContain('href="/brands/acme?size=M"');
+        expect(html).toContain('href="/brands/acme?colour=Navy"');
+        expect(html).toContain(`href="/brands/acme">${COPY.catalogue.clearAll}<`);
+        expect(html).not.toContain('href="/shop');
+    });
+
     it('uses the panel wording for type, condition and department codes', () => {
         const html = render(query({}, { type: ['knit'], condition: ['AB'], department: ['mens'] }));
         expect(html).toContain('>Knitwear<');
