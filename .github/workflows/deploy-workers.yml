@@ -69,3 +69,5 @@ jobs:
           res=$(curl -si "https://www.blacktailarchive.cgaudino.com/shop?sort=price_asc")
           printf '%s' "$res" | grep -q 'content="noindex, follow"'
           printf '%s' "$res" | grep -qi '^x-robots-tag: noindex, nofollow'
+          test "$(curl -s -o /dev/null -w '%{http_code}' https://www.blacktailarchive.cgaudino.com/items/NOPE-0000)" = 404
+          test "$(curl -s -o /dev/null -w '%{http_code}' https://www.blacktailarchive.cgaudino.com/brands)" = 200
