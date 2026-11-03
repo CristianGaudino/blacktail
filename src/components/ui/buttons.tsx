@@ -7,9 +7,9 @@ type ButtonStyleProps = {
     fullWidth?: boolean;
 };
 
-export type ButtonProps = ButtonStyleProps & React.ButtonHTMLAttributes<HTMLButtonElement>;
+type ButtonProps = ButtonStyleProps & React.ButtonHTMLAttributes<HTMLButtonElement>;
 
-export type ButtonLinkProps = ButtonStyleProps & {
+type ButtonLinkProps = ButtonStyleProps & {
     href:       string;
     className?: string;
     /** A link to another site: a plain anchor that opens a new tab (next/link is for in-app routes) */
@@ -17,7 +17,7 @@ export type ButtonLinkProps = ButtonStyleProps & {
     children:   React.ReactNode;
 };
 
-export type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
+type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
     icon:  LucideIcon;
     /** The accessible name (an icon has no text) */
     label: string;

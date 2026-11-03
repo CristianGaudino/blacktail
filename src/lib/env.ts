@@ -20,7 +20,7 @@ const storeSchema = z.object({
     { path: ['HOWMANY_API_URL'], message: 'must be the address from More > Online store, ending in /stores/<STORE_SLUG>', when: () => true },
 );
 
-export type StoreEnv = z.output<typeof storeSchema>;
+type StoreEnv = z.output<typeof storeSchema>;
 
 /** All server configuration, validated. Throws listing every problem. */
 export function storeEnv(): StoreEnv {

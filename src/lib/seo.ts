@@ -4,7 +4,7 @@ import { hasFilters, toSearchString } from '@/lib/params';
 import { ROUTES } from '@/lib/routes';
 
 /** The one switch until SEO-03 (Phase 4) makes indexing depend on the environment */
-export const SITE_INDEXABLE = false;
+const SITE_INDEXABLE = false;
 
 /**
  * Filtered, searched or sorted listings are noindex, follow; a clean listing follows the site switch.

@@ -2,7 +2,7 @@
 // Usage: node scripts/mock-howmany.mjs [--port 4010] [--host 127.0.0.1]
 //   GET <anything>/items    -> 30 items, filtered, sorted and paged by the query (brand, ...; page, limit)
 //   GET <anything>/filters  -> the facets and ranges of those 30 items
-//   GET <anything>/items/<code> -> that item (200), or 404 no-store when it does not exist or is gone
+//   GET <anything>/items/<code> -> that item (200), or 404 no-store when it does not exist; a piece in `gone` is a 200 with status "sold", like the real API
 //   GET <anything else>     -> the store
 //   GET /__count            -> {"store":n,"items":n} of non-control GETs so far (/filters counts as store; a single item counts as items)
 //   GET /__last             -> the raw query string (no "?") of the last /items list request
@@ -161,8 +161,9 @@ createServer((req, res) => {
     const cache = { 'cache-control': 'public, s-maxage=60, stale-while-revalidate=600' };
     if (isItems) return send(res, 200, listItems(searchParams), cache);
     if (single) {
-        const found = items().find(x => x.code === decodeURIComponent(single[1]));
-        return found ? send(res, 200, found, cache) : send(res, 404, { error: 'Not found' }, { 'cache-control': 'no-store' });
+        const code = decodeURIComponent(single[1]);
+        const found = allItems().find(x => x.code === code);
+        return found ? send(res, 200, { ...found, status: gone.includes(code) ? 'sold' : 'inStock' }, cache) : send(res, 404, { error: 'Not found' }, { 'cache-control': 'no-store' });
     }
     if (pathname.endsWith('/filters')) return send(res, 200, filters(), cache);
     send(res, 200, { slug: pathname.split('/').filter(Boolean).pop(), name: 'Mock Store', currency: 'EUR', futureField: 'ignored' }, cache);

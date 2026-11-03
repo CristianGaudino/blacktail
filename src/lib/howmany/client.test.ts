@@ -121,7 +121,16 @@ describe('how many client', () => {
             expect(parsed).not.toHaveProperty('notes');
         });
 
-        it('resolves null for a 404 (sold, hidden or unknown)', async () => {
+        it('resolves null for a sold piece, and keeps one that is in stock or has no status', async () => {
+            fetchMock.mockResolvedValue(reply({ ...item, status: 'sold' }));
+            await expect(getItem('BT-0001')).resolves.toBeNull();
+            fetchMock.mockResolvedValue(reply({ ...item, status: 'inStock' }));
+            await expect(getItem('BT-0001')).resolves.toMatchObject({ code: 'BT-0001' });
+            fetchMock.mockResolvedValue(reply(item));
+            await expect(getItem('BT-0001')).resolves.toMatchObject({ code: 'BT-0001' });
+        });
+
+        it('resolves null for a 404 (hidden or unknown)', async () => {
             fetchMock.mockResolvedValue(new Response('{}', { status: 404 }));
             await expect(getItem('BT-0001')).resolves.toBeNull();
         });

@@ -9,7 +9,7 @@ export function ItemJsonLd({ item, url }: { item: Item; url: string }) {
         '@context': 'https://schema.org',
         '@type':    'Product',
         name:       item.title,
-        image:      item.photos.map(photo => photo.url),
+        ...(item.photos.length > 0 ? { image: item.photos.map(photo => photo.url) } : {}),
         ...(item.brand ? { brand: { '@type': 'Brand', name: item.brand } } : {}),
         offers: {
             '@type':       'Offer',
