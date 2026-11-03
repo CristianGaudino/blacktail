@@ -109,7 +109,7 @@ Edit these values and nothing else:
 1. Overwrite the pictures in `public/images/` with the real ones.
 2. Fill the contact, platform and About values and the brand order (`grep -rn PENDING-OWNER src` shows what is left).
 3. Create the Cloudflare rate-limit rule described in the README.
-4. In GitHub, set the repository variable `ALLOW_INDEXING` to `true` (Settings, Secrets and variables, Actions, Variables), then run the Deploy workflow (Actions, Deploy, Run workflow). A redeploy is needed because the robots header is fixed at build.
+4. In GitHub, set the repository variable `ALLOW_INDEXING` to `true` (Settings, Secrets and variables, Actions, Variables), then run the Deploy workflow (Actions, Deploy, Run workflow). A redeploy is needed because the robots header is fixed at build. Always deploy through this workflow: it passes the variable to both the build and the Worker. A hand-run `wrangler deploy` with the variable set only on the Worker leaves `robots.txt` open while every page still says noindex.
 5. Check that `https://<host>/robots.txt` has a `Sitemap:` line and that `curl -sI https://<host>/shop` shows no `x-robots-tag` header.
 6. Submit `https://<host>/sitemap.xml` in Google Search Console.
 
