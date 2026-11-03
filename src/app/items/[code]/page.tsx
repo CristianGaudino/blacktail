@@ -10,8 +10,11 @@ import { WhereToBuy } from '@/components/item/WhereToBuy';
 import { brandSlug, linkableSlug } from '@/lib/brands';
 import { storeEnv } from '@/lib/env';
 import { getFilters, getItem, getItemsPage } from '@/lib/howmany/client';
+import { COPY } from '@/lib/copy';
+import { label } from '@/lib/labels';
 import { formatMoney } from '@/lib/money';
 import { ROUTES } from '@/lib/routes';
+import { pageMetadata } from '@/lib/seo';
 
 const nameOf = (item: { brand: string | null; title: string }) => [item.brand, item.title].filter(Boolean).join(' ');
 // SITE_URL is read per call, never at module scope and never from the Host header
@@ -21,7 +24,18 @@ export async function generateMetadata({ params }: PageProps<'/items/[code]'>): 
     const item = await getItem((await params).code);
     // a 404 thrown from metadata would answer 200 (Pitfall 1): the page body decides the status
     if (!item) return {};
-    return { title: nameOf(item), alternates: { canonical: itemUrl(item.code) } };
+    const cover = item.photos[0];
+    const description = [
+        nameOf(item),
+        ...(item.size === null ? [] : [COPY.seo.size(item.size)]),
+        COPY.seo.condition(label(item.condition, COPY.labels.condition)),
+    ].join('. ') + '.';
+    return pageMetadata({
+        url:   itemUrl(item.code),
+        title: nameOf(item),
+        description,
+        image: cover && { url: cover.url, width: cover.width, height: cover.height },
+    });
 }
 
 export default async function ItemPage({ params }: PageProps<'/items/[code]'>) {

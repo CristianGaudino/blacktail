@@ -8,7 +8,8 @@ import { storeEnv } from '@/lib/env';
 import { getFilters } from '@/lib/howmany/client';
 import { parseCatalogueQuery } from '@/lib/params';
 import { ROUTES } from '@/lib/routes';
-import { canonicalUrl, listingRobots } from '@/lib/seo';
+import { canonicalUrl, listingRobots, pageMetadata } from '@/lib/seo';
+import { SHOP } from '@/shop/config';
 
 /** The slug is only ever resolved against the cached /filters names (React-cached, shared with the Header) */
 async function brandOf(slug: string) {
@@ -25,9 +26,8 @@ export async function generateMetadata({ params, searchParams }: PageProps<'/bra
     const query = parseCatalogueQuery(await searchParams, { ...filters, brand: [] });
     const { ALLOW_INDEXING, SITE_URL } = storeEnv();
     return {
-        title:      name,
-        robots:     listingRobots(query, ALLOW_INDEXING),
-        alternates: { canonical: canonicalUrl(SITE_URL, query, ROUTES.brand(slug)) },
+        ...pageMetadata({ url: canonicalUrl(SITE_URL, query, ROUTES.brand(slug)), title: name, description: SHOP.seo.brand(name) }),
+        robots: listingRobots(query, ALLOW_INDEXING),
     };
 }
 

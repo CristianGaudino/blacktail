@@ -10,6 +10,12 @@ const root = process.cwd();
 
 const themeHexes = readFileSync(join(root, 'src', 'shop', 'theme.css'), 'utf8').match(/#[0-9a-f]{3,8}\b/gi) ?? [];
 
+/** Every string leaf of 24 characters or more, so a long shop sentence cannot be typed into a component (D-03). The floor keeps short phrases that equal COPY text out. */
+const longStrings = (value: unknown): string[] =>
+    typeof value === 'string' ? (value.length >= 24 ? [value] : [])
+        : value && typeof value === 'object' ? Object.values(value).flatMap(longStrings)
+        : [];
+
 const NEEDLES = [
     SHOP.name,
     SHOP.name.replace(/\s+/g, ''),
@@ -18,6 +24,7 @@ const NEEDLES = [
     ...Object.values(SHOP.socials).filter((url): url is string => !!url),
     ...Object.values(COLOURS),
     ...themeHexes,
+    ...longStrings(SHOP),
 ]
     .map(n => n.toLowerCase())
     .filter(n => n.length > 0);
@@ -37,6 +44,7 @@ describe('shop-string guard', () => {
         for (const p of SHOP.platforms) expect(NEEDLES).toContain(p.url.toLowerCase());
         expect(NEEDLES).toContain((SHOP.socials.instagram ?? '').toLowerCase());
         for (const hex of Object.values(COLOURS)) expect(NEEDLES).toContain(hex.toLowerCase());
+        expect(NEEDLES).toContain(SHOP.seo.shop.toLowerCase());
     });
 
     it('does not use a null social as a needle', () => {

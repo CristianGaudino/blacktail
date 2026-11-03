@@ -24,6 +24,17 @@ export const SHOP = {
         pinterest: null,
         spotify: null,
     } as Record<'instagram' | 'tiktok' | 'pinterest' | 'spotify', string | null>,
+    /** Page titles and descriptions for search results and link previews (D-18) */
+    seo: {
+        homeTitle: 'Pre-loved branded clothing',
+        home: 'Pre-loved clothing from iconic brands. One-of-a-kind pieces, with new arrivals every week.',
+        shop: 'Browse every piece in stock. Filter by brand, size, colour and condition.',
+        brands: 'Shop pre-loved pieces by brand.',
+        brand: (brand: string) => `Pre-loved ${brand} pieces in stock now.`,
+        justDropped: 'The newest pre-loved pieces, added weekly.',
+        about: 'The story behind the shop and why we love pre-loved clothing.',
+        contact: 'How to reach the shop, and where to find our pieces on Vinted and eBay.',
+    },
     /** A piece published within this many days shows the New badge (D-21). */
     newBadgeDays: 7,
     colours: COLOURS,
