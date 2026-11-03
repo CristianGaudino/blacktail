@@ -47,19 +47,19 @@
 
 ### Item Page
 
-- [ ] **ITEM-01**: The visitor can view an item's photos in a gallery (full-size images, cover first, in the seller's order)
-- [ ] **ITEM-02**: The item page shows brand, title, price, size, colour, era, department and condition, with the grade in words (A Excellent, AB Very good, B Good)
-- [ ] **ITEM-03**: The item page shows measurements (pit to pit, length) when the item has them
-- [ ] **ITEM-04**: The item page says the piece is listed on Vinted and eBay and links to the shop's profiles from config. There is no per-item link and no checkout
-- [ ] **ITEM-05**: The item page shows a "More from this brand" row
-- [ ] **ITEM-06**: An item that is gone (sold, hidden or unknown code) returns a real 404 with a branded page that shows the newest drops
+- [x] **ITEM-01**: The visitor can view an item's photos in a gallery (full-size images, cover first, in the seller's order)
+- [x] **ITEM-02**: The item page shows brand, title, price, size, colour, era, department and condition, with the grade in words (A Excellent, AB Very good, B Good)
+- [x] **ITEM-03**: The item page shows measurements (pit to pit, length) when the item has them
+- [x] **ITEM-04**: The item page says the piece is listed on Vinted and eBay and links to the shop's profiles from config. There is no per-item link and no checkout
+- [x] **ITEM-05**: The item page shows a "More from this brand" row
+- [x] **ITEM-06**: An item that is gone (sold, hidden or unknown code) returns a real 404 with a branded page that shows the newest drops
 
 ### Brands
 
-- [ ] **BRAND-01**: Brand logos come from `public/brands/<slug>.svg` matched by slug, with the brand name as text when there is no logo
+- [x] **BRAND-01**: Brand logos come from `public/brands/<slug>.svg` matched by slug, with the brand name as text when there is no logo
 - [ ] **BRAND-02**: The brand strip is ordered in stock first, then sold before (empty until How many provides it), then the default order from config
-- [ ] **BRAND-03**: The visitor can see a Brands page of the brands in stock
-- [ ] **BRAND-04**: The visitor can open a brand page (`/brands/[slug]`) that lists that brand's in-stock items
+- [x] **BRAND-03**: The visitor can see a Brands page of the brands in stock
+- [x] **BRAND-04**: The visitor can open a brand page (`/brands/[slug]`) that lists that brand's in-stock items
 
 ### Home
 
@@ -75,7 +75,7 @@
 ### SEO
 
 - [ ] **SEO-01**: Every page has a title, description and Open Graph tags, and item pages use the item's name and cover photo
-- [ ] **SEO-02**: Item pages include JSON-LD `Product` data (name, image, price, currency, `InStock`, `UsedCondition`)
+- [x] **SEO-02**: Item pages include JSON-LD `Product` data (name, image, price, currency, `InStock`, `UsedCondition`)
 - [ ] **SEO-03**: There is a sitemap of all pages and in-stock items, refreshed with the store tag, and a robots file that blocks indexing outside production
 - [x] **SEO-04**: Filtered, searched or sorted listings are `noindex,follow`, with a canonical URL built from `SITE_URL`
 
@@ -149,23 +149,23 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CAT-09 | Phase 2 | Complete |
 | CAT-10 | Phase 2 | Complete |
 | CAT-11 | Phase 4 | Pending |
-| ITEM-01 | Phase 3 | Pending |
-| ITEM-02 | Phase 3 | Pending |
-| ITEM-03 | Phase 3 | Pending |
-| ITEM-04 | Phase 3 | Pending |
-| ITEM-05 | Phase 3 | Pending |
-| ITEM-06 | Phase 3 | Pending |
-| BRAND-01 | Phase 3 | Pending |
+| ITEM-01 | Phase 3 | Complete |
+| ITEM-02 | Phase 3 | Complete |
+| ITEM-03 | Phase 3 | Complete |
+| ITEM-04 | Phase 3 | Complete |
+| ITEM-05 | Phase 3 | Complete |
+| ITEM-06 | Phase 3 | Complete |
+| BRAND-01 | Phase 3 | Complete |
 | BRAND-02 | Phase 4 | Pending |
-| BRAND-03 | Phase 3 | Pending |
-| BRAND-04 | Phase 3 | Pending |
+| BRAND-03 | Phase 3 | Complete |
+| BRAND-04 | Phase 3 | Complete |
 | HOME-01 | Phase 4 | Pending |
 | HOME-02 | Phase 4 | Pending |
 | HOME-03 | Phase 4 | Pending |
 | PAGE-01 | Phase 4 | Pending |
 | PAGE-02 | Phase 4 | Pending |
 | SEO-01 | Phase 4 | Pending |
-| SEO-02 | Phase 3 | Pending |
+| SEO-02 | Phase 3 | Complete |
 | SEO-03 | Phase 4 | Pending |
 | SEO-04 | Phase 2 | Complete |
 | TMPL-01 | Phase 2 | Complete |
