@@ -21,13 +21,13 @@
     {
       "number": "4",
       "name": "Home and Launch",
-      "status": "in_progress"
+      "status": "complete"
     }
   ],
   "next": {
-    "command": "/gsd-progress --next",
-    "label": "Advance to the next step",
-    "reason": "Phase 4 of 4 · 50% · executing"
+    "command": "/gsd-new-milestone",
+    "label": "Start a new milestone",
+    "reason": "All phases complete — start a new milestone"
   },
-  "updated_at": "2026-11-03T13:24:50.649Z"
+  "updated_at": "2026-11-03T15:40:17.063Z"
 }
