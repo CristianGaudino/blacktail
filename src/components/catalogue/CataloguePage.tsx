@@ -9,28 +9,32 @@ import { FilterPanel } from '@/components/catalogue/FilterPanel';
 import { ItemGrid } from '@/components/catalogue/ItemGrid';
 import { Pager } from '@/components/catalogue/Pager';
 import { SortSelect } from '@/components/catalogue/SortSelect';
-import { CATALOGUE } from '@/lib/config';
+import { CATALOGUE, DEFAULT_SORT } from '@/lib/config';
 import { COPY } from '@/lib/copy';
 import { getFilters, getItemsPage, getStore, HowManyError } from '@/lib/howmany/client';
 import { pageCountOf, resolvePage } from '@/lib/paging';
 import { hasFilters, pageHref, parseCatalogueQuery, toSearchString, type RawParams } from '@/lib/params';
 
 /**
- * The one catalogue body, shared by /shop and /brands/[slug] (D-13). With `brand` the catalogue is locked to it:
+ * The one catalogue body, shared by /shop, /brands/[slug] and /just-dropped (D-13). With `brand` the catalogue is locked to it:
  * the URL's brand param is ignored, the Brand filter and chip are hidden, and the brand is added to the API query only.
+ * With `lockedSort` the URL's sort is ignored and the sort control is not shown (newest first, D-09).
  * The caller has already called connection().
  */
-export async function CataloguePage({ raw, basePath, title, back, brand }: {
-    raw:      RawParams;
-    basePath: string;
-    title:    string;
-    back?:    { href: string; label: string };
-    brand?:   string;
+export async function CataloguePage({ raw, basePath, title, back, brand, lockedSort }: {
+    raw:         RawParams;
+    basePath:    string;
+    title:       string;
+    back?:       { href: string; label: string };
+    brand?:      string;
+    lockedSort?: boolean;
 }) {
     const [fullFilters, store] = await Promise.all([getFilters(), getStore()]);
     // An empty Brand list makes pickList drop any brand param, and FilterPanel hides an empty group
     const filters = brand ? { ...fullFilters, brand: [] } : fullFilters;
-    const query = parseCatalogueQuery(raw, filters);
+    const parsed = parseCatalogueQuery(raw, filters);
+    // The default sort is left out of every link and of the API query, so no sort param reaches either
+    const query = lockedSort ? { ...parsed, sort: DEFAULT_SORT } : parsed;
     const apiQuery = brand ? { ...query, lists: { ...query.lists, brand: [brand] } } : query;
     const { page, asOf } = await getItemsPage(toSearchString(apiQuery)).catch(error => {
         // The cached /filters and the API can briefly disagree about a code: show "no match", not the error screen
@@ -73,7 +77,7 @@ export async function CataloguePage({ raw, basePath, title, back, brand }: {
                             </p>
                             {brand && <CatalogueSearch query={query} basePath={basePath} label={COPY.catalogue.searchIn(brand)} />}
                             <FilterDrawer filters={filters} query={query} currency={store.currency} basePath={basePath} />
-                            <SortSelect query={query} basePath={basePath} />
+                            {!lockedSort && <SortSelect query={query} basePath={basePath} />}
                         </div>
                         <FilterChips query={query} filters={filters} currency={store.currency} basePath={basePath} />
                         <GridBusy>
