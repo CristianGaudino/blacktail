@@ -11,7 +11,19 @@ export const CACHE = {
 } as const;
 
 /** Fixed files under public/ (D-02), the same names for every shop; a picture is replaced by overwriting its file */
-export const IMAGES = { ogDefault: '/images/og-default.jpg' } as const;
+export const IMAGES = {
+    ogDefault:         '/images/og-default.jpg',
+    hero:              '/images/hero.jpg',
+    bannerJustDropped: '/images/banner-just-dropped.jpg',
+    bannerBrands:      '/images/banner-brands.jpg',
+    story:             '/images/story.jpg',
+} as const;
+
+/** The home page (D-12) */
+export const HOME = {
+    /** Newest pieces in the Just Dropped carousel */
+    carouselItems: 10,
+} as const;
 
 /** How the catalogue page reads its URL. Param names equal the API's, so a shared link is also an API query */
 export const CATALOGUE = {

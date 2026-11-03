@@ -2,7 +2,7 @@
 // Usage: node scripts/prove-freshness.mjs <baseUrl> [--mock <mockUrl>] [--outage]
 // Item pages: item-page, item-unknown, code-gate (mock only) and item-gone (mock only) check /items/<code>.
 // Needs HOWMANY_WEBHOOK_SECRET and STORE_SLUG in the environment. No dependencies.
-// The stock page is /shop; / only redirects to it (307).
+// The stock page is /shop; / is the home page (hero, newest pieces, static sections).
 // Runs against `next start`, `wrangler dev` and the deployed Worker. Without --mock only the
 // checks that need no mock run (no request counters, data-as-of only for the round trip).
 import { createHmac } from 'node:crypto';
@@ -78,10 +78,12 @@ await check('ready', async () => {
     throw new Error('GET /shop never returned 200 with a data-as-of value within 60 s');
 });
 
-await check('home-redirect', async () => {
+await check('home', async () => {
     const res = await fetch(`${base}/`, { redirect: 'manual' });
-    assert(res.status === 307, `GET / returned ${res.status}, expected 307`);
-    assert(/\/shop$/.test(res.headers.get('location') ?? ''), `GET / location is ${res.headers.get('location')}, expected one ending in /shop`);
+    const html = await res.text();
+    assert(res.status === 200, `GET / returned ${res.status}, expected 200`);
+    assert(html.includes('<h1'), 'GET / has no h1');
+    if (mock) assert(html.includes('href="/items/'), 'GET / has no /items/<code> link (the Just Dropped carousel)');
 });
 
 await check('noindex', async () => {
@@ -230,6 +232,12 @@ if (mock && outage) {
         // Next's loading.js docs, "Status codes": streaming page responses begin with a 200 status code, so with
         // /shop/loading.tsx the error arrives inside the stream as React's failed-boundary marker ($RX( or data-dgst=), not as a 5xx
         assert(errored.status >= 500 || /\$RX\(|data-dgst=/.test(errored.html), `expected an error response or a streamed error marker, got ${errored.status}`);
+
+        // The static sections stay up and the carousel hides (HOME-02, DATA-03)
+        const home = await fetch(`${base}/`);
+        const homeHtml = await home.text();
+        assert(home.status === 200 && homeHtml.includes('<h1'), `GET / during the outage returned ${home.status} or has no h1`);
+        assert(!homeHtml.includes('href="/items/'), 'GET / during the outage still shows item links');
 
         await setMock({ status: 200 });
         const recovered = await poll(async () => {

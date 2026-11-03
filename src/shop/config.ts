@@ -35,7 +35,36 @@ export const SHOP = {
         about: 'The story behind the shop and why we love pre-loved clothing.',
         contact: 'How to reach the shop, and where to find our pieces on Vinted and eBay.',
     },
-    /** A piece published within this many days shows the New badge (D-21). */
-    newBadgeDays: 7,
+    /** Home page words (Phase 4 D-03), stored in normal case: CSS uppercases the headings and eyebrows. */
+    home: {
+        hero: {
+            eyebrow:  'Pre-loved',
+            headline: ['Timeless clothes.', 'Just different.'],
+            button:   'Shop new arrivals',
+        },
+        justDropped: {
+            heading: 'Just dropped',
+            eyebrow: 'New arrivals weekly',
+        },
+        promos: {
+            justDropped: {
+                title:  'Just dropped',
+                body:   'Fresh arrivals. Iconic brands. One-of-a-kind pieces. Be the first to find them before they are gone.',
+                button: 'Shop Just Dropped',
+            },
+            brands: {
+                eyebrow: 'Pre-loved',
+                title:   'Iconic brands. Real style.',
+                button:  'Shop all brands',
+            },
+        },
+        story: {
+            heading: 'A more conscious way to shop.',
+            body:    'Pre-loved pieces. Longer lives. Better choices.',
+            button:  'Our story',
+        },
+    },
+    /** A piece published within this many days shows the New badge, everywhere (Phase 4 D-11). */
+    newBadgeDays: 14,
     colours: COLOURS,
 };
