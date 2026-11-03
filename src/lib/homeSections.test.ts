@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { stripBrands } from './homeSections';
+import { stripBrands, visibleTiles } from './homeSections';
 
 const names = (brands: { name: string }[]) => brands.map(b => b.name);
 
@@ -35,5 +35,27 @@ describe('stripBrands', () => {
 
     it('drops a name with an empty slug', () => {
         expect(names(stripBrands(['東京', 'Acme'], [], []))).toEqual(['Acme']);
+    });
+});
+
+describe('visibleTiles', () => {
+    const tile = (type: string) => ({ type, label: type, image: `/images/${type}.jpg` });
+    const types = [{ value: 'jacket', count: 3 }, { value: 'knit', count: 0 }, { value: 'shirt', count: 1 }];
+
+    it('keeps a tile whose type has stock, matching case-insensitively', () => {
+        expect(visibleTiles([tile('Jacket')], types).map(t => t.type)).toEqual(['Jacket']);
+    });
+
+    it('drops a tile whose type is absent or has a zero count', () => {
+        expect(visibleTiles([tile('jeans'), tile('knit')], types)).toEqual([]);
+    });
+
+    it('keeps config order and caps at 4', () => {
+        const many = ['a', 'b', 'c', 'd', 'e'].map(v => ({ value: v, count: 1 }));
+        expect(visibleTiles(['e', 'a', 'b', 'c', 'd'].map(tile), many).map(t => t.type)).toEqual(['e', 'a', 'b', 'c']);
+    });
+
+    it('gives nothing for an empty list', () => {
+        expect(visibleTiles([], types)).toEqual([]);
     });
 });

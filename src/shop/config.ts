@@ -49,6 +49,18 @@ export const SHOP = {
             button:   'Shop new arrivals',
         },
         brands: { heading: 'Shop by brand' },
+        categories: {
+            heading:    'Shop by category',
+            exploreAll: 'Explore all pieces',
+            // PENDING-OWNER (D-05): up to 4 tiles. The owner confirmed Shirts as the fourth (D-22); the mockup's Accessories has no type code.
+            // A tile hides when its type has no stock. Still one entry to change.
+            tiles: [
+                { type: 'jacket', label: 'Jackets',  image: '/images/category-1.jpg' },
+                { type: 'knit',   label: 'Knitwear', image: '/images/category-2.jpg' },
+                { type: 'jeans',  label: 'Denim',    image: '/images/category-3.jpg' },
+                { type: 'shirt',  label: 'Shirts',   image: '/images/category-4.jpg' },
+            ],
+        },
         justDropped: {
             heading: 'Just dropped',
             eyebrow: 'New arrivals weekly',
