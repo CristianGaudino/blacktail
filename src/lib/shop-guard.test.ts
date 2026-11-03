@@ -20,6 +20,9 @@ const NEEDLES = [
     SHOP.name,
     SHOP.name.replace(/\s+/g, ''),
     SHOP.contact.email,
+    SHOP.contact.heading,
+    SHOP.contact.shopWith,
+    SHOP.contact.follow,
     ...SHOP.platforms.map(p => p.url),
     ...Object.values(SHOP.socials).filter((url): url is string => !!url),
     ...Object.values(COLOURS),
@@ -41,6 +44,7 @@ describe('shop-string guard', () => {
         expect(NEEDLES).toContain(SHOP.name.toLowerCase());
         expect(NEEDLES).toContain(SHOP.name.replace(/\s+/g, '').toLowerCase());
         expect(NEEDLES).toContain(SHOP.contact.email.toLowerCase());
+        for (const label of [SHOP.contact.heading, SHOP.contact.shopWith, SHOP.contact.follow]) expect(NEEDLES).toContain(label.toLowerCase());
         for (const p of SHOP.platforms) expect(NEEDLES).toContain(p.url.toLowerCase());
         expect(NEEDLES).toContain((SHOP.socials.instagram ?? '').toLowerCase());
         for (const hex of Object.values(COLOURS)) expect(NEEDLES).toContain(hex.toLowerCase());

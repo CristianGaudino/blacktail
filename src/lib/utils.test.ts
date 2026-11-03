@@ -1,6 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { ROUTES } from '@/lib/routes';
-import { cn, isBuilt, isNavActive } from './utils';
+import { cn, isNavActive } from './utils';
 
 describe('isNavActive', () => {
     it('matches Home only exactly', () => {
@@ -12,21 +11,6 @@ describe('isNavActive', () => {
         expect(isNavActive('/shop', '/shop')).toBe(true);
         expect(isNavActive('/shop/x', '/shop')).toBe(true);
         expect(isNavActive('/shopping', '/shop')).toBe(false);
-    });
-});
-
-describe('isBuilt', () => {
-    it('is true for the home, shop, item, brands and brand pages, with or without a query', () => {
-        expect(isBuilt('/')).toBe(true);
-        expect(isBuilt('/shop')).toBe(true);
-        expect(isBuilt('/shop?brand=Acme')).toBe(true);
-        expect(isBuilt(ROUTES.item('BT-1'))).toBe(true);
-        expect(isBuilt(ROUTES.brands)).toBe(true);
-        expect(isBuilt(ROUTES.brand('acme'))).toBe(true);
-    });
-
-    it('is false for pages that do not exist yet', () => {
-        for (const href of [ROUTES.justDropped, ROUTES.about, ROUTES.contact]) expect(isBuilt(href)).toBe(false);
     });
 });
 
