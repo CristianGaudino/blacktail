@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { cn } from '@/lib/utils';
 
 type ButtonStyleProps = {
-    variant?:   'primary' | 'secondary';
+    variant?:   'primary' | 'secondary' | 'inverse';
     fullWidth?: boolean;
 };
 
@@ -26,6 +26,8 @@ type IconButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> & {
 const VARIANTS = {
     primary:   'bg-forest text-ivory',
     secondary: 'border border-forest text-forest',
+    /** For text on a photo: an Ivory outline, no fill; the focus ring is Ivory too, a Forest ring would vanish on the dark overlay */
+    inverse:   'border border-ivory text-ivory focus-visible:outline-ivory transition-colors duration-150 ease-out hover:bg-ivory/10 motion-reduce:transition-none',
 } as const;
 
 function buttonClassName({ variant = 'primary', fullWidth = false }: ButtonStyleProps, className?: string): string {
