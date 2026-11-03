@@ -91,13 +91,13 @@ export function toSearchString(query: CatalogueQuery): string {
  * Every non-page change (filter, search, sort) builds its link here and starts at page 1, which is
  * how CAT-07's reset is enforced in one place.
  */
-export function shopHref(query: CatalogueQuery): string {
-    return pageHref(query, 1);
+export function shopHref(query: CatalogueQuery, basePath: string = ROUTES.shop): string {
+    return pageHref(query, 1, basePath);
 }
 
-export function pageHref(query: CatalogueQuery, page: number): string {
+export function pageHref(query: CatalogueQuery, page: number, basePath: string = ROUTES.shop): string {
     const search = toSearchString({ ...query, page });
-    return search ? `${ROUTES.shop}?${search}` : ROUTES.shop;
+    return search ? `${basePath}?${search}` : basePath;
 }
 
 /** Sort and page are not filters: a shopper can still have "everything", sorted */

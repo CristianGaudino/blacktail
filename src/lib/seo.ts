@@ -16,7 +16,7 @@ export function listingRobots(query: CatalogueQuery): { index: boolean; follow: 
 }
 
 /** The same sorted query string as links and the API cache key, so equivalent URLs share one canonical */
-export function canonicalUrl(siteUrl: string, query: CatalogueQuery): string {
+export function canonicalUrl(siteUrl: string, query: CatalogueQuery, basePath: string = ROUTES.shop): string {
     const search = toSearchString(query);
-    return new URL(search ? `${ROUTES.shop}?${search}` : ROUTES.shop, siteUrl).toString();
+    return new URL(search ? `${basePath}?${search}` : basePath, siteUrl).toString();
 }

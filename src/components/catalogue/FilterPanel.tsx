@@ -18,16 +18,17 @@ import { RangeSlider } from './RangeSlider';
 const OPEN_BY_DEFAULT: readonly string[] = ['brand', 'type', 'size', 'colour', 'price'];
 
 /**
- * The filter form. A GET form to /shop. It works without JavaScript for the desktop sidebar only; the
+ * The filter form. A GET form to the catalogue path (/shop or a brand page). It works without JavaScript for the desktop sidebar only; the
  * phone drawer needs JavaScript to open. With JavaScript it keeps a draft of the query: `instant` pushes
  * the draft after a short pause (desktop sidebar), `apply` waits for the Apply button (phone drawer).
  */
-export function FilterPanel({ filters, query, currency, mode, onApplied }: {
+export function FilterPanel({ filters, query, currency, mode, onApplied, basePath = ROUTES.shop }: {
     filters:    Filters;
     query:      CatalogueQuery;
     currency:   string;
     mode:       'instant' | 'apply';
     onApplied?: () => void;
+    basePath?:  string;
 }) {
     const navigate = useCatalogueNavigate();
     const [draft, setDraft] = useState(query);
@@ -47,7 +48,7 @@ export function FilterPanel({ filters, query, currency, mode, onApplied }: {
         if (mode !== 'instant') return;
         // Only the last change of a burst is pushed
         clearTimeout(timer.current);
-        timer.current = setTimeout(() => navigate(shopHref(next)), CATALOGUE.applyDebounceMs);
+        timer.current = setTimeout(() => navigate(shopHref(next, basePath)), CATALOGUE.applyDebounceMs);
     };
 
     const toggle = (list: ListKey) => (value: string) => {
@@ -106,7 +107,7 @@ export function FilterPanel({ filters, query, currency, mode, onApplied }: {
                         if (mode !== 'instant') return;
                         // A release is its own settled change: drop any pending checkbox push and go now
                         clearTimeout(timer.current);
-                        navigate(shopHref(next));
+                        navigate(shopHref(next, basePath));
                     }}
                 />
             </FilterGroup>
@@ -116,13 +117,13 @@ export function FilterPanel({ filters, query, currency, mode, onApplied }: {
     // Apply mode: nothing is pushed until Apply. An unchanged draft only closes, so Back gets no duplicate entry
     const apply = (e: React.FormEvent) => {
         e.preventDefault();
-        const href = shopHref(draft);
-        if (href !== shopHref(query)) navigate(href);
+        const href = shopHref(draft, basePath);
+        if (href !== shopHref(query, basePath)) navigate(href);
         onApplied?.();
     };
 
     return (
-        <form action={ROUTES.shop} method="get" onSubmit={mode === 'apply' ? apply : undefined} className={mode === 'apply' ? 'px-4' : undefined}>
+        <form action={basePath} method="get" onSubmit={mode === 'apply' ? apply : undefined} className={mode === 'apply' ? 'px-4' : undefined}>
             {draft.q && <input type="hidden" name={SEARCH_PARAMS.q} value={draft.q} />}
             {draft.sort !== DEFAULT_SORT && <input type="hidden" name={SEARCH_PARAMS.sort} value={draft.sort} />}
             {listGroup('brand')}
