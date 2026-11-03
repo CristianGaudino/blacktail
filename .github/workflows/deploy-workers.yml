@@ -27,6 +27,9 @@ jobs:
       STORE_SLUG: blacktail-archive
       HOWMANY_API_URL: https://www.checkhowmany.com/api/v1/stores/blacktail-archive
       SITE_URL: https://www.blacktailarchive.cgaudino.com
+      # One GitHub repository variable (Settings, Secrets and variables, Actions, Variables) feeds both the build, where
+      # next build fixes the X-Robots-Tag header, and the running Worker through --var below. Unset means off.
+      ALLOW_INDEXING: ${{ vars.ALLOW_INDEXING || 'false' }}
       # The Cloudflare token is set only on the two steps that need it, not on npm ci, tests or the build
       # Placeholder: the build neither fetches nor verifies anything. The Worker reads its own secret
       # (`wrangler secret put`) at run time, and the real one never enters CI.
@@ -40,6 +43,13 @@ jobs:
           node-version-file: .nvmrc
           cache: npm
       - run: npm ci
+      # A typo would otherwise make every page a 500 through the env check
+      - name: The indexing switch is true or false
+        run: |
+          case "$ALLOW_INDEXING" in
+            true|false) ;;
+            *) echo "ALLOW_INDEXING is '$ALLOW_INDEXING' (want true or false)"; exit 1 ;;
+          esac
       # CI no longer runs on main (the pull request ran it, on an older main): a merge of several pull requests is tested here
       - name: Tests
         run: npm test
@@ -50,24 +60,39 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+      # ALLOW_INDEXING is passed with --var, not set in wrangler.jsonc vars, so the build and the Worker share one source
       - name: Deploy
-        run: npx wrangler deploy
+        run: npx wrangler deploy --var "ALLOW_INDEXING:$ALLOW_INDEXING"
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
       # A first deploy waits a few minutes for the address's certificate
       - name: Wait for the site
-        run: curl -fsS -o /dev/null --retry 40 --retry-delay 15 --retry-all-errors --max-time 20 https://www.blacktailarchive.cgaudino.com/shop
+        run: curl -fsS -o /dev/null --retry 40 --retry-delay 15 --retry-all-errors --max-time 20 "$SITE_URL/"
       - name: Smoke
         run: |
-          # The header check uses /shop: headers on the config redirect at / are not guaranteed
-          curl -sI https://www.blacktailarchive.cgaudino.com/shop | grep -i '^x-robots-tag:.*noindex'
-          test "$(curl -s -o /dev/null -w '%{http_code}' https://www.blacktailarchive.cgaudino.com/)" = 307
-          test "$(curl -s -o /dev/null -w '%{http_code}' -X POST https://www.blacktailarchive.cgaudino.com/api/webhooks/howmany)" = 401
-          # SEO-04 in production. The site-wide X-Robots-Tag: noindex, nofollow header (SEO-03 pre-launch guard)
-          # stays until Phase 4, so a filtered URL carries both: page "noindex, follow", wire "nofollow". Intended.
-          res=$(curl -si "https://www.blacktailarchive.cgaudino.com/shop?sort=price_asc")
-          printf '%s' "$res" | grep -q 'content="noindex, follow"'
-          printf '%s' "$res" | grep -qi '^x-robots-tag: noindex, nofollow'
-          test "$(curl -s -o /dev/null -w '%{http_code}' https://www.blacktailarchive.cgaudino.com/items/NOPE-0000)" = 404
-          test "$(curl -s -o /dev/null -w '%{http_code}' https://www.blacktailarchive.cgaudino.com/brands)" = 200
+          B="$SITE_URL"
+          code() { curl -s -o /dev/null -w '%{http_code}' --max-time 30 "$B$1"; }
+          body() { curl -s --max-time 30 "$B$1"; }
+          test "$(code /)" = 200 || { echo '/ is not 200'; exit 1; }
+          test "$(curl -s -o /dev/null -w '%{http_code}' -X POST "$B/api/webhooks/howmany")" = 401 || { echo 'an unsigned webhook is not 401'; exit 1; }
+          test "$(code /items/NOPE-0000)" = 404 || { echo 'unknown item is not 404'; exit 1; }
+          test "$(code /brands)" = 200 || { echo '/brands is not 200'; exit 1; }
+          test "$(code /just-dropped)" = 200 || { echo '/just-dropped is not 200'; exit 1; }
+          test "$(code /sitemap.xml)" = 200 || { echo 'sitemap.xml is not 200'; exit 1; }
+          # SEO-04 in production: a filtered URL says "noindex, follow" in the page in both states
+          res=$(curl -si "$B/shop?sort=price_asc")
+          printf '%s' "$res" | grep -q 'content="noindex, follow"' || { echo 'a filtered /shop has no meta noindex, follow'; exit 1; }
+          # RESEARCH A1 (wrangler deploy --var sets the run-time flag) is verified only here, after merge. The off branch cannot
+          # tell an applied --var from a missing one (unset means off), so A1 is fully proven by the first run with the variable set to true.
+          if [ "$ALLOW_INDEXING" = true ]; then
+            if curl -sI "$B/shop" | grep -qi '^x-robots-tag:'; then echo 'indexing is on but /shop still has an x-robots-tag header'; exit 1; fi
+            body /robots.txt | grep -q '^Sitemap:' || { echo 'indexing is on but robots.txt has no Sitemap line'; exit 1; }
+            body /shop | grep -qF 'content="index, follow"' || { echo 'indexing is on but /shop is not index, follow'; exit 1; }
+          else
+            curl -sI "$B/shop" | grep -qi '^x-robots-tag:.*noindex' || { echo 'indexing is off but /shop has no noindex header'; exit 1; }
+            printf '%s' "$res" | grep -qi '^x-robots-tag: noindex, nofollow' || { echo 'a filtered /shop has no X-Robots-Tag: noindex, nofollow'; exit 1; }
+            robots=$(body /robots.txt)
+            printf '%s\n' "$robots" | grep -qx "Disallow: /" || { echo 'indexing is off but robots.txt has no Disallow: / line'; exit 1; }
+            if printf '%s\n' "$robots" | grep -q '^Sitemap:'; then echo 'indexing is off but robots.txt has a Sitemap line'; exit 1; fi
+          fi

@@ -79,12 +79,12 @@ jobs:
           printf 'STORE_SLUG=%s\nHOWMANY_API_URL=%s\nHOWMANY_WEBHOOK_SECRET=%s\nSITE_URL=%s\n' \
             "$STORE_SLUG" "$HOWMANY_API_URL" "$HOWMANY_WEBHOOK_SECRET" "$SITE_URL" > .dev.vars
           npx wrangler dev --port 8787 --ip 127.0.0.1 > wrangler.log 2>&1 &
-          # Warm up on /shop (/ is a redirect to it; no robots.txt until Phase 4); the result is ignored, an error there still shows in the log
-          curl -s -o /dev/null --retry 60 --retry-connrefused --retry-delay 2 http://127.0.0.1:8787/shop || true
+          # Warm up on / (the home page); the result is ignored, an error there still shows in the log
+          curl -s -o /dev/null --retry 60 --retry-connrefused --retry-delay 2 http://127.0.0.1:8787/ || true
       - name: Prove the freshness round trip on the Worker
         run: node scripts/prove-freshness.mjs http://127.0.0.1:8787 --mock http://127.0.0.1:4010
-      # SEO-04 on workerd. The site-wide X-Robots-Tag: noindex, nofollow header (SEO-03 pre-launch guard) stays until
-      # Phase 4, so a filtered URL carries both: the page says "noindex, follow", the wire says "nofollow". Intended; pinned here.
+      # SEO-04 on workerd. This job builds with ALLOW_INDEXING unset, so the X-Robots-Tag: noindex, nofollow header is on
+      # and a filtered URL carries both: the page says "noindex, follow", the wire says "nofollow". Intended; pinned here.
       - name: Filtered listings are noindex, follow
         run: |
           res=$(curl -si --max-time 30 'http://127.0.0.1:8787/shop?sort=price_asc')
@@ -113,12 +113,64 @@ jobs:
           test "$(code /brands/not-a-brand)" = 404 || { echo 'unknown brand is not 404'; exit 1; }
           test "$(code '/brands/mock-brand?page=99')" = 307 || { echo 'out-of-range brand page is not 307'; exit 1; }
           curl -si --max-time 30 "$B/brands/nike.svg" | grep -qi '^content-type: image/svg+xml' || { echo 'logo is not served as svg'; exit 1; }
+      - name: Home, Just Dropped, About, Contact, robots and sitemap on the Worker
+        run: |
+          B=http://127.0.0.1:8787
+          code() { curl -s -o /dev/null -w '%{http_code}' --max-time 30 "$B$1"; }
+          body() { curl -s --max-time 30 "$B$1"; }
+          test "$(code /)" = 200 || { echo '/ is not 200'; exit 1; }
+          home=$(body /)
+          for s in '<h1' 'href="/items/MOCK-0001"' 'href="/brands/mock-brand"' 'href="/shop?type=jacket"' "content=\"$SITE_URL/images/og-default.jpg\""; do
+            printf '%s' "$home" | grep -qF "$s" || { echo "home page lacks: $s"; exit 1; }
+          done
+          # The mock's types are shirt, knit and jacket, so the Denim tile has no stock and hides
+          if printf '%s' "$home" | grep -qF 'type=jeans'; then echo 'the Denim tile shows with no stock'; exit 1; fi
+          # Served from the assets binding
+          for img in hero og-default; do
+            curl -si --max-time 30 "$B/images/$img.jpg" | grep -qi '^content-type: image/jpeg' || { echo "/images/$img.jpg is not served as jpeg"; exit 1; }
+          done
+          test "$(code /just-dropped)" = 200 || { echo '/just-dropped is not 200'; exit 1; }
+          if body /just-dropped | grep -qF 'name="sort"'; then echo '/just-dropped has a sort control'; exit 1; fi
+          body '/just-dropped?sort=price_asc' | grep -qF "rel=\"canonical\" href=\"$SITE_URL/just-dropped\"" || { echo 'a sort-only /just-dropped URL does not canonicalise to /just-dropped'; exit 1; }
+          test "$(code '/just-dropped?page=99')" = 307 || { echo 'out-of-range /just-dropped page is not 307'; exit 1; }
+          test "$(code /about)" = 200 || { echo '/about is not 200'; exit 1; }
+          test "$(code /contact)" = 200 || { echo '/contact is not 200'; exit 1; }
+          body /contact | grep -qF 'href="mailto:' || { echo '/contact has no mailto link'; exit 1; }
+          test "$(code /robots.txt)" = 200 || { echo 'robots.txt is not 200'; exit 1; }
+          robots=$(body /robots.txt)
+          printf '%s\n' "$robots" | grep -qx 'Disallow: /' || { echo 'robots.txt has no Disallow: / with indexing off'; exit 1; }
+          if printf '%s\n' "$robots" | grep -q '^Sitemap:'; then echo 'robots.txt has a Sitemap line with indexing off'; exit 1; fi
+          test "$(code /sitemap.xml)" = 200 || { echo 'sitemap.xml is not 200'; exit 1; }
+          if body /sitemap.xml | grep -qF '<loc>'; then echo 'the sitemap lists pages with indexing off'; exit 1; fi
       - name: The Worker logged no error
         run: |
           if grep -q ERROR wrangler.log; then echo 'the Worker logged an error:'; grep ERROR wrangler.log | sort -u | head -20; exit 1; fi
       # After the log check: the outage makes the page log its expected API error
       - name: Prove the outage path on the Worker
         run: node scripts/prove-freshness.mjs http://127.0.0.1:8787 --mock http://127.0.0.1:4010 --outage
+      # The X-Robots-Tag header is fixed at build and this job builds once with the flag off, so the header is not checked here;
+      # the indexing unit test covers securityHeaders(true) and the deploy smoke checks it live.
+      - name: "Indexing on: robots, sitemap and the robots meta follow ALLOW_INDEXING"
+        run: |
+          curl -s -X POST -d '{"status":200,"gone":[]}' http://127.0.0.1:4010/__set
+          pkill -f wrangler || true
+          pkill -f workerd || true
+          sleep 3
+          printf 'STORE_SLUG=%s\nHOWMANY_API_URL=%s\nHOWMANY_WEBHOOK_SECRET=%s\nSITE_URL=%s\nALLOW_INDEXING=true\n' \
+            "$STORE_SLUG" "$HOWMANY_API_URL" "$HOWMANY_WEBHOOK_SECRET" "$SITE_URL" > .dev.vars
+          npx wrangler dev --port 8789 --ip 127.0.0.1 > wrangler-indexing.log 2>&1 &
+          B=http://127.0.0.1:8789
+          body() { curl -s --max-time 30 "$B$1"; }
+          curl -s -o /dev/null --retry 60 --retry-connrefused --retry-delay 2 "$B/" || true
+          robots=$(body /robots.txt)
+          printf '%s\n' "$robots" | grep -qxF "Sitemap: $SITE_URL/sitemap.xml" || { echo 'robots.txt has no absolute Sitemap line'; exit 1; }
+          printf '%s\n' "$robots" | grep -qx 'Disallow: /api/' || { echo 'robots.txt does not disallow /api/'; exit 1; }
+          if printf '%s\n' "$robots" | grep -qx 'Disallow: /'; then echo 'robots.txt still disallows everything'; exit 1; fi
+          sitemap=$(body /sitemap.xml)
+          for s in "<loc>$SITE_URL/items/MOCK-0001</loc>" "<loc>$SITE_URL/brands/mock-brand</loc>"; do
+            printf '%s' "$sitemap" | grep -qF "$s" || { echo "sitemap lacks: $s"; exit 1; }
+          done
+          body /shop | grep -qF 'content="index, follow"' || { echo '/shop does not say index, follow'; exit 1; }
       - name: A Worker without its secret refuses to serve
         run: |
           pkill -f wrangler || true
@@ -127,7 +179,7 @@ jobs:
           printf 'STORE_SLUG=%s\nHOWMANY_API_URL=%s\nSITE_URL=%s\n' "$STORE_SLUG" "$HOWMANY_API_URL" "$SITE_URL" > .dev.vars
           npx wrangler dev --port 8788 --ip 127.0.0.1 > wrangler-bad.log 2>&1 &
           # Only wait for the port: curl's own retry would also retry the 500 we want.
-          # /shop, not /: the root is a config redirect that may answer before the server runs its env check
+          # /shop is the checked page because it reads the API, so it runs the env check
           code=000
           for i in $(seq 1 60); do
             code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 http://127.0.0.1:8788/shop || true)
@@ -145,7 +197,7 @@ jobs:
       - name: Logs
         if: failure()
         run: |
-          for f in mock.log wrangler.log wrangler-bad.log; do
+          for f in mock.log wrangler.log wrangler-indexing.log wrangler-bad.log; do
             [ -f "$f" ] && { echo "--- $f (tail) ---"; tail -n 40 "$f"; }
           done
           true

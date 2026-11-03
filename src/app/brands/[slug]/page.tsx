@@ -2,18 +2,19 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
 import { CataloguePage } from '@/components/catalogue/CataloguePage';
-import { brandIndex } from '@/lib/brands';
+import { brandBySlug, SOLD_BEFORE_BRANDS } from '@/lib/brands';
 import { COPY } from '@/lib/copy';
 import { storeEnv } from '@/lib/env';
 import { getFilters } from '@/lib/howmany/client';
 import { parseCatalogueQuery } from '@/lib/params';
 import { ROUTES } from '@/lib/routes';
-import { canonicalUrl, listingRobots } from '@/lib/seo';
+import { canonicalUrl, listingRobots, pageMetadata } from '@/lib/seo';
+import { SHOP } from '@/shop/config';
 
-/** The slug is only ever resolved against the cached /filters names (React-cached, shared with the Header) */
+/** The slug is only ever resolved against the cached /filters names (React-cached, shared with the Header) and the sold-before list; anything else is a 404 (D-21) */
 async function brandOf(slug: string) {
     const filters = await getFilters();
-    const name = brandIndex(filters.brand.map(f => f.value)).find(b => b.slug === slug)?.name;
+    const name = brandBySlug(slug, filters.brand.map(f => f.value), SOLD_BEFORE_BRANDS);
     return { filters, name };
 }
 
@@ -23,10 +24,10 @@ export async function generateMetadata({ params, searchParams }: PageProps<'/bra
     const { filters, name } = await brandOf(slug);
     if (!name) return {};
     const query = parseCatalogueQuery(await searchParams, { ...filters, brand: [] });
+    const { ALLOW_INDEXING, SITE_URL } = storeEnv();
     return {
-        title:      name,
-        robots:     listingRobots(query),
-        alternates: { canonical: canonicalUrl(storeEnv().SITE_URL, query, ROUTES.brand(slug)) },
+        ...pageMetadata({ url: canonicalUrl(SITE_URL, query, ROUTES.brand(slug)), title: name, description: SHOP.seo.brand(name) }),
+        robots: listingRobots(query, ALLOW_INDEXING),
     };
 }
 

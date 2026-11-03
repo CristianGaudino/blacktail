@@ -8,7 +8,7 @@ import { IconButton } from '@/components/ui/buttons';
 import { Sheet } from '@/components/ui/Sheet';
 import { COPY } from '@/lib/copy';
 import { ROUTES } from '@/lib/routes';
-import { cn, isBuilt } from '@/lib/utils';
+import { cn } from '@/lib/utils';
 import { SHOP } from '@/shop/config';
 import logo from '@/shop/logo.svg';
 
@@ -46,7 +46,7 @@ export function MobileMenu({ typeLinks, brandLinks }: { typeLinks: NavItem[]; br
         </li>
     );
 
-    const link = (href: string, text: string) => isBuilt(href) && (
+    const link = (href: string, text: string) => (
         <li>
             <Link href={href} prefetch={false} onClick={close} className={ROW}>
                 {text}

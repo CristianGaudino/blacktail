@@ -21,13 +21,13 @@
     {
       "number": "4",
       "name": "Home and Launch",
-      "status": "pending"
+      "status": "in_progress"
     }
   ],
   "next": {
     "command": "/gsd-progress --next",
-    "label": "Advance to the next step (plan phase 4)",
-    "reason": "Phase 4 of 4 — needs a plan"
+    "label": "Advance to the next step",
+    "reason": "Phase 4 of 4 · 50% · executing"
   },
-  "updated_at": "2026-11-03T10:10:14.337Z"
+  "updated_at": "2026-11-03T13:24:50.649Z"
 }

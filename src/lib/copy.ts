@@ -147,6 +147,15 @@ export const COPY = {
         viewAll:        'View all',
         viewAllLabel:   (brand: string) => `View all ${brand} pieces`,
     },
+    seo: {
+        size:      (size: string) => `Size ${size}`,
+        condition: (condition: string) => `Condition ${condition}`,
+    },
+    home: {
+        viewAllBrands: 'View all brands',
+        previous: 'Previous items',
+        next:     'Next items',
+    },
     notFound: {
         title: 'Page not found',
         body:  'We could not find that page. It may have moved, or the link may be wrong.',

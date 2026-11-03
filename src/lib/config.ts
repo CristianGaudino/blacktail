@@ -10,9 +10,30 @@ export const CACHE = {
     webhookRevalidate: { expire: 0 },
 } as const;
 
+/** Fixed files under public/ (D-02), the same names for every shop; a picture is replaced by overwriting its file */
+export const IMAGES = {
+    ogDefault:         '/images/og-default.jpg',
+    hero:              '/images/hero.jpg',
+    bannerJustDropped: '/images/banner-just-dropped.jpg',
+    bannerBrands:      '/images/banner-brands.jpg',
+    story:             '/images/story.jpg',
+} as const;
+
+/** The home page (D-12) */
+export const HOME = {
+    /** Newest pieces in the Just Dropped carousel */
+    carouselItems: 10,
+    /** Brands in the home brand strip */
+    stripBrands: 16,
+    /** Most category tiles the home page shows (D-05) */
+    categoryTiles: 4,
+} as const;
+
 /** How the catalogue page reads its URL. Param names equal the API's, so a shared link is also an API query */
 export const CATALOGUE = {
     pageSize:      24,
+    /** The API maximum, so a 300-piece shop is three reads for the sitemap */
+    sitemapPageSize: 100,
     /** The first row on the widest grid loads eagerly, the rest lazily */
     eagerImages:   4,
     /** Newest pieces shown on the gone-item page (D-09) */
@@ -41,7 +62,7 @@ export const CATALOGUE = {
 
 export const SORTS = ['newest', 'price_asc', 'price_desc'] as const;
 /** The API default, so it is left out of URLs and API calls */
-export const DEFAULT_SORT = 'newest';
+export const DEFAULT_SORT = 'newest' as const;
 export const SEARCH_PARAMS = { q: 'q', sort: 'sort', page: 'page' } as const;
 
 /** The How many public API contract */

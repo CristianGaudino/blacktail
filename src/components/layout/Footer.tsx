@@ -4,7 +4,6 @@ import Link from 'next/link';
 import { SocialIcons } from '@/components/ui/SocialIcons';
 import { COPY } from '@/lib/copy';
 import { ROUTES } from '@/lib/routes';
-import { isBuilt } from '@/lib/utils';
 import { SHOP } from '@/shop/config';
 import logo from '@/shop/logo.svg';
 
@@ -34,7 +33,7 @@ export function Footer() {
                 <nav aria-labelledby="footer-explore">
                     <h2 id="footer-explore" className={heading}>{COPY.footer.explore}</h2>
                     <ul className="space-y-2">
-                        {EXPLORE.filter(item => isBuilt(item.href)).map(item => (
+                        {EXPLORE.map(item => (
                             <li key={item.href}><Link href={item.href} className={link}>{item.label}</Link></li>
                         ))}
                     </ul>

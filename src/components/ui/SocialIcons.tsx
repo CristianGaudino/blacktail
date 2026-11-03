@@ -14,10 +14,10 @@ const ORDER = Object.keys(GLYPHS) as Network[];
 const box = 'inline-flex size-11 items-center justify-center';
 
 /** A glyph with a URL is a link that opens in a new tab; one without stays a plain icon (D-07). */
-export function SocialIcons({ links }: { links: Record<Network, string | null> }) {
+export function SocialIcons({ links, linkedOnly = false }: { links: Record<Network, string | null>; linkedOnly?: boolean }) {
     return (
         <div className="flex">
-            {ORDER.map(network => {
+            {ORDER.filter(network => !linkedOnly || links[network]).map(network => {
                 const icon = (
                     <svg viewBox="0 0 24 24" width={24} height={24} fill="currentColor" fillRule="evenodd" aria-hidden="true">
                         <path d={GLYPHS[network]} />

@@ -12,7 +12,8 @@ Blacktail goes from an empty repo to a launched Blacktail Archive storefront in 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [x] **Phase 1: Live Stock Skeleton** - Deployed Worker shows real How many stock and refreshes within seconds of a signed webhook (completed 2026-10-26)
+- [x] **Phase 1: Live Stock Skeleton** - Deployed Worker shows real How many stock and refreshes within seconds of a signed webhook
+ (completed 2026-10-26)
 - [x] **Phase 2: Branded Catalogue** - Blacktail Archive look, header and footer, and the full All Items browse, filter, search, sort and paging (completed 2026-11-02)
 - [x] **Phase 3: Item and Brand Pages** - Item page with gallery, details and where to buy, real 404s, JSON-LD, and Brands pages with logos (completed 2026-11-03)
 - [ ] **Phase 4: Home and Launch** - Mockup home page, Just Dropped, About and Contact, site-wide SEO, and the second-shop onboarding doc
@@ -121,7 +122,24 @@ Plans:
   4. Every page has its own title, description and Open Graph tags (item links preview with the item's name and cover photo); a sitemap lists all pages and in-stock items and refreshes with the store tag; robots blocks indexing outside production
   5. Following the onboarding doc, someone can deploy the template for another shop (env, Cloudflare R2, D1 and Worker setup, assets) without editing any component
 
-**Plans**: TBD
+**Plans:** 5/5 plans executed
+
+Plans:
+**Wave 1**
+- [x] 04-01-PLAN.md — Tracer: ALLOW_INDEXING drives robots.txt, robots meta and the X-Robots-Tag header; dynamic sitemap through the tagged client; pageMetadata (title, description, Open Graph) on the existing pages; og-default placeholder
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [x] 04-02-PLAN.md — Tracer: / is the home page (redirect removed): hero, Just Dropped carousel of the 10 newest with arrows, two promo banners, story band, fixed image slots with placeholders, New badge at 14 days
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [x] 04-03-PLAN.md — Tracer: brand strip (in stock, sold before, default order) and shop-by-category tiles that hide without stock, both from tested pure functions and shop config
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [x] 04-04-PLAN.md — Tracer: /just-dropped is the catalogue locked to newest; About and Contact from src/shop (no form); the built-pages stopgap is deleted
+
+**Wave 5** *(blocked on Wave 4 completion)*
+- [x] 04-05-PLAN.md — Tracer: workerd proof of home, pages, robots and sitemap (flag off and on), phase PR; one-switch deploy, workers.dev and preview URLs off; docs/ONBOARDING.md with a drift test; UAT comment
+
 **UI hint**: yes
 
 ## Progress
@@ -134,4 +152,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Live Stock Skeleton | 4/4 | Complete    | 2026-10-26 |
 | 2. Branded Catalogue | 10/10 | Complete    | 2026-11-02 |
 | 3. Item and Brand Pages | 4/4 | Complete    | 2026-11-03 |
-| 4. Home and Launch | 0/TBD | Not started | - |
+| 4. Home and Launch | 5/5 | In Progress | - |
