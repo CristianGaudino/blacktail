@@ -10,7 +10,7 @@ const valid = {
 
 const setEnv = (vars: Record<string, string | undefined>) => {
     vi.unstubAllEnvs();
-    for (const [k, v] of Object.entries({ ...Object.fromEntries(Object.keys(valid).map(k => [k, undefined])), ...vars })) {
+    for (const [k, v] of Object.entries({ ...Object.fromEntries([...Object.keys(valid), 'ALLOW_INDEXING'].map(k => [k, undefined])), ...vars })) {
         vi.stubEnv(k, v as string);
     }
 };
@@ -72,6 +72,22 @@ describe('env', () => {
         expect(message()).toMatch(/SITE_URL/);
         setEnv({ ...valid, HOWMANY_WEBHOOK_SECRET: '123456789012345' });
         expect(message()).toMatch(/HOWMANY_WEBHOOK_SECRET: must be at least 16/);
+    });
+
+    it('reads ALLOW_INDEXING as a flag, off when absent', () => {
+        setEnv(valid);
+        expect(storeEnv().ALLOW_INDEXING).toBe(false);
+        setEnv({ ...valid, ALLOW_INDEXING: 'true' });
+        expect(storeEnv().ALLOW_INDEXING).toBe(true);
+        setEnv({ ...valid, ALLOW_INDEXING: 'false' });
+        expect(storeEnv().ALLOW_INDEXING).toBe(false);
+    });
+
+    it('rejects an ALLOW_INDEXING value that is not true or false', () => {
+        for (const value of ['yes', '', 'TRUE']) {
+            setEnv({ ...valid, ALLOW_INDEXING: value });
+            expect(message(), value).toMatch(/ALLOW_INDEXING: must be true or false/);
+        }
     });
 
     it('never puts a secret value in the message', () => {

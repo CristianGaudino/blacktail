@@ -67,11 +67,12 @@ export const getItem = cache(async (code: string): Promise<Item | null> => {
 
 /**
  * One page of /items. `search` is the canonical query string (not an object) because cache() keys on
- * identity; limit is always sent so every page is the same size.
+ * identity; limit is always sent so every page is the same size. Pages keep 24, the sitemap passes 100;
+ * both arguments are primitives, so cache() keys stay stable.
  */
-export const getItemsPage = cache(async (search: string): Promise<{ page: ItemsPage; asOf: string | null }> => {
+export const getItemsPage = cache(async (search: string, limit: number = CATALOGUE.pageSize): Promise<{ page: ItemsPage; asOf: string | null }> => {
     const params = new URLSearchParams(search);
-    params.set('limit', String(CATALOGUE.pageSize));
+    params.set('limit', String(limit));
     const { data, asOf } = await howmanyFetch('/items', itemsPageSchema, params);
     return { page: data, asOf };
 });

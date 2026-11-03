@@ -10,9 +10,14 @@ export const CACHE = {
     webhookRevalidate: { expire: 0 },
 } as const;
 
+/** Fixed files under public/ (D-02), the same names for every shop; a picture is replaced by overwriting its file */
+export const IMAGES = { ogDefault: '/images/og-default.jpg' } as const;
+
 /** How the catalogue page reads its URL. Param names equal the API's, so a shared link is also an API query */
 export const CATALOGUE = {
     pageSize:      24,
+    /** The API maximum, so a 300-piece shop is three reads for the sitemap */
+    sitemapPageSize: 100,
     /** The first row on the widest grid loads eagerly, the rest lazily */
     eagerImages:   4,
     /** Newest pieces shown on the gone-item page (D-09) */
