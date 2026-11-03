@@ -2,7 +2,7 @@ import { readdirSync } from 'node:fs';
 import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
 import { BRAND_LOGOS } from '@/shop/brand-logos';
-import { brandIndex, brandSlug, linkableSlug } from './brands';
+import { brandBySlug, brandIndex, brandSlug, linkableSlug, SOLD_BEFORE_BRANDS } from './brands';
 
 describe('brandSlug', () => {
     it.each([
@@ -45,6 +45,14 @@ describe('BRAND_LOGOS', () => {
         expect([...BRAND_LOGOS].sort()).toEqual(files);
         for (const slug of BRAND_LOGOS) expect(brandSlug(slug)).toBe(slug);
     });
+});
+
+describe('brandBySlug', () => {
+    it('resolves an in-stock brand', () => expect(brandBySlug('acme', ['Acme', 'Northwind'], [])).toBe('Acme'));
+    it('resolves a sold-before brand with no stock', () => expect(brandBySlug('barbour', ['Acme'], ['Barbour'])).toBe('Barbour'));
+    it('gives undefined for a slug in neither list', () => expect(brandBySlug('not-a-brand', ['Acme'], ['Barbour'])).toBeUndefined());
+    it('lets the in-stock name win a slug collision', () => expect(brandBySlug('levis', ['LEVIS'], ["Levi's"])).toBe('LEVIS'));
+    it('ships an empty sold-before list until BRAND-05', () => expect(SOLD_BEFORE_BRANDS).toEqual([]));
 });
 
 describe('linkableSlug', () => {

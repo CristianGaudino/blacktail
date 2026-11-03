@@ -35,6 +35,12 @@ export const SHOP = {
         about: 'The story behind the shop and why we love pre-loved clothing.',
         contact: 'How to reach the shop, and where to find our pieces on Vinted and eBay.',
     },
+    /**
+     * Ranks the home brand strip inside its in-stock and sold-before tiers (D-08); it never adds a brand. Names match by slug, so Levi's equals LEVIS.
+     * The rest follow A to Z.
+     */
+    // PENDING-OWNER (D-08): the owner's preferred order; only this array changes
+    defaultBrandOrder: ['Polo Ralph Lauren', 'Carhartt', 'Nike', 'Adidas', "Levi's", 'Barbour', 'The North Face', 'Patagonia'] as readonly string[],
     /** Home page words (Phase 4 D-03), stored in normal case: CSS uppercases the headings and eyebrows. */
     home: {
         hero: {
@@ -42,6 +48,7 @@ export const SHOP = {
             headline: ['Timeless clothes.', 'Just different.'],
             button:   'Shop new arrivals',
         },
+        brands: { heading: 'Shop by brand' },
         justDropped: {
             heading: 'Just dropped',
             eyebrow: 'New arrivals weekly',

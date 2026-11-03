@@ -23,6 +23,8 @@ export const IMAGES = {
 export const HOME = {
     /** Newest pieces in the Just Dropped carousel */
     carouselItems: 10,
+    /** Brands in the home brand strip */
+    stripBrands: 16,
 } as const;
 
 /** How the catalogue page reads its URL. Param names equal the API's, so a shared link is also an API query */
