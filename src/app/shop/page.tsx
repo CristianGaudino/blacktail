@@ -11,10 +11,11 @@ import { canonicalUrl, listingRobots } from '@/lib/seo';
 // SITE_URL is read here, per request, never at module scope and never from the Host header
 export async function generateMetadata({ searchParams }: PageProps<'/shop'>): Promise<Metadata> {
     const query = parseCatalogueQuery(await searchParams, await getFilters());
+    const { ALLOW_INDEXING, SITE_URL } = storeEnv();
     return {
         title:      COPY.catalogue.title,
-        robots:     listingRobots(query),
-        alternates: { canonical: canonicalUrl(storeEnv().SITE_URL, query) },
+        robots:     listingRobots(query, ALLOW_INDEXING),
+        alternates: { canonical: canonicalUrl(SITE_URL, query) },
     };
 }
 

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { isIndexingOn } from '@/lib/indexing';
 
 // Every environment variable the app reads, validated in one place. A missing
 // or malformed value fails with a message naming it, instead of a 500 later.
@@ -14,6 +15,8 @@ const storeSchema = z.object({
     HOWMANY_API_URL:        z.url({ protocol: /^https?$/, ...msg('must be the store address from More > Online store') }).transform(url => url.replace(/\/+$/, '')),
     HOWMANY_WEBHOOK_SECRET: z.string(msg('must be the webhook secret')).min(16, 'must be at least 16 characters'),
     SITE_URL:               z.url({ protocol: /^https$/, ...msg('must be an https:// URL') }),
+    /** true only on the live site; set for the build and the Worker. Absent means off, a typo fails loudly (D-16) */
+    ALLOW_INDEXING:         z.enum(['true', 'false'], msg('must be true or false')).optional().transform(isIndexingOn),
 }).refine(
     // Runs even when other variables fail, so one pass lists every problem. A variable that failed is absent here.
     env => !env.STORE_SLUG || !env.HOWMANY_API_URL || new URL(env.HOWMANY_API_URL).pathname.endsWith(`/stores/${env.STORE_SLUG}`),

@@ -10,17 +10,20 @@ const query = (over: Partial<CatalogueQuery> = {}, lists: Partial<CatalogueQuery
 });
 
 describe('listingRobots', () => {
-    it('keeps a clean listing out of search while the site is not indexable', () => {
-        expect(listingRobots(query())).toEqual({ index: false, follow: false });
-        expect(listingRobots(query({ page: 2 }))).toEqual({ index: false, follow: false });
-        expect(listingRobots(query({ sort: 'newest' }))).toEqual({ index: false, follow: false });
+    it('follows the site switch for a clean listing', () => {
+        for (const q of [query(), query({ page: 2 }), query({ sort: 'newest' })]) {
+            expect(listingRobots(q, false)).toEqual({ index: false, follow: false });
+            expect(listingRobots(q, true)).toEqual({ index: true, follow: true });
+        }
     });
 
-    it('gives noindex, follow to filtered, searched, ranged and sorted listings', () => {
-        expect(listingRobots(query({}, { brand: ['Acme'] }))).toEqual({ index: false, follow: true });
-        expect(listingRobots(query({ q: 'coat' }))).toEqual({ index: false, follow: true });
-        expect(listingRobots(query({ sort: 'price_asc' }))).toEqual({ index: false, follow: true });
-        expect(listingRobots(query({ ranges: { price: { min: 2000, max: null }, pitToPit: { min: null, max: null }, length: { min: null, max: null } } }))).toEqual({ index: false, follow: true });
+    it('gives noindex, follow to filtered, searched, ranged and sorted listings with either value', () => {
+        const ranged = query({ ranges: { price: { min: 2000, max: null }, pitToPit: { min: null, max: null }, length: { min: null, max: null } } });
+        for (const indexable of [false, true]) {
+            for (const q of [query({}, { brand: ['Acme'] }), query({ q: 'coat' }), query({ sort: 'price_asc' }), ranged]) {
+                expect(listingRobots(q, indexable)).toEqual({ index: false, follow: true });
+            }
+        }
     });
 });
 

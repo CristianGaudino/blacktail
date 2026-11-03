@@ -23,10 +23,11 @@ export async function generateMetadata({ params, searchParams }: PageProps<'/bra
     const { filters, name } = await brandOf(slug);
     if (!name) return {};
     const query = parseCatalogueQuery(await searchParams, { ...filters, brand: [] });
+    const { ALLOW_INDEXING, SITE_URL } = storeEnv();
     return {
         title:      name,
-        robots:     listingRobots(query),
-        alternates: { canonical: canonicalUrl(storeEnv().SITE_URL, query, ROUTES.brand(slug)) },
+        robots:     listingRobots(query, ALLOW_INDEXING),
+        alternates: { canonical: canonicalUrl(SITE_URL, query, ROUTES.brand(slug)) },
     };
 }
 

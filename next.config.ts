@@ -1,16 +1,6 @@
 import type { NextConfig } from 'next';
+import { isIndexingOn, securityHeaders } from './src/lib/indexing';
 import { ROUTES } from './src/lib/routes';
-
-const SECURITY_HEADERS = [
-    // The unfinished site stays out of search engines. SEO-03 (Phase 4) makes this depend on the environment.
-    { key: 'X-Robots-Tag', value: 'noindex, nofollow' },
-    // Never render inside someone else's frame (clickjacking)
-    { key: 'X-Frame-Options', value: 'DENY' },
-    { key: 'X-Content-Type-Options', value: 'nosniff' },
-    { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
-    // HTTPS only, for two years, on this host and below it
-    { key: 'Strict-Transport-Security', value: 'max-age=63072000; includeSubDomains' },
-];
 
 const nextConfig: NextConfig = {
     poweredByHeader: false,
@@ -21,7 +11,8 @@ const nextConfig: NextConfig = {
         return [{ source: ROUTES.home, destination: ROUTES.shop, permanent: false }];
     },
     async headers() {
-        return [{ source: '/:path*', headers: SECURITY_HEADERS }];
+        // Fixed when `next build` runs, so the deploy workflow passes ALLOW_INDEXING to the build as well as to the Worker
+        return [{ source: '/:path*', headers: securityHeaders(isIndexingOn(process.env.ALLOW_INDEXING)) }];
     },
     turbopack: {
         rules: {
