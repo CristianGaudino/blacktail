@@ -30,6 +30,11 @@ describe('canonicalUrl', () => {
         expect(canonicalUrl('https://shop.test/', query())).toBe('https://shop.test/shop');
     });
 
+    it('uses another base path for a brand page', () => {
+        expect(canonicalUrl('https://shop.test', query({ sort: 'price_asc' }), '/brands/acme')).toBe('https://shop.test/brands/acme?sort=price_asc');
+        expect(canonicalUrl('https://shop.test', query(), '/brands/acme')).toBe('https://shop.test/brands/acme');
+    });
+
     it('uses the same sorted serialisation as links, including the page', () => {
         expect(canonicalUrl('https://shop.test', query({ page: 2 }, { brand: ['Acme'] }))).toBe('https://shop.test/shop?brand=Acme&page=2');
     });

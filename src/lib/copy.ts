@@ -68,6 +68,7 @@ export const COPY = {
         cmRange:       (from: string, to: string) => `${from} to ${to} cm`,
         pitToPitChip:  (from: string, to: string) => `Pit to pit ${from} to ${to} cm`,
         lengthChip:    (from: string, to: string) => `Length ${from} to ${to} cm`,
+        searchIn:      (name: string) => `Search ${name}`,
         searchChip:    (q: string) => `Search: "${q}"`,
         removeChip:    (label: string) => `Remove filter: ${label}`,
     },

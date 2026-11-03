@@ -144,6 +144,13 @@ describe('hrefs', () => {
         expect(pageHref(query, 1)).toBe('/shop?brand=Nike&sort=price_asc');
     });
 
+    it('builds links under another base path', () => {
+        expect(shopHref(query, '/brands/acme')).toBe('/brands/acme?brand=Nike&sort=price_asc');
+        expect(shopHref(parse({}), '/brands/acme')).toBe('/brands/acme');
+        expect(pageHref(query, 4, '/brands/acme')).toBe('/brands/acme?brand=Nike&page=4&sort=price_asc');
+        expect(pageHref(parse({}), 1, '/brands/acme')).toBe('/brands/acme');
+    });
+
     it('hasFilters is true for lists, ranges and q, and false for sort or page alone', () => {
         expect(hasFilters(parse({ brand: 'nike' }))).toBe(true);
         expect(hasFilters(parse({ minPrice: '2000' }))).toBe(true);

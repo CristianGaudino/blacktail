@@ -1,5 +1,8 @@
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
-import { brandSlug } from './brands';
+import { BRAND_LOGOS } from '@/shop/brand-logos';
+import { brandIndex, brandSlug } from './brands';
 
 describe('brandSlug', () => {
     it.each([
@@ -19,5 +22,27 @@ describe('brandSlug', () => {
     it('gives an empty slug for a name with no Latin letters or digits', () => {
         expect(brandSlug('東京')).toBe('');
         expect(brandSlug('***')).toBe('');
+    });
+});
+
+describe('brandIndex', () => {
+    it('sorts A to Z ignoring case', () => {
+        expect(brandIndex(['Northwind', 'acme', 'Mock Brand']).map(b => b.name)).toEqual(['acme', 'Mock Brand', 'Northwind']);
+    });
+
+    it('keeps one entry per slug, the first in API order', () => {
+        expect(brandIndex(['Stüssy', 'Stussy'])).toEqual([{ name: 'Stüssy', slug: 'stussy' }]);
+    });
+
+    it('drops a name with an empty slug', () => {
+        expect(brandIndex(['東京', 'Acme'])).toEqual([{ name: 'Acme', slug: 'acme' }]);
+    });
+});
+
+describe('BRAND_LOGOS', () => {
+    it('lists exactly the .svg files in public/brands, each already in slug form', () => {
+        const files = readdirSync(join(process.cwd(), 'public', 'brands')).filter(f => f.endsWith('.svg')).map(f => f.slice(0, -4)).sort();
+        expect([...BRAND_LOGOS].sort()).toEqual(files);
+        for (const slug of BRAND_LOGOS) expect(brandSlug(slug)).toBe(slug);
     });
 });

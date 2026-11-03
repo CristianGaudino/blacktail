@@ -85,6 +85,13 @@ describe('FilterPanel', () => {
         expect(closed).toMatch(/<details[^>]*open[^>]*>\s*<summary[^>]*>\s*<span[^>]*>Brand/);
     });
 
+    it('posts to its base path and shows no Brand group when the brand list is empty', () => {
+        const html = renderToStaticMarkup(createElement(FilterPanel, { filters: filters({ brand: [] }), query: query(), currency: 'EUR', mode: 'instant', basePath: '/brands/acme' }));
+        expect(html).toContain('action="/brands/acme"');
+        expect(html).not.toContain('name="brand"');
+        expect(headings(html)).not.toContain('Brand');
+    });
+
     it('is a GET form to /shop with a no-JS Apply filters submit in instant mode', () => {
         const html = render(filters(), query());
         expect(html).toContain('action="/shop"');

@@ -11,7 +11,7 @@ import { ROUTES } from '@/lib/routes';
 type Chip = { key: string; text: string; href: string };
 
 /** One removable chip per choice, each linking to the same URL minus that choice (and minus page) */
-function buildChips(query: CatalogueQuery, filters: Filters, currency: string): Chip[] {
+function buildChips(query: CatalogueQuery, filters: Filters, currency: string, basePath: string): Chip[] {
     const chips: Chip[] = [];
     for (const key of CATALOGUE.lists) {
         for (const value of query.lists[key]) {
@@ -19,7 +19,7 @@ function buildChips(query: CatalogueQuery, filters: Filters, currency: string): 
             chips.push({
                 key:  `${key}:${value}`,
                 text: map ? label(value, map) : value,
-                href: shopHref({ ...query, lists: { ...query.lists, [key]: query.lists[key].filter(v => v !== value) } }),
+                href: shopHref({ ...query, lists: { ...query.lists, [key]: query.lists[key].filter(v => v !== value) } }, basePath),
             });
         }
     }
@@ -36,15 +36,15 @@ function buildChips(query: CatalogueQuery, filters: Filters, currency: string): 
         chips.push({
             key,
             text: rangeText[key](min ?? bounds.min, max ?? bounds.max),
-            href: shopHref({ ...query, ranges: { ...query.ranges, [key]: { min: null, max: null } } }),
+            href: shopHref({ ...query, ranges: { ...query.ranges, [key]: { min: null, max: null } } }, basePath),
         });
     }
-    if (query.q) chips.push({ key: 'q', text: COPY.catalogue.searchChip(query.q), href: shopHref({ ...query, q: '' }) });
+    if (query.q) chips.push({ key: 'q', text: COPY.catalogue.searchChip(query.q), href: shopHref({ ...query, q: '' }, basePath) });
     return chips;
 }
 
-export function FilterChips({ query, filters, currency }: { query: CatalogueQuery; filters: Filters; currency: string }) {
-    const chips = buildChips(query, filters, currency);
+export function FilterChips({ query, filters, currency, basePath = ROUTES.shop }: { query: CatalogueQuery; filters: Filters; currency: string; basePath?: string }) {
+    const chips = buildChips(query, filters, currency, basePath);
     if (chips.length === 0) return null;
     return (
         <ul className="mt-4 flex flex-wrap items-center gap-2">
@@ -62,7 +62,7 @@ export function FilterChips({ query, filters, currency }: { query: CatalogueQuer
                 </li>
             ))}
             <li>
-                <Link href={ROUTES.shop} prefetch={false} className="text-base text-forest underline underline-offset-4">{COPY.catalogue.clearAll}</Link>
+                <Link href={basePath} prefetch={false} className="text-base text-forest underline underline-offset-4">{COPY.catalogue.clearAll}</Link>
             </li>
         </ul>
     );
