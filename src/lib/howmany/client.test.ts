@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { getFilters, getItemsPage, getStore, HowManyError } from './client';
+import { getFilters, getItem, getItemsPage, getStore, HowManyError } from './client';
 
 const base = 'https://api.test/api/v1/stores/test-shop';
 const item = {
@@ -100,6 +100,49 @@ describe('how many client', () => {
     it('returns the response Date header as asOf', async () => {
         fetchMock.mockResolvedValue(reply(page([])));
         expect((await getItemsPage('')).asOf).toBe('Mon, 26 Oct 2026 14:00:00 GMT');
+    });
+
+    describe('getItem', () => {
+        it('fetches /items/{code} with the cache options, the store tag and no headers', async () => {
+            fetchMock.mockResolvedValue(reply(item));
+            await getItem('BT-0001');
+            const [url, init] = fetchMock.mock.calls[0];
+            expect(url).toBe(`${base}/items/BT-0001`);
+            expect(init.cache).toBe('force-cache');
+            expect(init.next).toEqual({ tags: ['store:test-shop'], revalidate: 600 });
+            expect(init).not.toHaveProperty('headers');
+        });
+
+        it('returns the parsed item and strips unknown fields', async () => {
+            fetchMock.mockResolvedValue(reply({ ...item, costCents: 5, notes: 'x' }));
+            const parsed = await getItem('BT-0001');
+            expect(parsed?.title).toBe('Wool coat');
+            expect(parsed).not.toHaveProperty('costCents');
+            expect(parsed).not.toHaveProperty('notes');
+        });
+
+        it('resolves null for a 404 (sold, hidden or unknown)', async () => {
+            fetchMock.mockResolvedValue(new Response('{}', { status: 404 }));
+            await expect(getItem('BT-0001')).resolves.toBeNull();
+        });
+
+        it('rejects with HowManyError for 429 and 500, so they never look like a not-found', async () => {
+            for (const status of [429, 500]) {
+                fetchMock.mockResolvedValue(new Response('{}', { status }));
+                await expect(getItem('BT-0001')).rejects.toMatchObject({ name: 'HowManyError', status });
+            }
+        });
+
+        it('resolves null without fetching for a badly shaped code', async () => {
+            for (const code of ['../filters', 'a b', '', 'A'.repeat(65), '-X']) await expect(getItem(code)).resolves.toBeNull();
+            expect(fetchMock).not.toHaveBeenCalled();
+        });
+
+        it('fetches a code with dots and underscores', async () => {
+            fetchMock.mockResolvedValue(reply(item));
+            await getItem('BT_0001.v2');
+            expect(fetchMock.mock.calls[0][0]).toBe(`${base}/items/BT_0001.v2`);
+        });
     });
 
     it('does not read env until called', async () => {

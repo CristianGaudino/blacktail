@@ -2,10 +2,10 @@ import 'server-only';
 import { cache } from 'react';
 import type { z } from 'zod';
 import { CACHE, CATALOGUE } from '@/lib/config';
-import type { Filters, ItemsPage, Store } from '@/lib/definitions';
+import type { Filters, Item, ItemsPage, Store } from '@/lib/definitions';
 import { storeEnv } from '@/lib/env';
 import { sortEntries } from '@/lib/params';
-import { filtersSchema, itemsPageSchema, storeSchema } from '@/lib/howmany/schemas';
+import { filtersSchema, itemSchema, itemsPageSchema, storeSchema } from '@/lib/howmany/schemas';
 
 /** The cache tag every How many read carries, and the webhook revalidates */
 export const storeTag = () => `store:${storeEnv().STORE_SLUG}`;
@@ -44,6 +44,24 @@ export async function getStore(): Promise<Store> {
  * cache() dedupes the Header, the page and generateMetadata into one read per request.
  */
 export const getFilters = cache(async (): Promise<Filters> => (await howmanyFetch('/filters', filtersSchema)).data);
+
+// A code that cannot exist never reaches the shared 3000/min API limit (RESEARCH A1: relax this if a real code fails)
+const ITEM_CODE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
+
+/**
+ * One /items/{code} read. null = the API does not show it (sold, hidden, unknown, or a badly shaped code);
+ * every other failure still throws, so a 429 or 500 reaches error.tsx and is never shown as a not-found.
+ * React cache() dedupes generateMetadata and the page (the AbortSignal opts out of Next's memoization).
+ */
+export const getItem = cache(async (code: string): Promise<Item | null> => {
+    if (!ITEM_CODE.test(code)) return null;
+    try {
+        return (await howmanyFetch(`/items/${encodeURIComponent(code)}`, itemSchema)).data;
+    } catch (error) {
+        if (error instanceof HowManyError && error.status === 404) return null;
+        throw error;
+    }
+});
 
 /**
  * One page of /items. `search` is the canonical query string (not an object) because cache() keys on

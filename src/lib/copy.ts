@@ -4,6 +4,7 @@ export const COPY = {
     common: {
         tryAgain:       'Try again',
         goHome:         'Go home',
+        shopAll:        'Shop all items',
         close:          'Close',
         opensInNewTab:  '(opens in a new tab)',
     },
@@ -124,8 +125,13 @@ export const COPY = {
     stock: {
         empty: 'Nothing is in stock right now. Please check back soon.',
     },
+    gone: {
+        title:  'This piece has found a new home',
+        body:   'It has sold or is no longer available. Here are our newest pieces.',
+        newest: 'Newest drops',
+    },
     status: {
-        errorTitle:   'Something went wrong',
+        errorTitle:  'Something went wrong',
         errorMessage: 'The shop could not be loaded. Please try again in a moment.',
         errorId:      (digest: string) => `Reference: ${digest}`,
     },
