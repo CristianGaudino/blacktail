@@ -328,13 +328,16 @@ export const inches = (mm: number): string => String(Math.round(mm / 25.4));   /
 | A5 | OpenNext on Workers preserves Next's 404 status for a dynamic page exactly as `next start` does | Summary | Not run on workerd (OpenNext cannot build on Windows). CI worker job must assert it; if it fails, the fix is in the adapter, not the page |
 | A6 | A `/brands` page route does not collide with the `public/brands/` directory in the assets binding | Brands page | Smoke test `/brands` and `/brands/nike.svg` on the Worker in CI |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Does the Worker (workerd + OpenNext) return 404 for a gone item right after a webhook?**
    - Known: `next start` does (reproduced); fetch cache never stores non-200 (`patch-fetch.js:707`: `if (res.status === 200 && incrementalCache && cacheKey && ...)`).
    - Unclear: workerd behaviour. Recommendation: CI worker job assertion described above is a phase gate, not optional.
+   - **Resolution:** gated by Plan 03-04. The CI worker job runs prove-freshness item-gone (a 404 right after the signed webhook) and the "Item and brand pages on the Worker" step. A 200 keeps the PR red and is reported as blocking.
 2. **`details` keys for real items.** Recommendation: render Material only from a string `details.material`; list it in the PR as "unconfirmed against live data".
+   - **Resolution:** Plan 03-01 Task 2 reads a top-level `material` first, then `details.material`. Issue #2 filters `material` as a top-level facet; live items checked on 2026-11-03 carry neither field. `itemSchema` gains an optional `material`, the mock moves material to the top level, and the PR lists it as unconfirmed.
 3. **Brand name vs logo filename mismatches in production** (`ralph-lauren` vs `polo-ralph-lauren`, `arcteryx`). Deferred by CONTEXT (no alias map); the Brands page falls back to the text tile, which is the designed degradation.
+   - **Resolution:** the alias map stays deferred (CONTEXT Deferred Ideas). Both ralph-lauren.svg and polo-ralph-lauren.svg ship and arcteryx.svg is already renamed. Any other mismatch shows the text tile.
 
 ## Environment Availability
 
