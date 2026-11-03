@@ -7,17 +7,17 @@ import { HeaderSearch } from './HeaderSearch';
 import { MobileMenu } from './MobileMenu';
 import { NavDropdown } from './NavDropdown';
 import { NavLink } from './NavLink';
+import { brandIndex } from '@/lib/brands';
 import { getFilters } from '@/lib/howmany/client';
 import { COPY } from '@/lib/copy';
 import { label } from '@/lib/labels';
 import { ROUTES } from '@/lib/routes';
-import { isBuilt } from '@/lib/utils';
 import logo from '@/shop/logo.svg';
 import { SHOP } from '@/shop/config';
 
 type NavItem = { label: string; href: string };
 
-const shopHref = (key: 'type' | 'brand', value: string) => `${ROUTES.shop}?${new URLSearchParams({ [key]: value })}`;
+const typeHref = (value: string) => `${ROUTES.shop}?${new URLSearchParams({ type: value })}`;
 
 /** Decorative, like the mockup: not focusable, no handler (D-08) */
 const iconSlot = 'size-11 items-center justify-center';
@@ -39,12 +39,12 @@ export async function Header() {
 
     const typeLinks: NavItem[]  = [
         { label: COPY.nav.allItems, href: ROUTES.shop },
-        ...types.map(value => ({ label: label(value, COPY.labels.type), href: shopHref('type', value) })),
+        ...types.map(value => ({ label: label(value, COPY.labels.type), href: typeHref(value) })),
     ];
     const brandLinks: NavItem[] = [
-        ...brands.map(value => ({ label: value, href: shopHref('brand', value) })),
+        ...brandIndex(brands).map(({ name, slug }) => ({ label: name, href: ROUTES.brand(slug) })),
         { label: COPY.nav.allBrands, href: ROUTES.brands },
-    ].filter(link => isBuilt(link.href));
+    ];
 
     return (
         <header className="sticky top-0 z-40 border-b border-stone bg-ivory">

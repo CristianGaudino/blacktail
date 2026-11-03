@@ -1,4 +1,7 @@
+import { readdirSync } from 'node:fs';
+import { join } from 'node:path';
 import { describe, expect, it } from 'vitest';
+import { BRAND_LOGOS } from '@/shop/brand-logos';
 import { brandIndex, brandSlug } from './brands';
 
 describe('brandSlug', () => {
@@ -33,5 +36,13 @@ describe('brandIndex', () => {
 
     it('drops a name with an empty slug', () => {
         expect(brandIndex(['東京', 'Acme'])).toEqual([{ name: 'Acme', slug: 'acme' }]);
+    });
+});
+
+describe('BRAND_LOGOS', () => {
+    it('lists exactly the .svg files in public/brands, each already in slug form', () => {
+        const files = readdirSync(join(process.cwd(), 'public', 'brands')).filter(f => f.endsWith('.svg')).map(f => f.slice(0, -4)).sort();
+        expect([...BRAND_LOGOS].sort()).toEqual(files);
+        for (const slug of BRAND_LOGOS) expect(brandSlug(slug)).toBe(slug);
     });
 });
