@@ -7,9 +7,9 @@ import { ItemGallery } from '@/components/item/ItemGallery';
 import { ItemJsonLd } from '@/components/item/ItemJsonLd';
 import { MoreFromBrand } from '@/components/item/MoreFromBrand';
 import { WhereToBuy } from '@/components/item/WhereToBuy';
-import { brandSlug } from '@/lib/brands';
+import { brandIndex, brandSlug } from '@/lib/brands';
 import { storeEnv } from '@/lib/env';
-import { getItem, getItemsPage } from '@/lib/howmany/client';
+import { getFilters, getItem, getItemsPage } from '@/lib/howmany/client';
 import { formatMoney } from '@/lib/money';
 import { ROUTES } from '@/lib/routes';
 
@@ -30,7 +30,10 @@ export default async function ItemPage({ params }: PageProps<'/items/[code]'>) {
     const item = await getItem((await params).code);
     // Thrown from the page body, before any output, this is a real 404 (from generateMetadata it would be a 200)
     if (!item) notFound();
-    const slug = item.brand ? brandSlug(item.brand) : '';
+    // Two names can share a slug (Arc'teryx, Arcteryx): only link to a brand page that shows this brand. A failed /filters read keeps the link.
+    const own = item.brand ? brandSlug(item.brand) : '';
+    const filters = own ? await getFilters().catch(() => null) : null;
+    const slug = !filters || brandIndex(filters.brand.map(f => f.value)).find(b => b.slug === own)?.name === item.brand ? own : '';
     // Exactly the query of page 1 of the brand page (never a limit of our own), so this shares its cache entry and adds no API call.
     // A failed read hides the row instead of showing the error screen.
     const more = item.brand

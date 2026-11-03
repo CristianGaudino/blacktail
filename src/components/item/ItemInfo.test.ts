@@ -94,6 +94,10 @@ describe('ItemJsonLd', () => {
         expect(JSON.parse(ldBody(ld({ priceCents: 11950 }))).offers.price).toBe('119.50');
     });
 
+    it('leaves out image when the piece has no photos', () => {
+        expect(JSON.parse(ldBody(ld({ photos: [] }))).image).toBeUndefined();
+    });
+
     it('leaves out the brand when there is none, and never carries the code, details or cost', () => {
         expect(JSON.parse(ldBody(ld({ brand: null }))).brand).toBeUndefined();
         const leaky = ld({ details: { costCents: 'SECRET' }, notes: 'SECRET' } as unknown as Partial<Item>);
