@@ -1,5 +1,7 @@
 import type { Metadata } from 'next';
 import { connection } from 'next/server';
+import { BrandStrip } from '@/components/home/BrandStrip';
+import { CategoryTiles } from '@/components/home/CategoryTiles';
 import { HeroBanner } from '@/components/home/HeroBanner';
 import { JustDropped } from '@/components/home/JustDropped';
 import { PromoBanners } from '@/components/home/PromoBanners';
@@ -24,8 +26,10 @@ export default async function HomePage() {
     return (
         <main>
             <HeroBanner />
+            <BrandStrip />
             <JustDropped />
             <PromoBanners />
+            <CategoryTiles />
             <StoryBand />
         </main>
     );

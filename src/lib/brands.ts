@@ -15,6 +15,13 @@ export function brandIndex(names: string[]): { name: string; slug: string }[] {
         .sort((a, b) => collator.compare(a.name, b.name));
 }
 
+/** BRAND-05: How many does not provide sold-before brands yet. The strip and /brands/[slug] both read this one list, so only it changes when the data arrives */
+export const SOLD_BEFORE_BRANDS: readonly string[] = [];
+
+/** D-21: the brand name a slug resolves to, among the in-stock names then the sold-before names (in-stock first, so it wins a collision); undefined is a 404 */
+export const brandBySlug = (slug: string, inStock: string[], soldBefore: readonly string[]): string | undefined =>
+    brandIndex([...inStock, ...soldBefore]).find(b => b.slug === slug)?.name;
+
 /** The slug to link a brand name to, or '' when none: a name with no slug, or one that lost a slug collision to another name, has no page of its own */
 export const linkableSlug = (name: string, names: string[]): string => {
     const slug = brandSlug(name);

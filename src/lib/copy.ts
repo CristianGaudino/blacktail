@@ -152,6 +152,7 @@ export const COPY = {
         condition: (condition: string) => `Condition ${condition}`,
     },
     home: {
+        viewAllBrands: 'View all brands',
         previous: 'Previous items',
         next:     'Next items',
     },

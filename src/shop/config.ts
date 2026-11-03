@@ -35,12 +35,31 @@ export const SHOP = {
         about: 'The story behind the shop and why we love pre-loved clothing.',
         contact: 'How to reach the shop, and where to find our pieces on Vinted and eBay.',
     },
+    /**
+     * Ranks the home brand strip inside its in-stock and sold-before tiers (D-08); it never adds a brand. Names match by slug, so Levi's equals LEVIS.
+     * The rest follow A to Z.
+     */
+    // PENDING-OWNER (D-08): the owner's preferred order; only this array changes
+    defaultBrandOrder: ['Polo Ralph Lauren', 'Carhartt', 'Nike', 'Adidas', "Levi's", 'Barbour', 'The North Face', 'Patagonia'] as readonly string[],
     /** Home page words (Phase 4 D-03), stored in normal case: CSS uppercases the headings and eyebrows. */
     home: {
         hero: {
             eyebrow:  'Pre-loved',
             headline: ['Timeless clothes.', 'Just different.'],
             button:   'Shop new arrivals',
+        },
+        brands: { heading: 'Shop by brand' },
+        categories: {
+            heading:    'Shop by category',
+            exploreAll: 'Explore all pieces',
+            // PENDING-OWNER (D-05): up to 4 tiles. The owner confirmed Shirts as the fourth (D-22); the mockup's Accessories has no type code.
+            // A tile hides when its type has no stock. Still one entry to change.
+            tiles: [
+                { type: 'jacket', label: 'Jackets',  image: '/images/category-1.jpg' },
+                { type: 'knit',   label: 'Knitwear', image: '/images/category-2.jpg' },
+                { type: 'jeans',  label: 'Denim',    image: '/images/category-3.jpg' },
+                { type: 'shirt',  label: 'Shirts',   image: '/images/category-4.jpg' },
+            ],
         },
         justDropped: {
             heading: 'Just dropped',
