@@ -12,8 +12,11 @@ export const CACHE = {
 
 /** Fixed files under public/ (D-02), the same names for every shop; a picture is replaced by overwriting its file */
 export const IMAGES = {
-    ogDefault: '/images/og-default.jpg',
-    hero:      '/images/hero.jpg',
+    ogDefault:         '/images/og-default.jpg',
+    hero:              '/images/hero.jpg',
+    bannerJustDropped: '/images/banner-just-dropped.jpg',
+    bannerBrands:      '/images/banner-brands.jpg',
+    story:             '/images/story.jpg',
 } as const;
 
 /** The home page (D-12) */

@@ -2,6 +2,8 @@ import type { Metadata } from 'next';
 import { connection } from 'next/server';
 import { HeroBanner } from '@/components/home/HeroBanner';
 import { JustDropped } from '@/components/home/JustDropped';
+import { PromoBanners } from '@/components/home/PromoBanners';
+import { StoryBand } from '@/components/home/StoryBand';
 import { storeEnv } from '@/lib/env';
 import { ROUTES } from '@/lib/routes';
 import { pageMetadata } from '@/lib/seo';
@@ -23,6 +25,8 @@ export default async function HomePage() {
         <main>
             <HeroBanner />
             <JustDropped />
+            <PromoBanners />
+            <StoryBand />
         </main>
     );
 }

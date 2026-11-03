@@ -46,6 +46,23 @@ export const SHOP = {
             heading: 'Just dropped',
             eyebrow: 'New arrivals weekly',
         },
+        promos: {
+            justDropped: {
+                title:  'Just dropped',
+                body:   'Fresh arrivals. Iconic brands. One-of-a-kind pieces. Be the first to find them before they are gone.',
+                button: 'Shop Just Dropped',
+            },
+            brands: {
+                eyebrow: 'Pre-loved',
+                title:   'Iconic brands. Real style.',
+                button:  'Shop all brands',
+            },
+        },
+        story: {
+            heading: 'A more conscious way to shop.',
+            body:    'Pre-loved pieces. Longer lives. Better choices.',
+            button:  'Our story',
+        },
     },
     /** A piece published within this many days shows the New badge, everywhere (Phase 4 D-11). */
     newBadgeDays: 14,
