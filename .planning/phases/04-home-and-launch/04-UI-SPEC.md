@@ -1,10 +1,11 @@
 ---
 phase: "04"
 slug: "home-and-launch"
-status: draft
+status: approved
 shadcn_initialized: false
 preset: none
 created: "2026-11-03"
+reviewed_at: "2026-11-03"
 ---
 
 # Phase 04 - UI Design Contract
