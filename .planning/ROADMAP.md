@@ -184,7 +184,17 @@ Plans:
   3. A hidden, deleted or unknown item, or a code of the wrong shape, still returns a real 404 with the newest drops, including on the deployed site right after the webhook for a piece that was just hidden or deleted
   4. A piece with `listings` shows one button per listing, labelled with the platform name from config, and each opens that exact listing in a new tab
   5. A piece with an empty `listings` shows the shop's Vinted and eBay profile links from config, as it does today
-**Plans**: TBD
+**Plans:** 3 plans
+
+Plans:
+**Wave 1**
+- [ ] 05-01-PLAN.md — Tracer: a just-sold piece flips to a 200 Sold page (badge, Sold on date, sold panel, SoldOut, noindex) and a just-hidden piece to a 404 after the webhook
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [ ] 05-02-PLAN.md — Tracer: per-item "Buy on <Platform>" buttons to the exact https listings, profile links when there are none
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [ ] 05-03-PLAN.md — Tracer: workerd proof of the Sold flip, the hidden 404 and the listing buttons; phase PR (Closes #13) and UAT list
 **UI hint**: yes
 
 #### Phase 6: Sold-Before Brands, Spotlight and Docs
