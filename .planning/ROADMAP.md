@@ -185,14 +185,14 @@ Plans:
   4. A piece with `listings` shows one button per listing, labelled with the platform name from config, and each opens that exact listing in a new tab
   5. A piece with an empty `listings` shows the shop's Vinted and eBay profile links from config, as it does today
 
-**Plans:** 1/4 plans executed
+**Plans:** 2/4 plans executed
 
 Plans:
 **Wave 1**
 - [x] 05-01-PLAN.md — Tracer: a just-sold piece flips to a 200 Sold page (Sold on date, sold panel, SoldOut, noindex, out of /shop and More from) and a just-hidden piece to a 404 after the webhook; a sold piece with no price, date or photos still renders
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 05-02-PLAN.md — Tracer: the Sold badge on the cover photo (also with no photos); the sold edge cases pinned by unit tests
+- [x] 05-02-PLAN.md — Tracer: the Sold badge on the cover photo (also with no photos); the sold edge cases pinned by unit tests
 
 **Wave 3** *(blocked on Wave 2 completion)*
 - [ ] 05-03-PLAN.md — Tracer: per-item "Buy on <Platform>" buttons to the exact https listings, profile links when there are none
@@ -227,5 +227,5 @@ Phases execute in numeric order: 5 → 6
 | 2. Branded Catalogue | v1.0 | 10/10 | Complete | 2026-11-02 |
 | 3. Item and Brand Pages | v1.0 | 4/4 | Complete | 2026-11-03 |
 | 4. Home and Launch | v1.0 | 5/5 | Complete | 2026-11-03 |
-| 5. Sold Item Pages and Listing Links | v1.1 | 1/4 | In Progress | - |
+| 5. Sold Item Pages and Listing Links | v1.1 | 2/4 | In Progress | - |
 | 6. Sold-Before Brands, Spotlight and Docs | v1.1 | 0/0 | Not started | - |
