@@ -93,7 +93,9 @@ jobs:
       # The mock's second cheapest piece costs 1250 cents: workerd's ICU must print it as en-IE
       - name: Money is formatted as en-IE on the Worker
         run: curl -s --max-time 30 'http://127.0.0.1:8787/shop?sort=price_asc' | grep -q '€12.50'
-      # The just-sold 404 right after the webhook is proven by the prove-freshness item-gone check in the runs around this step
+      # The Sold page (200 with the Sold line, SoldOut, noindex and no price, also with no price, date or photos), its exclusion from /shop,
+      # /just-dropped, the home carousel and More from, and the hidden-piece 404 right after the webhook are proven by the prove-freshness
+      # item-sold, item-sold-bare and item-hidden checks in the runs around this step
       - name: Item and brand pages on the Worker
         run: |
           B=http://127.0.0.1:8787
@@ -102,6 +104,14 @@ jobs:
           item=$(body /items/MOCK-0001)
           for s in 'application/ld+json' 'https://schema.org/InStock' 'More from Mock Brand'; do printf '%s' "$item" | grep -qF "$s" || { echo "item page lacks: $s"; exit 1; }; done
           test "$(code /items/MOCK-0001)" = 200 || { echo 'item page is not 200'; exit 1; }
+          printf '%s' "$item" | grep -qF 'Visit us on' || { echo 'MOCK-0001 lacks the profile fallback: Visit us on'; exit 1; }
+          test "$(code /items/MOCK-0003)" = 200 || { echo 'MOCK-0003 is not 200'; exit 1; }
+          listed=$(body /items/MOCK-0003)
+          for u in https://www.ebay.ie/itm/mock-3 https://www.vinted.ie/items/mock-3; do
+            printf '%s' "$listed" | grep -qE "<a [^>]*href=\"$u\"[^>]*target=\"_blank\"[^>]*rel=\"noopener noreferrer\"" || { echo "MOCK-0003 has no new-tab anchor to $u"; exit 1; }
+          done
+          for s in 'Buy on eBay' 'Buy on Vinted'; do printf '%s' "$listed" | grep -qF "$s" || { echo "MOCK-0003 lacks: $s"; exit 1; }; done
+          if printf '%s' "$listed" | grep -qF 'Visit us on'; then echo 'MOCK-0003 shows the profile panel despite its listings'; exit 1; fi
           test "$(code /items/NOPE-0000)" = 404 || { echo 'unknown item is not 404'; exit 1; }
           test "$(code /no-such-page)" = 404 || { echo 'unknown page is not 404'; exit 1; }
           test "$(code /brands)" = 200 || { echo '/brands is not 200'; exit 1; }
@@ -152,7 +162,7 @@ jobs:
       # the indexing unit test covers securityHeaders(true) and the deploy smoke checks it live.
       - name: "Indexing on: robots, sitemap and the robots meta follow ALLOW_INDEXING"
         run: |
-          curl -s -X POST -d '{"status":200,"gone":[]}' http://127.0.0.1:4010/__set
+          curl -s -X POST -d '{"status":200,"gone":["MOCK-0002"],"hidden":[]}' http://127.0.0.1:4010/__set
           pkill -f wrangler || true
           pkill -f workerd || true
           sleep 3
@@ -166,11 +176,27 @@ jobs:
           printf '%s\n' "$robots" | grep -qxF "Sitemap: $SITE_URL/sitemap.xml" || { echo 'robots.txt has no absolute Sitemap line'; exit 1; }
           printf '%s\n' "$robots" | grep -qx 'Disallow: /api/' || { echo 'robots.txt does not disallow /api/'; exit 1; }
           if printf '%s\n' "$robots" | grep -qx 'Disallow: /'; then echo 'robots.txt still disallows everything'; exit 1; fi
-          sitemap=$(body /sitemap.xml)
+          # The webhook refreshes the store tag so the sitemap and the list pages read the mock with MOCK-0002 sold even if an earlier run cached the list
+          body_json=$(printf '{"store":"%s","event":"store.updated","at":"%s"}' "$STORE_SLUG" "$(date -u +%Y-%m-%dT%H:%M:%S.000Z)")
+          ts=$(date +%s)
+          sig=$(printf '%s.%s' "$ts" "$body_json" | openssl dgst -sha256 -hmac "$HOWMANY_WEBHOOK_SECRET" | awk '{print $NF}')
+          status=$(curl -s -o /dev/null -w '%{http_code}' --max-time 30 -X POST -H "x-howmany-timestamp: $ts" -H "x-howmany-signature: $sig" -d "$body_json" "$B/api/webhooks/howmany")
+          [ "$status" = 204 ] || { echo "signed webhook returned $status, expected 204"; exit 1; }
+          for i in $(seq 1 10); do
+            sitemap=$(body /sitemap.xml)
+            printf '%s' "$sitemap" | grep -qF "<loc>$SITE_URL/items/MOCK-0002</loc>" || break
+            sleep 1
+          done
+          if printf '%s' "$sitemap" | grep -qF "<loc>$SITE_URL/items/MOCK-0002</loc>"; then echo 'the sitemap still lists the sold MOCK-0002'; exit 1; fi
           for s in "<loc>$SITE_URL/items/MOCK-0001</loc>" "<loc>$SITE_URL/brands/mock-brand</loc>"; do
             printf '%s' "$sitemap" | grep -qF "$s" || { echo "sitemap lacks: $s"; exit 1; }
           done
           body /shop | grep -qF 'content="index, follow"' || { echo '/shop does not say index, follow'; exit 1; }
+          for p in /shop /just-dropped /; do
+            page=$(body "$p")
+            printf '%s' "$page" | grep -qF 'href="/items/MOCK-0001"' || { echo "$p does not list MOCK-0001"; exit 1; }
+            if printf '%s' "$page" | grep -qF 'href="/items/MOCK-0002"'; then echo "$p still lists the sold MOCK-0002"; exit 1; fi
+          done
       - name: A Worker without its secret refuses to serve
         run: |
           pkill -f wrangler || true
