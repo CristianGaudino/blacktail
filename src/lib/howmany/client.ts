@@ -6,6 +6,7 @@ import type { Filters, ItemDetail, ItemsPage, Store } from '@/lib/definitions';
 import { storeEnv } from '@/lib/env';
 import { sortEntries } from '@/lib/params';
 import { filtersSchema, itemDetailSchema, itemsPageSchema, storeSchema } from '@/lib/howmany/schemas';
+import { SHOP } from '@/shop/config';
 
 /** The cache tag every How many read carries, and the webhook revalidates */
 export const storeTag = () => `store:${storeEnv().STORE_SLUG}`;
@@ -49,7 +50,7 @@ export const getFilters = cache(async (): Promise<Filters> => (await howmanyFetc
 // Next never stores a 404, so without this each request for a made-up code would reach the shared API limit.
 // shortcut: per isolate and short, so a piece shown again can take up to missingSeconds to reappear; share it (KV) only if that matters.
 const missing = new Map<string, number>();
-const ITEM_CODE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
+// A code that cannot exist never reaches the shared 3000/min API limit, and a made-up one fails here before any call: the shape is the shop's own (SHOP.itemCode)
 
 /**
  * One /items/{code} read. null = the API answered 404 (hidden, deleted, unknown) or the code is badly shaped.
@@ -58,7 +59,7 @@ const ITEM_CODE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
  * React cache() dedupes generateMetadata and the page (the AbortSignal opts out of Next's memoization).
  */
 export const getItem = cache(async (code: string): Promise<ItemDetail | null> => {
-    if (!ITEM_CODE.test(code)) return null;
+    if (!SHOP.itemCode.test(code)) return null;
     if ((missing.get(code) ?? 0) > Date.now()) return null;
     try {
         return (await howmanyFetch(`/items/${encodeURIComponent(code)}`, itemDetailSchema)).data;

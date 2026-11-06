@@ -72,7 +72,7 @@ export function ItemGallery({ photos, name, soldLabel }: { photos: ItemPhoto[]; 
                     <div className="absolute inset-0 flex flex-col gap-2 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                         {photos.map((photo, i) => (
                             <button
-                                key={photo.url}
+                                key={`${i}-${photo.url}`}
                                 type="button"
                                 aria-label={COPY.item.showPhoto(i + 1)}
                                 aria-current={i === index ? 'true' : undefined}
@@ -104,7 +104,7 @@ export function ItemGallery({ photos, name, soldLabel }: { photos: ItemPhoto[]; 
                     >
                         {photos.map((photo, i) => (
                             <div
-                                key={photo.url}
+                                key={`${i}-${photo.url}`}
                                 ref={el => { slides.current[i] = el; }}
                                 role="group"
                                 aria-roledescription="slide"
@@ -139,7 +139,7 @@ export function ItemGallery({ photos, name, soldLabel }: { photos: ItemPhoto[]; 
                         <div aria-hidden="true" className="mt-4 flex justify-center gap-2 lg:hidden">
                             {total > MAX_DOTS
                                 ? <span className="text-label uppercase text-olive">{COPY.item.position(index + 1, total)}</span>
-                                : photos.map((photo, i) => <span key={photo.url} className={cn('size-2 rounded-full', i === index ? 'bg-forest' : 'bg-stone')} />)}
+                                : photos.map((photo, i) => <span key={`${i}-${photo.url}`} className={cn('size-2 rounded-full', i === index ? 'bg-forest' : 'bg-stone')} />)}
                         </div>
                         <p className="sr-only" aria-live="polite">{COPY.item.photoOf(index + 1, total)}</p>
                     </>

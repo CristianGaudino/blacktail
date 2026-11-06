@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { CACHE } from '@/lib/config';
 import { getFilters, getItem, getItemsPage, getStore, HowManyError } from './client';
 
 const base = 'https://api.test/api/v1/stores/test-shop';
@@ -203,10 +204,26 @@ describe('how many client', () => {
             expect(fetchMock).not.toHaveBeenCalled();
         });
 
-        it('fetches a code with dots and underscores', async () => {
-            fetchMock.mockResolvedValue(reply(item));
-            await getItem('BT_0001.v2');
-            expect(fetchMock.mock.calls[0][0]).toBe(`${base}/items/BT_0001.v2`);
+        it('answers null without fetching for a code that is not in the shop\'s shape', async () => {
+            for (const code of ['BT_0001.v2', 'NOPE', 'ABCDEFG-1', 'BT-12x']) await expect(getItem(code)).resolves.toBeNull();
+            expect(fetchMock).not.toHaveBeenCalled();
+        });
+
+        it('forgets a 404 after missingSeconds and keeps at most missingMax codes', async () => {
+            vi.useFakeTimers();
+            try {
+                fetchMock.mockResolvedValue(reply({}, { status: 404 }));
+                await getItem('EXP-1');
+                vi.advanceTimersByTime(CACHE.missingSeconds * 1000 + 1);
+                await getItem('EXP-1');
+                expect(fetchMock).toHaveBeenCalledTimes(2);
+                fetchMock.mockClear();
+                for (let i = 0; i < CACHE.missingMax + 1; i++) await getItem(`CAP-${i}`);
+                await getItem('CAP-0');
+                expect(fetchMock).toHaveBeenCalledTimes(CACHE.missingMax + 2);
+            } finally {
+                vi.useRealTimers();
+            }
         });
     });
 
