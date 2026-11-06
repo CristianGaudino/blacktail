@@ -63,7 +63,7 @@ Blacktail is a Next.js storefront template that shows the stock a seller picks i
 
 | Piece | Rule |
 |-------|------|
-| Every API read | `fetch(url, { next: { tags: [\`store:${slug}\`], revalidate: 600 } })`. In Next 16 caching is opt-in, so omitting `next.tags`/`revalidate` means uncached and would hammer the 3000/min shared rate limit. Centralise in one `src/lib/howmany/client.ts` so no page calls `fetch` directly |
+| Every API read | `fetch(url, { next: { tags: [\`store:${slug}\`], revalidate: 600 } })`. In Next 16 caching is opt-in, so omitting `next.tags`/`revalidate` means uncached and would hammer the shared limit of 600 uncached requests a minute per IP. Centralise in one `src/lib/howmany/client.ts` so no page calls `fetch` directly |
 | Webhook route | `revalidateTag(\`store:${slug}\`, { expire: 0 })`. The one-argument form is deprecated in Next 16. `'max'` (Next's recommendation) serves stale content to the first visitor after a stock change; `{ expire: 0 }` makes the next request a blocking refetch, which matches the core value "always up to date" and a catalogue this small. Decide once, test it, put it in `config.ts` |
 | Do not call | `updateTag` (Server Actions only), `revalidatePath` (pulls in the soft-tag filter exception), `unstable_cache` (Vintage used it as a stopgap for storage figures; there is no need here because `fetch` tags cover everything) |
 | Webhook verification | `node:crypto` `createHmac` + `timingSafeEqual` as in issue #2; works under `nodejs_compat`. Read the raw body with `request.text()` before parsing. Return 204 fast |
