@@ -5,8 +5,8 @@ import type { Filters, Item } from '@/lib/definitions';
 
 /**
  * The brand strip order (D-07): brands in stock, then sold-before brands, each tier A to Z and then ranked by the shop's default order.
- * `soldBefore` is supplied by BRAND-05 (empty until How many provides it): sold-before brands show even with no stock and their
- * brand page renders the empty catalogue (D-21). A default-order brand that is in neither tier is never added (D-21).
+ * `soldBefore` comes from /filters `soldBrands` (BRAND-05); with none, the strip is the in-stock brands ranked by the default order, as in v1.0.
+ * Sold-before brands show even with no stock and their brand page renders the empty catalogue (D-21). A default-order brand that is in neither tier is never added (D-21).
  */
 export function stripBrands(inStock: string[], soldBefore: readonly string[], defaultOrder: readonly string[]): { name: string; slug: string }[] {
     const rank = defaultOrder.map(brandSlug);

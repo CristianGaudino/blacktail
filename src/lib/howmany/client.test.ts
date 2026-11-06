@@ -88,6 +88,31 @@ describe('how many client', () => {
         expect(filters.pitToPitMm).toBeNull();
         expect(filters.lengthMm).toBeNull();
         expect(filters).not.toHaveProperty('costCents');
+        expect(filters.soldBrands).toEqual([]);
+    });
+
+    describe('soldBrands', () => {
+        const sold = async (soldBrands: unknown) => {
+            fetchMock.mockResolvedValue(reply({ ...filtersBody, soldBrands }));
+            return (await getFilters()).soldBrands;
+        };
+
+        it('keeps plain names in API order', async () => {
+            expect(await sold(['Barbour', 'Zed'])).toEqual(['Barbour', 'Zed']);
+        });
+
+        it('takes the name of a { value, count } object', async () => {
+            expect(await sold([{ value: 'Old Mill', count: 2 }])).toEqual(['Old Mill']);
+        });
+
+        it('drops each bad entry alone and trims the good names, in order', async () => {
+            const bad = [5, null, '', '   ', { count: 1 }, { value: 7 }];
+            expect(await sold(['Barbour', ...bad, { value: ' Old Mill ', count: 2 }, ' Zed '])).toEqual(['Barbour', 'Old Mill', 'Zed']);
+        });
+
+        it('gives an empty list for a field that is a string, null or an object, without rejecting', async () => {
+            for (const value of ['Barbour', null, { value: 'Barbour' }]) expect(await sold(value)).toEqual([]);
+        });
     });
 
     it('ignores extra keys and unknown condition codes, and strips the extras', async () => {
