@@ -222,10 +222,10 @@ Tests the plan should include (all colocated Vitest, `environment: 'node'`):
 | A3 | `soldBrands` entries will be strings or `{ value, count }` | Pattern 1 | Unknown shape yields an empty tier (entries dropped), never an error; revisit when the seller has a sold brand |
 | A4 | A sold-before brand's `/items?brand=X` returns 200 with zero items (not 400) | Pitfall 2 | v1.0 built the empty screen for this; confirm once with the live API when a sold brand exists (`brand` accepts exact text, any case per the API contract) |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Real `soldBrands` shape.** Empty today. Tolerant parser covers both plausible shapes; re-check against the live API once the seller has a sold brand (CONTEXT canonical note already asks for this). Not blocking.
-2. **Does `soldBrands` include brands that are currently in stock?** `stripBrands` already excludes in-stock slugs from tier two (`homeSections.ts:18`), so either answer is safe.
+1. **Real `soldBrands` shape.** RESOLVED for planning: plan 06-03 uses a tolerant parser (strings or `{ value }`), and 06-04 carries a "Before merge: a live sample" check against the live API once the seller has a sold brand.
+2. **Does `soldBrands` include brands that are currently in stock?** RESOLVED: `stripBrands` already excludes in-stock slugs from tier two (`homeSections.ts:18`), so either answer is safe.
 
 ## Environment Availability
 
