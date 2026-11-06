@@ -2,20 +2,22 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { COPY } from '@/lib/copy';
-import type { Item } from '@/lib/definitions';
+import { ROUTES } from '@/lib/routes';
+import type { ItemDetail } from '@/lib/definitions';
 import { SHOP } from '@/shop/config';
 import { ItemDetails } from './ItemDetails';
 import { ItemJsonLd } from './ItemJsonLd';
+import { SoldNotice } from './SoldNotice';
 import { WhereToBuy } from './WhereToBuy';
 
-const item: Item = {
+const item: ItemDetail = {
     code: 'BT-0001', title: 'Wool coat', brand: 'Acme', category: 'clothing', type: null, size: 'L', condition: 'A', colour: 'Navy', era: '90s',
     department: 'mens', measurements: { pitToPitMm: 560, lengthMm: 700 }, details: {}, priceCents: 12000, currency: 'EUR',
     photos: [{ url: 'https://p.test/1.jpg', thumbUrl: 'https://p.test/1t.jpg', width: 800, height: 1000 }],
-    publishedAt: '2026-01-01T00:00:00Z',
+    publishedAt: '2026-01-01T00:00:00Z', soldAt: null, listings: [],
 };
-const details = (over: Partial<Item>) => renderToStaticMarkup(createElement(ItemDetails, { item: { ...item, ...over } }));
-const ld = (over: Partial<Item> = {}) => renderToStaticMarkup(createElement(ItemJsonLd, { item: { ...item, ...over }, url: 'https://shop.test/items/BT-0001' }));
+const details = (over: Partial<ItemDetail>) => renderToStaticMarkup(createElement(ItemDetails, { item: { ...item, ...over } }));
+const ld = (over: Partial<ItemDetail> = {}) => renderToStaticMarkup(createElement(ItemJsonLd, { item: { ...item, ...over }, url: 'https://shop.test/items/BT-0001' }));
 const ldBody = (html: string) => html.match(/<script[^>]*>([\s\S]*)<\/script>/)![1];
 
 describe('ItemDetails', () => {
@@ -64,7 +66,7 @@ describe('ItemDetails', () => {
 });
 
 describe('WhereToBuy', () => {
-    const html = renderToStaticMarkup(createElement(WhereToBuy));
+    const html = renderToStaticMarkup(createElement(WhereToBuy, { listings: [] }));
 
     it('links each platform profile in a new tab with rel noopener noreferrer', () => {
         for (const platform of SHOP.platforms) {
@@ -77,6 +79,42 @@ describe('WhereToBuy', () => {
     it('says the piece is listed on every platform', () => {
         for (const platform of SHOP.platforms) expect(html).toContain(platform.name);
         expect(html).toContain(COPY.item.listedOn('').trim());
+    });
+});
+
+describe('WhereToBuy with listings', () => {
+    const [first, second] = SHOP.platforms;
+    const render = (listings: ItemDetail['listings']) => renderToStaticMarkup(createElement(WhereToBuy, { listings }));
+    const anchors = (html: string) => html.match(/<a [^>]*>/g) ?? [];
+
+    it('shows one new-tab Buy on button per listing, in the given order, and no profile text', () => {
+        const listings = [
+            { platform: second!.name.toLowerCase(), url: 'https://listing.test/a' },
+            { platform: first!.name.toUpperCase(), url: 'https://listing.test/b' },
+        ];
+        const html = render(listings);
+        expect(anchors(html)).toHaveLength(2);
+        listings.forEach((listing, n) => {
+            expect(anchors(html)[n]).toMatch(new RegExp(`href="${listing.url}"[^>]*target="_blank"[^>]*rel="noopener noreferrer"`));
+        });
+        expect(html.indexOf(COPY.item.buyOn(second!.name))).toBeLessThan(html.indexOf(COPY.item.buyOn(first!.name)));
+        expect(html.match(new RegExp(COPY.common.opensInNewTab, 'g'))).toHaveLength(2);
+        expect(html).not.toContain(COPY.item.visitOn(first!.name));
+        expect(html).not.toContain(COPY.item.whereToBuyHelp);
+    });
+
+    it('labels an unknown platform with its host and never prints the code or the URL as text', () => {
+        const html = render([{ platform: 'nosuchplatform', url: 'https://www.example.test/item/1' }]);
+        expect(html).toContain(COPY.item.buyOn('example.test'));
+        expect(html).not.toContain('nosuchplatform');
+        expect(html.split('https://www.example.test/item/1')).toHaveLength(2);
+    });
+
+    it('names a platform once in the intro when two listings share it, with two buttons', () => {
+        const code = first!.name.toLowerCase();
+        const html = render([{ platform: code, url: 'https://listing.test/a' }, { platform: code, url: 'https://listing.test/b' }]);
+        expect(html).toContain(COPY.item.listedOn(first!.name));
+        expect(anchors(html)).toHaveLength(2);
     });
 });
 
@@ -94,15 +132,41 @@ describe('ItemJsonLd', () => {
         expect(JSON.parse(ldBody(ld({ priceCents: 11950 }))).offers.price).toBe('119.50');
     });
 
+    it('says SoldOut for a sold piece and keeps its asking price', () => {
+        const data = JSON.parse(ldBody(ld({ status: 'sold' })));
+        expect(data.offers).toMatchObject({ price: '120.00', availability: 'https://schema.org/SoldOut' });
+    });
+
+    it('leaves out the price key but keeps the currency for a sold piece with no price', () => {
+        const { offers } = JSON.parse(ldBody(ld({ status: 'sold', priceCents: null })));
+        expect(offers).not.toHaveProperty('price');
+        expect(offers).toMatchObject({ priceCurrency: 'EUR', availability: 'https://schema.org/SoldOut' });
+    });
+
     it('leaves out image when the piece has no photos', () => {
         expect(JSON.parse(ldBody(ld({ photos: [] }))).image).toBeUndefined();
     });
 
     it('leaves out the brand when there is none, and never carries the code, details or cost', () => {
         expect(JSON.parse(ldBody(ld({ brand: null }))).brand).toBeUndefined();
-        const leaky = ld({ details: { costCents: 'SECRET' }, notes: 'SECRET' } as unknown as Partial<Item>);
+        const leaky = ld({ details: { costCents: 'SECRET' }, notes: 'SECRET' } as unknown as Partial<ItemDetail>);
         expect(leaky).not.toContain('SECRET');
         const data = JSON.parse(ldBody(ld()));
         for (const key of ['sku', 'code', 'details']) expect(data).not.toHaveProperty(key);
+    });
+});
+
+describe('SoldNotice', () => {
+    const html = renderToStaticMarkup(createElement(SoldNotice));
+
+    it('says the piece is sold and links back to the stock', () => {
+        expect(html).toContain(COPY.item.soldMessage);
+        expect(html).toMatch(new RegExp(`<a [^>]*href="${ROUTES.shop}"[^>]*>[^<]*${COPY.common.shopAll}`));
+        expect(html).toMatch(new RegExp(`<a [^>]*href="${ROUTES.justDropped}"[^>]*>[^<]*${COPY.item.newestDrops}`));
+    });
+
+    it('opens nothing in a new tab and shows no price', () => {
+        expect(html).not.toContain('target=');
+        expect(html).not.toMatch(/[€$£]/);
     });
 });

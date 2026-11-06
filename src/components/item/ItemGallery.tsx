@@ -13,9 +13,10 @@ const MAX_DOTS = 10;
 /**
  * Gets the photos and the display name only, never the item: its details would ship in the RSC payload.
  * One scroll-snap track of full-size photos on every viewport; its frame takes the cover's ratio, so
- * switching photos never moves the page.
+ * switching photos never moves the page. An optional soldLabel (a plain string) shows as a corner badge on the cover
+ * frame, outside the track and the lightbox.
  */
-export function ItemGallery({ photos, name }: { photos: ItemPhoto[]; name: string }) {
+export function ItemGallery({ photos, name, soldLabel }: { photos: ItemPhoto[]; name: string; soldLabel?: string }) {
     const [index, setIndex] = useState(0);
     const [open, setOpen] = useState(false);
     const track = useRef<HTMLDivElement>(null);
@@ -71,7 +72,7 @@ export function ItemGallery({ photos, name }: { photos: ItemPhoto[]; name: strin
                     <div className="absolute inset-0 flex flex-col gap-2 overflow-y-auto [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
                         {photos.map((photo, i) => (
                             <button
-                                key={photo.url}
+                                key={`${i}-${photo.url}`}
                                 type="button"
                                 aria-label={COPY.item.showPhoto(i + 1)}
                                 aria-current={i === index ? 'true' : undefined}
@@ -84,7 +85,12 @@ export function ItemGallery({ photos, name }: { photos: ItemPhoto[]; name: strin
                     </div>
                 </div>
             )}
-            <div>
+            <div className="relative">
+                {soldLabel && (
+                    <span aria-hidden="true" className="pointer-events-none absolute left-2 top-2 z-10 border border-forest bg-forest px-2 py-1 text-label uppercase text-ivory">
+                        {soldLabel}
+                    </span>
+                )}
                 {cover ? (
                     <div
                         ref={track}
@@ -98,7 +104,7 @@ export function ItemGallery({ photos, name }: { photos: ItemPhoto[]; name: strin
                     >
                         {photos.map((photo, i) => (
                             <div
-                                key={photo.url}
+                                key={`${i}-${photo.url}`}
                                 ref={el => { slides.current[i] = el; }}
                                 role="group"
                                 aria-roledescription="slide"
@@ -133,7 +139,7 @@ export function ItemGallery({ photos, name }: { photos: ItemPhoto[]; name: strin
                         <div aria-hidden="true" className="mt-4 flex justify-center gap-2 lg:hidden">
                             {total > MAX_DOTS
                                 ? <span className="text-label uppercase text-olive">{COPY.item.position(index + 1, total)}</span>
-                                : photos.map((photo, i) => <span key={photo.url} className={cn('size-2 rounded-full', i === index ? 'bg-forest' : 'bg-stone')} />)}
+                                : photos.map((photo, i) => <span key={`${i}-${photo.url}`} className={cn('size-2 rounded-full', i === index ? 'bg-forest' : 'bg-stone')} />)}
                         </div>
                         <p className="sr-only" aria-live="polite">{COPY.item.photoOf(index + 1, total)}</p>
                     </>

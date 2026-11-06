@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { CATALOGUE } from '@/lib/config';
 import type { CatalogueQuery } from '@/lib/definitions';
 import { SHOP } from '@/shop/config';
-import { canonicalUrl, listingRobots, pageMetadata } from './seo';
+import { canonicalUrl, listingRobots, pageMetadata, soldItemRobots } from './seo';
 
 const query = (over: Partial<CatalogueQuery> = {}, lists: Partial<CatalogueQuery['lists']> = {}): CatalogueQuery => ({
     lists: { ...Object.fromEntries(CATALOGUE.lists.map(k => [k, []])), ...lists } as CatalogueQuery['lists'],
@@ -25,6 +25,12 @@ describe('listingRobots', () => {
                 expect(listingRobots(q, indexable)).toEqual({ index: false, follow: true });
             }
         }
+    });
+});
+
+describe('soldItemRobots', () => {
+    it('is noindex, follow', () => {
+        expect(soldItemRobots()).toEqual({ index: false, follow: true });
     });
 });
 

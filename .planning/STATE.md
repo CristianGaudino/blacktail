@@ -1,17 +1,20 @@
 ---
 gsd_state_version: "1.0"
-current_phase: 04
-status: completed
-stopped_at: Phase 04 complete — all phases complete
-last_updated: "2026-11-03T15:40:17.036Z"
-last_activity: 2026-11-03
-last_activity_desc: Phase 04 complete
-state_head: 4f980097d7c903c33bbec6906058d63c64c87346
+milestone: v1.1
+milestone_name: How many API fields
+current_phase: 05
+current_phase_name: Sold Item Pages and Listing Links
+status: verifying
+stopped_at: Phase 05 UI-SPEC approved
+last_updated: "2026-11-06T19:39:40.033Z"
+last_activity: 2026-11-06
+last_activity_desc: Phase 05 execution started
+state_head: dedf20f4b528e98459bff98051d523b51f429433
 progress:
-  total_phases: 4
+  total_phases: 2
   completed_phases: 4
-  total_plans: 23
-  completed_plans: 23
+  total_plans: 4
+  completed_plans: 4
   percent: 100
 ---
 
@@ -19,24 +22,24 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-10-26)
+See: .planning/PROJECT.md (updated 2026-11-06)
 
 **Core value:** Shoppers see the shop's current in-stock pieces, always up to date with How many, in a storefront that looks like the Blacktail Archive mockups.
-**Current focus:** Phase 04 — Home and Launch
+**Current focus:** Phase 05 — Sold Item Pages and Listing Links
 
 ## Current Position
 
-Phase: 04
-Plan: Not started
-Status: All phases complete
-Last activity: 2026-11-03 — Phase 04 complete
+Phase: 05 (Sold Item Pages and Listing Links) — EXECUTING
+Plan: 4 of 4
+Status: Phase complete — ready for verification
+Last activity: 2026-11-06 — Phase 05 execution started
 
 Progress: [██████████] 100%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
+- Total plans completed: 19 (all in v1.0; none yet in v1.1)
 - Average duration: -
 - Total execution time: 0.0 hours
 
@@ -79,6 +82,8 @@ Progress: [██████████] 100%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
+- [Roadmap v1.1]: Two phases, chosen by the owner. Phase 5 is sold item pages plus per-item listing links (closes #13); Phase 6 is sold-before brands, spotlight and the rate-limit docs (closes #19)
+- [Roadmap v1.1]: A sold piece now returns 200 on its own address (noindex, SoldOut, no buy block) and stays out of every list and the sitemap; hidden, deleted and unknown items stay a real 404 (supersedes v1.0 Phase 3 criterion 3 for sold pieces)
 - [Roadmap]: Freshness round trip (R2 + D1 tag cache + DO queue, signed webhook) is proven on a deployed Worker in Phase 1, before any styled UI
 - [Roadmap]: No `cacheComponents` / `'use cache'`; guard test lands in Phase 1
 - [Roadmap]: Shop seam (`src/shop/`) and the shop-strings guard test land in Phase 2 with the design system
@@ -110,7 +115,8 @@ None yet.
 - [Phase 1]: Freshness round trip on a deployed Worker is unproven (research flag, highest). Settle `{ expire: 0 }` vs `'max'` and `force-cache` after `await searchParams`
 - [Phase 1]: OpenNext cannot build on Windows. Build and deploy from Linux CI or WSL only
 - [Phase 3]: Ralph Lauren spelling (`ralph-lauren` vs `polo-ralph-lauren`) and `arc-teryx.svg` rename to `arcteryx.svg` need confirming
-- [Phase 4]: Sold-before brand tier has no data source (BRAND-02 ships with it empty; BRAND-05 is v2)
+- [Phase 6]: The sold-before brand tier now has a source (`/filters` `soldBrands`, BRAND-05); it ships empty until How many returns brands there
+- [Phase 5]: A sold piece must return 200 while hidden, deleted and unknown items stay a real 404, including right after the webhook. Prove it on workerd as v1.0 Phase 3 did
 - [Phase 4]: Default brand order and lifestyle photos (hero, 2 banners, 4 category tiles, story band) still to come from the owner
 
 ## Deferred Items
@@ -123,6 +129,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-03T11:31:11.270Z
-Stopped at: Phase 04 complete — all phases complete
-Resume file: .planning/phases/04-home-and-launch/04-UI-SPEC.md
+Last session: 2026-11-06T18:11:53.517Z
+Stopped at: Phase 05 UI-SPEC approved
+Resume file: .planning/phases/05-sold-item-pages-and-listing-links/05-UI-SPEC.md

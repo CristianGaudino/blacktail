@@ -2,10 +2,11 @@ import 'server-only';
 import { cache } from 'react';
 import type { z } from 'zod';
 import { CACHE, CATALOGUE } from '@/lib/config';
-import type { Filters, Item, ItemsPage, Store } from '@/lib/definitions';
+import type { Filters, ItemDetail, ItemsPage, Store } from '@/lib/definitions';
 import { storeEnv } from '@/lib/env';
 import { sortEntries } from '@/lib/params';
-import { filtersSchema, itemSchema, itemsPageSchema, storeSchema } from '@/lib/howmany/schemas';
+import { filtersSchema, itemDetailSchema, itemsPageSchema, storeSchema } from '@/lib/howmany/schemas';
+import { SHOP } from '@/shop/config';
 
 /** The cache tag every How many read carries, and the webhook revalidates */
 export const storeTag = () => `store:${storeEnv().STORE_SLUG}`;
@@ -46,21 +47,32 @@ export async function getStore(): Promise<Store> {
 export const getFilters = cache(async (): Promise<Filters> => (await howmanyFetch('/filters', filtersSchema)).data);
 
 // A code that cannot exist never reaches the shared 3000/min API limit (RESEARCH A1: relax this if a real code fails)
-const ITEM_CODE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
+// Next never stores a 404, so without this each request for a made-up code would reach the shared API limit.
+// shortcut: per isolate and short, so a piece shown again can take up to missingSeconds to reappear; share it (KV) only if that matters.
+// On globalThis because Next bundles the webhook route and the pages separately: a module-level Map would be two Maps
+const store = globalThis as typeof globalThis & { __howmanyMissing?: Map<string, number> };
+const missing = (store.__howmanyMissing ??= new Map<string, number>());
+/** A webhook means stock changed: forget the 404s so a piece shown again is not hidden by them (this isolate only) */
+export const forgetMissing = () => missing.clear();
+// A code that cannot exist never reaches the shared 3000/min API limit, and a made-up one fails here before any call: the shape is the shop's own (SHOP.itemCode)
 
 /**
- * One /items/{code} read. null = nothing to show: the API says it is sold (status "sold", a 200 so a refresh replaces the cached copy),
- * or answers 404 (hidden, unknown), or the code is badly shaped;
- * every other failure still throws, so a 429 or 500 reaches error.tsx and is never shown as a not-found.
+ * One /items/{code} read. null = the API answered 404 (hidden, deleted, unknown) or the code is badly shaped.
+ * A sold piece is a 200 that the page shows as Sold; the webhook's tag refresh turns a cached copy into Sold or into a 404 on the next request.
+ * Every other failure throws, so a 429 or 500 reaches error.tsx and is never shown as a not-found.
  * React cache() dedupes generateMetadata and the page (the AbortSignal opts out of Next's memoization).
  */
-export const getItem = cache(async (code: string): Promise<Item | null> => {
-    if (!ITEM_CODE.test(code)) return null;
+export const getItem = cache(async (code: string): Promise<ItemDetail | null> => {
+    if (!SHOP.itemCode.test(code)) return null;
+    if ((missing.get(code) ?? 0) > Date.now()) return null;
     try {
-        const item = (await howmanyFetch(`/items/${encodeURIComponent(code)}`, itemSchema)).data;
-        return item.status === 'sold' ? null : item;
+        return (await howmanyFetch(`/items/${encodeURIComponent(code)}`, itemDetailSchema)).data;
     } catch (error) {
-        if (error instanceof HowManyError && error.status === 404) return null;
+        if (error instanceof HowManyError && error.status === 404) {
+            if (missing.size >= CACHE.missingMax) missing.clear();
+            missing.set(code, Date.now() + CACHE.missingSeconds * 1000);
+            return null;
+        }
         throw error;
     }
 });

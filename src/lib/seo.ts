@@ -14,6 +14,11 @@ export function listingRobots(query: CatalogueQuery, indexable: boolean): { inde
     return { index: indexable, follow: indexable };
 }
 
+/** A sold item page stays reachable for shared links but is never indexed; its links are still followed. */
+export function soldItemRobots(): { index: boolean; follow: boolean } {
+    return { index: false, follow: true };
+}
+
 /** The same sorted query string as links and the API cache key, so equivalent URLs share one canonical */
 export function canonicalUrl(siteUrl: string, query: CatalogueQuery, basePath: string = ROUTES.shop): string {
     const search = toSearchString(query);

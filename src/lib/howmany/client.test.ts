@@ -1,4 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
+import { CACHE } from '@/lib/config';
 import { getFilters, getItem, getItemsPage, getStore, HowManyError } from './client';
 
 const base = 'https://api.test/api/v1/stores/test-shop';
@@ -129,18 +130,61 @@ describe('how many client', () => {
             expect(parsed).not.toHaveProperty('notes');
         });
 
-        it('resolves null for a sold piece, and keeps one that is in stock or has no status', async () => {
-            fetchMock.mockResolvedValue(reply({ ...item, status: 'sold' }));
-            await expect(getItem('BT-0001')).resolves.toBeNull();
+        it('returns a sold piece with its sale day, and keeps one that is in stock or has no status', async () => {
+            fetchMock.mockResolvedValue(reply({ ...item, status: 'sold', soldAt: '2026-11-03' }));
+            await expect(getItem('BT-0001')).resolves.toMatchObject({ code: 'BT-0001', status: 'sold', soldAt: '2026-11-03' });
             fetchMock.mockResolvedValue(reply({ ...item, status: 'inStock' }));
             await expect(getItem('BT-0001')).resolves.toMatchObject({ code: 'BT-0001' });
             fetchMock.mockResolvedValue(reply(item));
             await expect(getItem('BT-0001')).resolves.toMatchObject({ code: 'BT-0001' });
         });
 
+        it('parses a sold piece with no price, no sale day or a malformed one, and no photos', async () => {
+            fetchMock.mockResolvedValue(reply({ ...item, status: 'sold', priceCents: null, soldAt: null, photos: [] }));
+            await expect(getItem('BT-0001')).resolves.toMatchObject({ priceCents: null, soldAt: null, photos: [] });
+            fetchMock.mockResolvedValue(reply({ ...item, status: 'sold', soldAt: '3 Nov' }));
+            await expect(getItem('BT-0001')).resolves.toMatchObject({ soldAt: null });
+            fetchMock.mockResolvedValue(reply({ ...item, status: 'sold', soldAt: 'yesterday' }));
+            await expect(getItem('BT-0001')).resolves.toMatchObject({ soldAt: null });
+            fetchMock.mockResolvedValue(reply({ ...item, status: 'sold', soldAt: '2026-11-03T10:00:00Z' }));
+            await expect(getItem('BT-0001')).resolves.toMatchObject({ soldAt: null });
+            fetchMock.mockResolvedValue(reply(item));
+            await expect(getItem('BT-0001')).resolves.toMatchObject({ soldAt: null });
+        });
+
+        it('keeps, in order, only the https listings and drops each bad entry alone', async () => {
+            const good = (n: number) => ({ platform: 'ebay', url: `https://listing.test/${n}` });
+            const bad = [
+                { platform: 'ebay', url: 'http://a.test/x' }, { platform: 'ebay', url: 'javascript:alert(1)' }, { platform: 'ebay', url: 'https://' },
+                { platform: 'ebay' }, { platform: 5, url: 'https://listing.test/5' }, null, 'x',
+            ];
+            fetchMock.mockResolvedValue(reply({ ...item, listings: [good(1), ...bad, good(2)] }));
+            const parsed = await getItem('BT-0001');
+            expect(parsed?.listings).toEqual([good(1), good(2)]);
+        });
+
+        it('gives no listings when the field is missing, a string or null', async () => {
+            for (const listings of [undefined, 'x', null]) {
+                fetchMock.mockResolvedValue(reply({ ...item, listings }));
+                await expect(getItem('BT-0001')).resolves.toMatchObject({ listings: [] });
+            }
+        });
+
+        it('asks the API once for a code it answered 404 for', async () => {
+            fetchMock.mockResolvedValue(reply({}, { status: 404 }));
+            await expect(getItem('GONE-1')).resolves.toBeNull();
+            await expect(getItem('GONE-1')).resolves.toBeNull();
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+        });
+
+        it('keeps listings off the list read', async () => {
+            fetchMock.mockResolvedValue(reply(page([{ ...item, listings: [{ platform: 'ebay', url: 'https://listing.test/1' }] }])));
+            expect((await getItemsPage('')).page.items[0]).not.toHaveProperty('listings');
+        });
+
         it('resolves null for a 404 (hidden or unknown)', async () => {
             fetchMock.mockResolvedValue(new Response('{}', { status: 404 }));
-            await expect(getItem('BT-0001')).resolves.toBeNull();
+            await expect(getItem('BT-0404')).resolves.toBeNull();
         });
 
         it('rejects with HowManyError for 429 and 500, so they never look like a not-found', async () => {
@@ -150,15 +194,36 @@ describe('how many client', () => {
             }
         });
 
+        it('rejects, never null, for a body that fails the schema', async () => {
+            fetchMock.mockResolvedValue(reply({ ...item, title: 5 }));
+            await expect(getItem('BT-0001')).rejects.toThrow();
+        });
+
         it('resolves null without fetching for a badly shaped code', async () => {
             for (const code of ['../filters', 'a b', '', 'A'.repeat(65), '-X']) await expect(getItem(code)).resolves.toBeNull();
             expect(fetchMock).not.toHaveBeenCalled();
         });
 
-        it('fetches a code with dots and underscores', async () => {
-            fetchMock.mockResolvedValue(reply(item));
-            await getItem('BT_0001.v2');
-            expect(fetchMock.mock.calls[0][0]).toBe(`${base}/items/BT_0001.v2`);
+        it('answers null without fetching for a code that is not in the shop\'s shape', async () => {
+            for (const code of ['BT_0001.v2', 'NOPE', 'ABCDEFG-1', 'BT-12x']) await expect(getItem(code)).resolves.toBeNull();
+            expect(fetchMock).not.toHaveBeenCalled();
+        });
+
+        it('forgets a 404 after missingSeconds and keeps at most missingMax codes', async () => {
+            vi.useFakeTimers();
+            try {
+                fetchMock.mockResolvedValue(reply({}, { status: 404 }));
+                await getItem('EXP-1');
+                vi.advanceTimersByTime(CACHE.missingSeconds * 1000 + 1);
+                await getItem('EXP-1');
+                expect(fetchMock).toHaveBeenCalledTimes(2);
+                fetchMock.mockClear();
+                for (let i = 0; i < CACHE.missingMax + 1; i++) await getItem(`CAP-${i}`);
+                await getItem('CAP-0');
+                expect(fetchMock).toHaveBeenCalledTimes(CACHE.missingMax + 2);
+            } finally {
+                vi.useRealTimers();
+            }
         });
     });
 

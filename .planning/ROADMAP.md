@@ -1,8 +1,15 @@
 # Roadmap: Blacktail
 
+## Milestones
+
+- ✅ **v1.0 Blacktail Archive launch** - Phases 1-4 (shipped 2026-11-03)
+- 🚧 **v1.1 How many API fields** - Phases 5-6 (in progress)
+
 ## Overview
 
-Blacktail goes from an empty repo to a launched Blacktail Archive storefront in four vertical slices, each deployed to Cloudflare Workers. Phase 1 proves the riskiest part first: a deployed Worker that shows real How many stock and refreshes within seconds of a signed webhook (R2 + D1 tag cache + DO queue). Phase 2 puts the Blacktail Archive look on top and delivers the full All Items catalogue. Phase 3 adds item pages and brand pages, so a shopper can decide on a piece and go buy it on Vinted or eBay. Phase 4 finishes the mockup home page, the story and contact pages, site-wide SEO and the template onboarding doc. The visual target throughout is `docs/refs/Blacktail Archive - Branding.pdf`.
+Blacktail went from an empty repo to a launched Blacktail Archive storefront in four vertical slices (v1.0), each deployed to Cloudflare Workers. Phase 1 proved the riskiest part first: a deployed Worker that shows real How many stock and refreshes within seconds of a signed webhook (R2 + D1 tag cache + DO queue). Phase 2 put the Blacktail Archive look on top and delivered the full All Items catalogue. Phase 3 added item pages and brand pages. Phase 4 finished the mockup home page, the story and contact pages, site-wide SEO and the template onboarding doc. The visual target throughout is `docs/refs/Blacktail Archive - Branding.pdf`.
+
+v1.1 starts using the fields How many has since added to its public API. Phase 5 keeps a sold piece's page alive (a Sold mark instead of a 404) and sends buyers to the exact Vinted or eBay listing of each piece. Phase 6 fills the sold-before brand tier from `/filters`, puts the seller's spotlight picks first in the Just Dropped carousel, and corrects the docs to the real rate limit.
 
 ## Phases
 
@@ -12,13 +19,13 @@ Blacktail goes from an empty repo to a launched Blacktail Archive storefront in 
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [x] **Phase 1: Live Stock Skeleton** - Deployed Worker shows real How many stock and refreshes within seconds of a signed webhook
- (completed 2026-10-26)
+<details>
+<summary>✅ v1.0 Blacktail Archive launch (Phases 1-4) - SHIPPED 2026-11-03</summary>
+
+- [x] **Phase 1: Live Stock Skeleton** - Deployed Worker shows real How many stock and refreshes within seconds of a signed webhook (completed 2026-10-26)
 - [x] **Phase 2: Branded Catalogue** - Blacktail Archive look, header and footer, and the full All Items browse, filter, search, sort and paging (completed 2026-11-02)
 - [x] **Phase 3: Item and Brand Pages** - Item page with gallery, details and where to buy, real 404s, JSON-LD, and Brands pages with logos (completed 2026-11-03)
 - [x] **Phase 4: Home and Launch** - Mockup home page, Just Dropped, About and Contact, site-wide SEO, and the second-shop onboarding doc (completed 2026-11-03)
-
-## Phase Details
 
 ### Phase 1: Live Stock Skeleton
 
@@ -102,11 +109,25 @@ Plans:
 **Success Criteria** (what must be TRUE):
   1. Opening an item from the grid shows a gallery of full-size photos (cover first, in the seller's order) with brand, title, price, size, colour, era, department, the condition in words (A Excellent, AB Very good, B Good) and pit-to-pit and length when the item has them
   2. The item page says the piece is listed on Vinted and eBay with links to the shop's profiles from config (no buy button, no checkout), and shows a "More from this brand" row
-  3. A sold, hidden or unknown item returns a real 404 status with a branded page showing the newest drops, including on the deployed site right after the webhook for a piece that just sold
+  3. A sold, hidden or unknown item returns a real 404 status with a branded page showing the newest drops, including on the deployed site right after the webhook for a piece that just sold (v1.1 Phase 5 changes this for sold pieces: they keep a page)
   4. Item pages carry JSON-LD `Product` data (name, image, price, currency, `InStock`, `UsedCondition`) that passes Google's Rich Results Test
   5. A shopper can open a Brands page of in-stock brands shown as their logos (or the brand name as text when there is no logo), and open `/brands/[slug]` to see that brand's in-stock items
 
-**Plans**: TBD
+**Plans:** 4/4 plans complete
+
+Plans:
+**Wave 1**
+- [x] 03-01-PLAN.md — Tracer: item page with details, where to buy and a real 404 after the webhook
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [x] 03-02-PLAN.md — Photo gallery with lightbox, brand link and the "More from this brand" row
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [x] 03-03-PLAN.md — Brands page and `/brands/[slug]` reusing the catalogue with the brand locked
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [x] 03-04-PLAN.md — CI worker proof of item and brand pages on workerd, phase PR
+
 **UI hint**: yes
 
 ### Phase 4: Home and Launch
@@ -142,14 +163,69 @@ Plans:
 
 **UI hint**: yes
 
+</details>
+
+### 🚧 v1.1 How many API fields (In Progress)
+
+**Milestone Goal:** Use the fields How many added to its public API, so sold pieces keep a page, buyers reach the exact listing, and the home page uses the seller's own picks.
+
+- [ ] **Phase 5: Sold Item Pages and Listing Links** - A sold piece keeps a page with a Sold mark instead of a 404, and each piece links to its exact Vinted or eBay listing (closes #13)
+- [ ] **Phase 6: Sold-Before Brands, Spotlight and Docs** - Brand strip filled from `soldBrands`, spotlight pieces first in the Just Dropped carousel, and docs that state the 600 requests a minute limit (closes #19)
+
+#### Phase 5: Sold Item Pages and Listing Links
+
+**Goal**: As a shopper, I want a sold piece's address to keep working as a clear Sold page, and a piece that is for sale to send me to its exact Vinted or eBay listing, so that shared links never dead-end and I land on the right listing.
+**Depends on**: Phase 4
+**Requirements**: SOLD-01, SOLD-02, SOLD-03, SOLD-04, LINK-01, LINK-02
+**Closes**: GitHub issue #13
+**Success Criteria** (what must be TRUE):
+  1. Opening a sold piece's address returns 200 with its photos, title and details and a Sold mark showing the sold date from `soldAt`, with no where-to-buy block and no price call to action
+  2. A sold item page carries JSON-LD availability `SoldOut` and `noindex`, and the piece appears nowhere else: not in the sitemap, All Items, Just Dropped or "More from this brand"
+  3. A hidden, deleted or unknown item, or a code of the wrong shape, still returns a real 404 with the newest drops, including on the deployed site right after the webhook for a piece that was just hidden or deleted
+  4. A piece with `listings` shows one button per listing, labelled with the platform name from config, and each opens that exact listing in a new tab
+  5. A piece with an empty `listings` shows the shop's Vinted and eBay profile links from config, as it does today
+
+**Plans:** 4/4 plans executed
+
+Plans:
+**Wave 1**
+- [x] 05-01-PLAN.md — Tracer: a just-sold piece flips to a 200 Sold page (Sold on date, sold panel, SoldOut, noindex, out of /shop and More from) and a just-hidden piece to a 404 after the webhook; a sold piece with no price, date or photos still renders
+
+**Wave 2** *(blocked on Wave 1 completion)*
+- [x] 05-02-PLAN.md — Tracer: the Sold badge on the cover photo (also with no photos); the sold edge cases pinned by unit tests
+
+**Wave 3** *(blocked on Wave 2 completion)*
+- [x] 05-03-PLAN.md — Tracer: per-item "Buy on <Platform>" buttons to the exact https listings, profile links when there are none
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [x] 05-04-PLAN.md — Tracer: workerd proof of the Sold flip, the sitemap exclusion, the hidden 404 and the listing buttons; phase PR (Closes #13) and the Phase 5 UAT comment
+
+**UI hint**: yes
+
+#### Phase 6: Sold-Before Brands, Spotlight and Docs
+
+**Goal**: As a shopper, I want the home page to follow the seller's own data (brands the shop has sold before, and the pieces the seller spotlights), so that the front of the shop shows what it is known for and what the seller wants me to see first. Docs and comments state the real rate limit.
+**Depends on**: Phase 4 (does not need Phase 5)
+**Requirements**: BRAND-05, HOME-05, DOC-01
+**Closes**: GitHub issue #19
+**Success Criteria** (what must be TRUE):
+  1. The brand strip on the home page lists brands in stock first, then brands sold before (from `/filters` `soldBrands`), then the default order from config, and a brand with no logo file still shows as its name
+  2. The Just Dropped carousel on the home page shows the seller's spotlight pieces first, then fills with the newest pieces up to the carousel size, and no piece appears twice
+  3. A shop with no spotlight pieces or no sold brands sees the home page as in v1.0: a newest-first carousel and a strip of in-stock brands then the default order, with no gap and no error
+  4. Searching the docs, code comments and scripts for the rate limit finds "600 uncached requests a minute per IP" and no mention of 3000
+
+**Plans**: TBD
+
 ## Progress
 
 **Execution Order:**
-Phases execute in numeric order: 1 → 2 → 3 → 4
+Phases execute in numeric order: 5 → 6
 
-| Phase | Plans Complete | Status | Completed |
-|-------|----------------|--------|-----------|
-| 1. Live Stock Skeleton | 4/4 | Complete    | 2026-10-26 |
-| 2. Branded Catalogue | 10/10 | Complete    | 2026-11-02 |
-| 3. Item and Brand Pages | 4/4 | Complete    | 2026-11-03 |
-| 4. Home and Launch | 5/5 | Complete    | 2026-11-03 |
+| Phase | Milestone | Plans Complete | Status | Completed |
+|-------|-----------|----------------|--------|-----------|
+| 1. Live Stock Skeleton | v1.0 | 4/4 | Complete | 2026-10-26 |
+| 2. Branded Catalogue | v1.0 | 10/10 | Complete | 2026-11-02 |
+| 3. Item and Brand Pages | v1.0 | 4/4 | Complete | 2026-11-03 |
+| 4. Home and Launch | v1.0 | 5/5 | Complete | 2026-11-03 |
+| 5. Sold Item Pages and Listing Links | v1.1 | 4/4 | In Progress | - |
+| 6. Sold-Before Brands, Spotlight and Docs | v1.1 | 0/0 | Not started | - |

@@ -8,6 +8,8 @@ import { COLOURS } from './colours';
 export const SHOP = {
     name: 'Blacktail Archive',
     locale: 'en-IE',
+    /** The shape of this shop's item codes (letters, a hyphen, digits, e.g. CO-0062); any other address is a 404 without asking How many */
+    itemCode: /^[A-Z]{1,5}-\d{1,8}$/i,
     /** A public/images/... path for the All Items banner; null draws the solid Forest panel. */
     bannerImage: null as string | null,
     contact: {

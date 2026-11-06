@@ -41,3 +41,7 @@ next-env.d.ts
 /.open-next/
 /.wrangler/
 .dev.vars*
+
+# Agent worktrees and GSD lock
+/.claude/worktrees/
+/.planning/milestone.lock

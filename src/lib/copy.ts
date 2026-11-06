@@ -133,6 +133,7 @@ export const COPY = {
         listedOn:       (names: string) => `This piece is listed on ${names}`,
         whereToBuyHelp: 'Find this piece in our shop on each platform.',
         visitOn:        (name: string) => `Visit us on ${name}`,
+        buyOn:          (name: string) => `Buy on ${name}`,
         photos:         'Photos',
         photoOf:        (n: number, total: number) => `Photo ${n} of ${total}`,
         openPhoto:      (n: number, total: number) => `Open photo ${n} of ${total} full size`,
@@ -146,10 +147,15 @@ export const COPY = {
         moreFrom:       (brand: string) => `More from ${brand}`,
         viewAll:        'View all',
         viewAllLabel:   (brand: string) => `View all ${brand} pieces`,
+        sold:           'Sold',
+        soldOn:         (date: string) => `Sold on ${date}`,
+        soldMessage:    'This piece has been sold. Have a look at what else we have.',
+        newestDrops:    'See the newest drops',
     },
     seo: {
         size:      (size: string) => `Size ${size}`,
         condition: (condition: string) => `Condition ${condition}`,
+        sold:      'Sold.',
     },
     home: {
         viewAllBrands: 'View all brands',
@@ -161,8 +167,8 @@ export const COPY = {
         body:  'We could not find that page. It may have moved, or the link may be wrong.',
     },
     gone: {
-        title:  'This piece has found a new home',
-        body:   'It has sold or is no longer available. Here are our newest pieces.',
+        title:  'This piece is no longer available',
+        body:   'It may have been removed. Here are our newest pieces.',
         newest: 'Newest drops',
     },
     status: {

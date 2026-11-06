@@ -1,5 +1,5 @@
 import { COPY } from '@/lib/copy';
-import type { Item } from '@/lib/definitions';
+import type { ItemDetail } from '@/lib/definitions';
 import { label } from '@/lib/labels';
 import { cm, inches } from '@/lib/money';
 
@@ -28,7 +28,7 @@ function Block({ heading, rows }: { heading: string; rows: Row[] }) {
  * Details and measurements. Named fields only: `details` is never iterated, so nothing but the
  * one `material` key can reach the markup (CLAUDE.md privacy rule).
  */
-export function ItemDetails({ item }: { item: Item }) {
+export function ItemDetails({ item }: { item: ItemDetail }) {
     const groups = COPY.catalogue.groups;
     // Material: a top-level field first (the API filters it there), then details.material
     const material = [item.material, item.details.material].find(present);

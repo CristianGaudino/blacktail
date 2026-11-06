@@ -1,7 +1,7 @@
 import { revalidateTag } from 'next/cache';
 import { CACHE, STORE_API } from '@/lib/config';
 import { storeEnv } from '@/lib/env';
-import { storeTag } from '@/lib/howmany/client';
+import { forgetMissing, storeTag } from '@/lib/howmany/client';
 import { parseWebhookEvent, verifyWebhook } from '@/lib/webhook';
 
 /** Never echoes why, and never logs the body, headers or secret */
@@ -52,6 +52,7 @@ export async function POST(request: Request): Promise<Response> {
     }
 
     // The tag always comes from env, never from the body
+    forgetMissing();
     revalidateTag(storeTag(), CACHE.webhookRevalidate);
     return new Response(null, { status: 204 });
 }
