@@ -15,6 +15,17 @@ Shoppers see the shop's current in-stock pieces, always up to date with How many
 - **Success metric**: The site matches the mockups and always shows current stock.
 - **Strategy notes**: Branding in `docs/refs/Blacktail Archive - Branding.pdf` (GitHub issue #3).
 
+## Current Milestone: v1.1 How many API fields
+
+**Goal:** Use the fields How many added to its public API, so sold pieces keep a page, buyers reach the exact listing, and the home page uses the seller's own picks.
+
+**Target features:**
+- Sold item pages: `status: "sold"` and `soldAt` shown as a Sold mark, no buy block, JSON-LD `SoldOut`, replacing the 404 (closes #13)
+- Per-item listing links (`listings`), falling back to the shop's profile links
+- Sold-before brand tier filled from `/filters` `soldBrands` (BRAND-05)
+- Spotlight picks first in the Just Dropped carousel, then the newest (closes #19)
+- Docs and comments updated for the 600 uncached requests a minute rate limit
+
 ## Requirements
 
 ### Validated
@@ -42,7 +53,7 @@ Shoppers see the shop's current in-stock pieces, always up to date with How many
 
 - Checkout, bag and payments — v1 sends buyers to Vinted / eBay. A later checkout needs a stock reservation so a one-off item can't sell twice
 - Accounts and a working wishlist — icons are decorative in v1
-- Per-item listing links and enquiry forms — the API has no per-item links yet. The item page says the piece is available on Vinted / eBay instead
+- Enquiry forms — the item page links out to the listing instead
 - Newsletter signup in the footer — no provider and nobody asked for one
 - Multi-tenant hosting (several shops in one deploy) — every API call already carries the slug, so a host-to-store lookup can be added later without API changes
 - Any direct database access — Blacktail only talks to the public API, so How many's internals stay free to change
@@ -54,7 +65,7 @@ Shoppers see the shop's current in-stock pieces, always up to date with How many
   - Money is integer cents in the seller's currency
   - Photos come with `thumbUrl` for grids and `url` for item pages, plus full-size width and height so space can be reserved
   - Condition, type and department arrive as codes (`A`, `knit`, `mens`). Blacktail labels them in its own words
-  - Rate limit is 3000 requests a minute per IP, shared by everything Blacktail does, page builds included. A server-side cache keeps it well under that
+  - Rate limit is 600 uncached requests a minute per IP (cache hits do not count), shared by everything Blacktail does, page builds included. A server-side cache keeps it well under that
   - `/api/v1` only ever gains fields. Ignore unknown ones
 - The issue #1 technical outline sets the split: How many owns data, and Blacktail owns presentation only (theme, shop links, contact details, layout).
 - **Code reference: `C:\Git\vintage`**. Follow its structure, coding principles and reuse patterns. The design is entirely different. Its conventions are mapped in `C:\Git\vintage\.planning\codebase\` (CONVENTIONS.md, STRUCTURE.md, STACK.md, ARCHITECTURE.md). In short:
@@ -105,7 +116,7 @@ Shoppers see the shop's current in-stock pieces, always up to date with How many
 
 ## Open Items
 
-- **Sold-before brands**: The API only describes in-stock items, so the strip's second tier has no source. Either How many adds sold brands (for example to `/filters` or a `/brands` endpoint), or the tier is skipped until it does
+- **Sold-before brands**: Now available as `soldBrands` on `/filters` (v1.1 phase 6)
 - **Default brand order**: To be set together with the user. A placeholder order lives in config until then
 - **`public/brands/arc-teryx.svg`**: Should be `arcteryx.svg` to match the slug rule (`Arc’teryx` → `arcteryx`)
 - **Brand spelling**: Both `ralph-lauren.svg` and `polo-ralph-lauren.svg` exist. Confirm which name How many records
@@ -129,4 +140,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-10-26 after initialization*
+*Last updated: 2026-11-06 after starting milestone v1.1*
