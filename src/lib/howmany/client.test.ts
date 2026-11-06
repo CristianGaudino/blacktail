@@ -177,6 +177,17 @@ describe('how many client', () => {
             expect(fetchMock).toHaveBeenCalledTimes(1);
         });
 
+        it('warns when a listed piece has a code outside the shop pattern', async () => {
+            const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+            fetchMock.mockResolvedValue(reply(page([item])));
+            await getItemsPage('a=1');
+            expect(warn).not.toHaveBeenCalled();
+            fetchMock.mockResolvedValue(reply(page([{ ...item, code: 'JACKET-WIDE-12' }])));
+            await getItemsPage('a=2');
+            expect(warn).toHaveBeenCalledOnce();
+            warn.mockRestore();
+        });
+
         it('keeps listings off the list read', async () => {
             fetchMock.mockResolvedValue(reply(page([{ ...item, listings: [{ platform: 'ebay', url: 'https://listing.test/1' }] }])));
             expect((await getItemsPage('')).page.items[0]).not.toHaveProperty('listings');
