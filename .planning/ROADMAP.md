@@ -184,11 +184,12 @@ Plans:
   3. A hidden, deleted or unknown item, or a code of the wrong shape, still returns a real 404 with the newest drops, including on the deployed site right after the webhook for a piece that was just hidden or deleted
   4. A piece with `listings` shows one button per listing, labelled with the platform name from config, and each opens that exact listing in a new tab
   5. A piece with an empty `listings` shows the shop's Vinted and eBay profile links from config, as it does today
-**Plans:** 4 plans
+
+**Plans:** 1/4 plans executed
 
 Plans:
 **Wave 1**
-- [ ] 05-01-PLAN.md — Tracer: a just-sold piece flips to a 200 Sold page (Sold on date, sold panel, SoldOut, noindex, out of /shop and More from) and a just-hidden piece to a 404 after the webhook; a sold piece with no price, date or photos still renders
+- [x] 05-01-PLAN.md — Tracer: a just-sold piece flips to a 200 Sold page (Sold on date, sold panel, SoldOut, noindex, out of /shop and More from) and a just-hidden piece to a 404 after the webhook; a sold piece with no price, date or photos still renders
 
 **Wave 2** *(blocked on Wave 1 completion)*
 - [ ] 05-02-PLAN.md — Tracer: the Sold badge on the cover photo (also with no photos); the sold edge cases pinned by unit tests
@@ -198,6 +199,7 @@ Plans:
 
 **Wave 4** *(blocked on Wave 3 completion)*
 - [ ] 05-04-PLAN.md — Tracer: workerd proof of the Sold flip, the sitemap exclusion, the hidden 404 and the listing buttons; phase PR (Closes #13) and the Phase 5 UAT comment
+
 **UI hint**: yes
 
 #### Phase 6: Sold-Before Brands, Spotlight and Docs
@@ -211,6 +213,7 @@ Plans:
   2. The Just Dropped carousel on the home page shows the seller's spotlight pieces first, then fills with the newest pieces up to the carousel size, and no piece appears twice
   3. A shop with no spotlight pieces or no sold brands sees the home page as in v1.0: a newest-first carousel and a strip of in-stock brands then the default order, with no gap and no error
   4. Searching the docs, code comments and scripts for the rate limit finds "600 uncached requests a minute per IP" and no mention of 3000
+
 **Plans**: TBD
 
 ## Progress
@@ -224,5 +227,5 @@ Phases execute in numeric order: 5 → 6
 | 2. Branded Catalogue | v1.0 | 10/10 | Complete | 2026-11-02 |
 | 3. Item and Brand Pages | v1.0 | 4/4 | Complete | 2026-11-03 |
 | 4. Home and Launch | v1.0 | 5/5 | Complete | 2026-11-03 |
-| 5. Sold Item Pages and Listing Links | v1.1 | 0/0 | Not started | - |
+| 5. Sold Item Pages and Listing Links | v1.1 | 1/4 | In Progress | - |
 | 6. Sold-Before Brands, Spotlight and Docs | v1.1 | 0/0 | Not started | - |
