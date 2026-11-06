@@ -187,6 +187,7 @@ if (mock) {
             assert(status === 200, `GET /items/${code} returned ${status}, expected 200`);
             assert(html.includes('€15') && html.includes('This piece is listed on'), `the in-stock /items/${code} lost its price or where-to-buy panel`);
             assert(!html.includes('Sold on'), `the in-stock /items/${code} shows a Sold line`);
+            assert(!html.includes('>Sold</span>'), `the in-stock /items/${code} shows a Sold badge`);
         }
         for (const path of listings) {
             const { html } = await text(path);
@@ -207,6 +208,7 @@ if (mock) {
             });
             assert(sold, `/items/${code} was not a 200 with "Sold on 3 November 2026" within 10 s of the webhook`);
             assert(sold.includes('https://schema.org/SoldOut'), 'the sold page has no SoldOut availability in its JSON-LD');
+            assert(sold.includes('>Sold</span>'), 'the sold page has no Sold badge on the cover');
             assert(sold.includes('content="noindex, follow"'), 'the sold page has no "noindex, follow" robots meta tag');
             assert(sold.includes('content="Sold. '), 'the sold page description does not start with "Sold."');
             assert(!sold.includes('€15'), 'the sold page still shows the asking price');
@@ -260,6 +262,7 @@ if (mock) {
         const html = await res.text();
         assert(res.status === 200, `GET /items/MOCK-0031 returned ${res.status}, expected 200`);
         assert(html.includes('>Sold</p>'), 'the bare sold page has no "Sold" line on its own');
+        assert(html.includes('>Sold</span>'), 'the bare sold page has no Sold badge on the photo placeholder');
         assert(html.includes('https://schema.org/SoldOut'), 'the bare sold page has no SoldOut availability');
         assert(html.includes('content="noindex, follow"'), 'the bare sold page has no "noindex, follow" robots meta tag');
         for (const text of ['Sold on', 'NaN', 'Invalid Date', '"price":']) assert(!html.includes(text), `the bare sold page contains "${text}"`);

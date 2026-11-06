@@ -8,7 +8,7 @@ import type { Item } from '@/lib/definitions';
 import { getItemsPage } from '@/lib/howmany/client';
 import { ROUTES } from '@/lib/routes';
 
-/** A sold, hidden or unknown piece: a real 404 (the page body called notFound()) with the newest drops. Nothing about the piece is shown. */
+/** A hidden, deleted or unknown piece, or a badly shaped code (a sold piece has its own page): a real 404 (the page body called notFound()) with the newest drops. Nothing about the piece is shown. */
 export default async function ItemGone() {
     // This reads the API, so it must never run at build
     await connection();
