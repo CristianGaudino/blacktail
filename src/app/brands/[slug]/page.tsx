@@ -2,7 +2,7 @@ import type { Metadata } from 'next';
 import { notFound } from 'next/navigation';
 import { connection } from 'next/server';
 import { CataloguePage } from '@/components/catalogue/CataloguePage';
-import { brandBySlug, SOLD_BEFORE_BRANDS } from '@/lib/brands';
+import { brandBySlug } from '@/lib/brands';
 import { COPY } from '@/lib/copy';
 import { storeEnv } from '@/lib/env';
 import { getFilters } from '@/lib/howmany/client';
@@ -11,10 +11,10 @@ import { ROUTES } from '@/lib/routes';
 import { canonicalUrl, listingRobots, pageMetadata } from '@/lib/seo';
 import { SHOP } from '@/shop/config';
 
-/** The slug is only ever resolved against the cached /filters names (React-cached, shared with the Header) and the sold-before list; anything else is a 404 (D-21) */
+/** The slug resolves only against the cached /filters in-stock names (React-cached, shared with the Header), then its soldBrands; a sold-before brand renders the v1.0 empty catalogue (D-21), anything else is a 404 before any /items call */
 async function brandOf(slug: string) {
     const filters = await getFilters();
-    const name = brandBySlug(slug, filters.brand.map(f => f.value), SOLD_BEFORE_BRANDS);
+    const name = brandBySlug(slug, filters.brand.map(f => f.value), filters.soldBrands);
     return { filters, name };
 }
 

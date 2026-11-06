@@ -17,6 +17,7 @@ const filters: Filters = {
     priceCents: { min: 1250, max: 8500 },
     pitToPitMm: { min: 500, max: 560 },
     lengthMm:   null,
+    soldBrands: [],
 };
 const parse = (raw: Record<string, string | string[] | undefined>, f: Filters = filters) => parseCatalogueQuery(raw, f);
 const str = (raw: Record<string, string | string[] | undefined>, f: Filters = filters) => toSearchString(parse(raw, f));

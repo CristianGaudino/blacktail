@@ -2,7 +2,7 @@
 // Usage: node scripts/mock-howmany.mjs [--port 4010] [--host 127.0.0.1]
 //   GET <anything>/items    -> 30 items, filtered, sorted and paged by the query (brand, ...; page, limit); it filters on `spotlight=true`
 //                              (any other value is a 400) and MOCK-0003 and MOCK-0015 are spotlighted
-//   GET <anything>/filters  -> the facets and ranges of those 30 items
+//   GET <anything>/filters  -> the facets and ranges of those 30 items, plus soldBrands: Barbour as a plain name and Old Mill as a { value, count } object
 //   GET <anything>/items/<code> -> that item (200), or 404 no-store when it does not exist or is in `hidden`; a piece in `gone` is a 200 with
 //                              status "sold" and soldAt "2026-11-03", like the real API. MOCK-0031 is always sold with no price, no date and no photos (never in a list)
 //                              Every item carries `listings: []` except MOCK-0003, which has two (ebay then vinted, the API's order); a sold read has none
@@ -100,6 +100,7 @@ function filters() {
         priceCents: range(all.map(x => x.priceCents)),
         pitToPitMm: range(all.map(x => x.measurements.pitToPitMm)),
         lengthMm:   range(all.map(x => x.measurements.lengthMm)),
+        soldBrands: ['Barbour', { value: 'Old Mill', count: 2 }],
         futureField: 'ignored',
     };
 }
