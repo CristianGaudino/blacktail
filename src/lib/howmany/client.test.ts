@@ -169,6 +169,13 @@ describe('how many client', () => {
             }
         });
 
+        it('asks the API once for a code it answered 404 for', async () => {
+            fetchMock.mockResolvedValue(reply({}, { status: 404 }));
+            await expect(getItem('GONE-1')).resolves.toBeNull();
+            await expect(getItem('GONE-1')).resolves.toBeNull();
+            expect(fetchMock).toHaveBeenCalledTimes(1);
+        });
+
         it('keeps listings off the list read', async () => {
             fetchMock.mockResolvedValue(reply(page([{ ...item, listings: [{ platform: 'ebay', url: 'https://listing.test/1' }] }])));
             expect((await getItemsPage('')).page.items[0]).not.toHaveProperty('listings');

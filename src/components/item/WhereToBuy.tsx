@@ -22,8 +22,8 @@ export function WhereToBuy({ listings }: { listings: ItemDetail['listings'] }) {
             <section className="bg-sand/40 p-6">
                 <p className="text-base">{COPY.item.listedOn(names)}</p>
                 <div className="mt-4 flex flex-col flex-wrap gap-2 min-[480px]:flex-row">
-                    {listings.map(listing => (
-                        <ButtonLink key={listing.url} external variant="secondary" href={listing.url}>
+                    {listings.map((listing, i) => (
+                        <ButtonLink key={`${i}-${listing.url}`} external variant="secondary" href={listing.url}>
                             {COPY.item.buyOn(nameFor(listing))}
                             <span className="sr-only">{COPY.common.opensInNewTab}</span>
                             <ExternalLink size={16} aria-hidden />

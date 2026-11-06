@@ -3,6 +3,9 @@ export const CACHE = {
     /** Time-based fallback: the first visit after this many seconds refreshes the data (the webhook is never retried) */
     revalidateSeconds: 600,
     fetchTimeoutMs:    8000,
+    /** How long a code the API answered 404 for is answered 404 here without asking again, and how many such codes are kept */
+    missingSeconds:    30,
+    missingMax:        500,
     /**
      * expire 0 makes the next visit after a webhook a blocking refetch. Chosen over 'max' so a sold
      * piece never shows again after a stock change.

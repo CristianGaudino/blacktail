@@ -46,6 +46,9 @@ export async function getStore(): Promise<Store> {
 export const getFilters = cache(async (): Promise<Filters> => (await howmanyFetch('/filters', filtersSchema)).data);
 
 // A code that cannot exist never reaches the shared 3000/min API limit (RESEARCH A1: relax this if a real code fails)
+// Next never stores a 404, so without this each request for a made-up code would reach the shared API limit.
+// shortcut: per isolate and short, so a piece shown again can take up to missingSeconds to reappear; share it (KV) only if that matters.
+const missing = new Map<string, number>();
 const ITEM_CODE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
 
 /**
@@ -56,10 +59,15 @@ const ITEM_CODE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
  */
 export const getItem = cache(async (code: string): Promise<ItemDetail | null> => {
     if (!ITEM_CODE.test(code)) return null;
+    if ((missing.get(code) ?? 0) > Date.now()) return null;
     try {
         return (await howmanyFetch(`/items/${encodeURIComponent(code)}`, itemDetailSchema)).data;
     } catch (error) {
-        if (error instanceof HowManyError && error.status === 404) return null;
+        if (error instanceof HowManyError && error.status === 404) {
+            if (missing.size >= CACHE.missingMax) missing.clear();
+            missing.set(code, Date.now() + CACHE.missingSeconds * 1000);
+            return null;
+        }
         throw error;
     }
 });
