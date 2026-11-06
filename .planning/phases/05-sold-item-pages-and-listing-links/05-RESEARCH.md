@@ -374,11 +374,14 @@ Not a rename/migration phase. None.
 | A5 | Badge colour inverse (forest on ivory text) and `aria-hidden` badge | Pattern 6 | Cosmetic / a11y preference |
 | A6 | The webhook fires when a piece is sold or hidden (How many sends one coarse event for any stock change per issue #2 spec) | Pitfall 4 | If sold does not fire it, the 10 minute fallback covers it |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Live sample of a sold and a listed item.** What we know: the source and live key set agree. Unclear: real-world values (e.g. a sold item with no photos). Recommendation: after implementation, owner lists one item with a Vinted URL and sells one, then check the deployed pages (also useful for issue #26 visual check).
+   **RESOLVED (deferred, accepted risk):** no live sample can exist before the build. The mock covers the sparse shapes (MOCK-0031: sold, no price, no date, no photos; MOCK-0003: two listings), the schema is lenient where the API is (nullable price, `soldAt` catch to null, listings dropped per entry), and the owner checks real sold, hidden and listed pieces in the "Phase 5 UAT" comment that Plan 04 posts on the phase PR.
 2. **Newest drops link target.** D-03 says "newest drops link": `ROUTES.justDropped` is the closest existing page; confirm that is what is meant (vs. only the All Items button plus drops on 404). Recommendation: link to `ROUTES.justDropped`.
+   **RESOLVED:** `ROUTES.justDropped`, fixed by 05-UI-SPEC.md section 3 (secondary `ButtonLink` with `COPY.item.newestDrops`) and built in Plan 01; listed under "Decisions to check" in the PR body.
 3. **UI contract.** `workflow.ui_phase` is on; a UI-SPEC for this phase was not found. The badge and sold panel are small; colours here are from existing tokens (forest, ivory, sand). Planner can proceed without one.
+   **RESOLVED (superseded):** 05-UI-SPEC.md now exists and is the UI contract (badge, sold panel, listing buttons, copy).
 
 ## Security Domain
 

@@ -184,17 +184,20 @@ Plans:
   3. A hidden, deleted or unknown item, or a code of the wrong shape, still returns a real 404 with the newest drops, including on the deployed site right after the webhook for a piece that was just hidden or deleted
   4. A piece with `listings` shows one button per listing, labelled with the platform name from config, and each opens that exact listing in a new tab
   5. A piece with an empty `listings` shows the shop's Vinted and eBay profile links from config, as it does today
-**Plans:** 3 plans
+**Plans:** 4 plans
 
 Plans:
 **Wave 1**
-- [ ] 05-01-PLAN.md — Tracer: a just-sold piece flips to a 200 Sold page (badge, Sold on date, sold panel, SoldOut, noindex) and a just-hidden piece to a 404 after the webhook
+- [ ] 05-01-PLAN.md — Tracer: a just-sold piece flips to a 200 Sold page (Sold on date, sold panel, SoldOut, noindex, out of /shop and More from) and a just-hidden piece to a 404 after the webhook; a sold piece with no price, date or photos still renders
 
 **Wave 2** *(blocked on Wave 1 completion)*
-- [ ] 05-02-PLAN.md — Tracer: per-item "Buy on <Platform>" buttons to the exact https listings, profile links when there are none
+- [ ] 05-02-PLAN.md — Tracer: the Sold badge on the cover photo (also with no photos); the sold edge cases pinned by unit tests
 
 **Wave 3** *(blocked on Wave 2 completion)*
-- [ ] 05-03-PLAN.md — Tracer: workerd proof of the Sold flip, the hidden 404 and the listing buttons; phase PR (Closes #13) and UAT list
+- [ ] 05-03-PLAN.md — Tracer: per-item "Buy on <Platform>" buttons to the exact https listings, profile links when there are none
+
+**Wave 4** *(blocked on Wave 3 completion)*
+- [ ] 05-04-PLAN.md — Tracer: workerd proof of the Sold flip, the sitemap exclusion, the hidden 404 and the listing buttons; phase PR (Closes #13) and the Phase 5 UAT comment
 **UI hint**: yes
 
 #### Phase 6: Sold-Before Brands, Spotlight and Docs
