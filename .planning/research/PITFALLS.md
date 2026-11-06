@@ -93,7 +93,7 @@ The fallback (about 10 minutes) exists because the webhook is never retried. It 
 ### Pitfall 5: Fetches are not actually cached on dynamic routes, so every visit hits the shared rate limit
 
 **What goes wrong:**
-By default Next 16 does not cache `fetch` ("`auto no cache`"). In dev nothing is cached either. The All Items page awaits `searchParams` (a request-time API) before it fetches, and the docs say that without an explicit cache option, requests "discovered after a Request-time API run on every request" [HIGH]. So `/items`, `/items?brand=...` and search can hit How many on every page view, bots included, against the 3000 requests per minute per IP budget shared with everything else. A 429 then turns into empty or broken pages.
+By default Next 16 does not cache `fetch` ("`auto no cache`"). In dev nothing is cached either. The All Items page awaits `searchParams` (a request-time API) before it fetches, and the docs say that without an explicit cache option, requests "discovered after a Request-time API run on every request" [HIGH]. So `/items`, `/items?brand=...` and search can hit How many on every page view, bots included, against the budget of 600 uncached requests a minute per IP, shared with everything else. A 429 then turns into empty or broken pages.
 
 **How to avoid:**
 - Give every API call an explicit `cache: 'force-cache'` and `next: { revalidate, tags }`. Never rely on defaults. Do it in one wrapper so it cannot be forgotten.
@@ -112,7 +112,7 @@ By default Next 16 does not cache `fetch` ("`auto no cache`"). In dev nothing is
 
 **What goes wrong:**
 - `next build` prerenders any page whose fetches are reachable before a request-time API: "a `fetch` that sets no `cache` option is fetched once during `next build`" [HIGH]. Home, Brands and Just Dropped data get baked into the output and uploaded to R2 by `populateCache` at deploy.
-- `generateStaticParams` over all item codes makes the build call the API once per item (plus Next's concurrent prerender workers and retries). On a bigger shop that burns the shared 3000/min budget and 429s fail the build; a How many outage blocks every deploy.
+- `generateStaticParams` over all item codes makes the build call the API once per item (plus Next's concurrent prerender workers and retries). On a bigger shop that burns the shared budget of 600 uncached requests a minute per IP and 429s fail the build; a How many outage blocks every deploy.
 - **A deploy resets the cache to the build-time snapshot.** Cache keys include the build ID ("Neither caching directive carries over to a new deploy" [HIGH] for `use cache`; OpenNext keys the R2 cache by build ID as well [MEDIUM]). Anything sold between "build started" and "deploy finished" shows as available until the next webhook or TTL, and a webhook that arrived mid-build is lost.
 - `STORE_SLUG` and `HOWMANY_API_URL` are needed at build time for prerender. If CI uses a placeholder (vintage's pattern for DB URLs), the baked pages belong to the wrong or no shop.
 - A page that swallows an API error into an empty list can be prerendered or ISR-cached as "no items".
@@ -302,7 +302,7 @@ The first deploy is Blacktail Archive and the mockups are the target, so "Blackt
 ### Pitfall 14: Search and filter URLs become an unbounded cache and a crawl trap
 
 **What goes wrong:**
-Every combination of brand, size, colour, era, condition, department, price range, sort, page and free-text `q` is a distinct URL, a distinct R2 cache entry and a distinct API call. Crawlers and bots walk them, filling R2 and burning the 3000/min budget on cache misses (and misses happen right after every webhook, since the whole tag is invalidated). Indexing thousands of near-duplicate filtered pages dilutes SEO.
+Every combination of brand, size, colour, era, condition, department, price range, sort, page and free-text `q` is a distinct URL, a distinct R2 cache entry and a distinct API call. Crawlers and bots walk them, filling R2 and burning the budget of 600 uncached requests a minute per IP on cache misses (and misses happen right after every webhook, since the whole tag is invalidated). Indexing thousands of near-duplicate filtered pages dilutes SEO.
 
 **How to avoid:**
 - Validate and normalise params at the edge of the page (Zod): known keys only, bounded lengths, `q` max about 60 chars, numeric ranges coerced, `page` clamped to `ceil(total/limit)` after the first fetch, unknown params dropped (and not forwarded to the API).

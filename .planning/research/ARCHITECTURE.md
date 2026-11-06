@@ -46,7 +46,7 @@ How many (checkhowmany.com)                        Owner edits stock
 
 Two rules make the design hold together:
 
-1. **Only `src/lib/howmany.ts` talks to the network.** No component, page or hook calls `fetch` for How many data. Browsers never call the API (rate limit is 3000/min per IP, shared by the server, and CORS/secret-less public API would still bypass the cache).
+1. **Only `src/lib/howmany.ts` talks to the network.** No component, page or hook calls `fetch` for How many data. Browsers never call the API (rate limit is 600 uncached requests a minute per IP, shared by the server, and CORS/secret-less public API would still bypass the cache).
 2. **Only `src/shop/`, `public/` and deploy config differ between shops.** Anything a second shop would need to change must already be reachable from there.
 
 ### Vintage pattern -> Blacktail mapping
@@ -148,7 +148,7 @@ src/app/
 1. Request reaches the Worker. Home, Brands, About, Contact and `items/[code]` are ISR pages (fetches carry `revalidate: 600` and the tag, so the rendered page entry inherits both). `items` and `just-dropped` depend on `searchParams` so render per request, but every API call underneath is served from the tagged fetch cache.
 2. The page parses `searchParams` with `lib/params.ts` into a validated `ItemsQuery` (bad values dropped, never forwarded: stops the API's 400 and stops cache-key spam).
 3. The page calls `getItems(query)` / `getFilters()` (in parallel with `Promise.all`, wrapped in `Suspense` + skeleton for the sidebar so the grid is not blocked by `/filters`).
-4. `data/*` calls `howmanyFetch(path, schema, query)`. A cache hit costs no API request. A miss/stale costs one request against the shared 3000/min budget.
+4. `data/*` calls `howmanyFetch(path, schema, query)`. A cache hit costs no API request. A miss/stale costs one request against the shared budget of 600 uncached requests a minute per IP.
 5. The response is Zod-parsed (unknown fields stripped, which also enforces the privacy whitelist), shaped into `definitions.ts` types, and returned.
 6. The page passes props to a view component. Money is formatted by `formatMoney`; codes are labelled through the label maps; photos render with API `width`/`height` (`thumbUrl` in grids, `url` on the item page, first photo as cover and `priority` for the LCP image only).
 
@@ -216,7 +216,7 @@ export async function howmanyFetch<S extends z.ZodType>(path: string, schema: S,
 
 ### Anti-Pattern 1: Client-side fetch of the API
 **What:** a `useEffect`/SWR hook calling How many from the browser (e.g. live search-as-you-type).
-**Why bad:** bypasses the server cache and the tag, exposes call volume to the shared 3000/min per-IP limit (only server calls share an IP, so it also hides the problem until it breaks), second contract to maintain (vintage's own "Client-side fetch for app data" anti-pattern).
+**Why bad:** bypasses the server cache and the tag, exposes call volume to the shared limit of 600 uncached requests a minute per IP (only server calls share an IP, so it also hides the problem until it breaks), second contract to maintain (vintage's own "Client-side fetch for app data" anti-pattern).
 **Instead:** submit-based search into `/items?q=`; render on the server.
 
 ### Anti-Pattern 2: `revalidatePath`, `unstable_cache`, `'use cache'` / `cacheComponents`
@@ -280,7 +280,7 @@ Bindings added to `wrangler.jsonc`: `NEXT_CACHE_DO_QUEUE` (Durable Object `DOQue
 
 | Concern | One shop (~hundreds of items, ~100 users/day) | ~10K visitors/day | Many shops / traffic spikes |
 |---------|-----------------------------------------------|-------------------|-----------------------------|
-| API rate (3000/min/IP shared) | Cache keeps it to a handful of calls per 10 min | Still bounded by distinct URLs, not visitors; canonical queries matter | Each deploy has its own Worker; shared-IP risk is across Cloudflare egress, so keep fetch cache hit rate high and honour `Retry-After` by serving stale |
+| API rate (600 uncached requests a minute per IP, shared) | Cache keeps it to a handful of calls per 10 min | Still bounded by distinct URLs, not visitors; canonical queries matter | Each deploy has its own Worker; shared-IP risk is across Cloudflare egress, so keep fetch cache hit rate high and honour `Retry-After` by serving stale |
 | Filter combinations | Few distinct URLs | Crawlers can enumerate combinations: consider `robots` disallow of filtered `/items?` URLs beyond `page`, canonical to `/items` | Same, plus cap `limit` and ignore unknown params |
 | Webhook storms | Owner edits several items -> several webhooks | Each `{ expire: 0 }` causes one blocking refetch per distinct URL on next visit | Could debounce at How many; Blacktail stays idempotent and cheap |
 | Tag cache | D1, single tag | D1 still fine | Sharded DO tag cache |
