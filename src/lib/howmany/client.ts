@@ -2,10 +2,10 @@ import 'server-only';
 import { cache } from 'react';
 import type { z } from 'zod';
 import { CACHE, CATALOGUE } from '@/lib/config';
-import type { Filters, Item, ItemsPage, Store } from '@/lib/definitions';
+import type { Filters, ItemDetail, ItemsPage, Store } from '@/lib/definitions';
 import { storeEnv } from '@/lib/env';
 import { sortEntries } from '@/lib/params';
-import { filtersSchema, itemSchema, itemsPageSchema, storeSchema } from '@/lib/howmany/schemas';
+import { filtersSchema, itemDetailSchema, itemsPageSchema, storeSchema } from '@/lib/howmany/schemas';
 
 /** The cache tag every How many read carries, and the webhook revalidates */
 export const storeTag = () => `store:${storeEnv().STORE_SLUG}`;
@@ -49,16 +49,15 @@ export const getFilters = cache(async (): Promise<Filters> => (await howmanyFetc
 const ITEM_CODE = /^[A-Za-z0-9][A-Za-z0-9._-]{0,63}$/;
 
 /**
- * One /items/{code} read. null = nothing to show: the API says it is sold (status "sold", a 200 so a refresh replaces the cached copy),
- * or answers 404 (hidden, unknown), or the code is badly shaped;
- * every other failure still throws, so a 429 or 500 reaches error.tsx and is never shown as a not-found.
+ * One /items/{code} read. null = the API answered 404 (hidden, deleted, unknown) or the code is badly shaped.
+ * A sold piece is a 200 that the page shows as Sold; the webhook's tag refresh turns a cached copy into Sold or into a 404 on the next request.
+ * Every other failure throws, so a 429 or 500 reaches error.tsx and is never shown as a not-found.
  * React cache() dedupes generateMetadata and the page (the AbortSignal opts out of Next's memoization).
  */
-export const getItem = cache(async (code: string): Promise<Item | null> => {
+export const getItem = cache(async (code: string): Promise<ItemDetail | null> => {
     if (!ITEM_CODE.test(code)) return null;
     try {
-        const item = (await howmanyFetch(`/items/${encodeURIComponent(code)}`, itemSchema)).data;
-        return item.status === 'sold' ? null : item;
+        return (await howmanyFetch(`/items/${encodeURIComponent(code)}`, itemDetailSchema)).data;
     } catch (error) {
         if (error instanceof HowManyError && error.status === 404) return null;
         throw error;

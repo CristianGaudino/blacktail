@@ -129,13 +129,22 @@ describe('how many client', () => {
             expect(parsed).not.toHaveProperty('notes');
         });
 
-        it('resolves null for a sold piece, and keeps one that is in stock or has no status', async () => {
-            fetchMock.mockResolvedValue(reply({ ...item, status: 'sold' }));
-            await expect(getItem('BT-0001')).resolves.toBeNull();
+        it('returns a sold piece with its sale day, and keeps one that is in stock or has no status', async () => {
+            fetchMock.mockResolvedValue(reply({ ...item, status: 'sold', soldAt: '2026-11-03' }));
+            await expect(getItem('BT-0001')).resolves.toMatchObject({ code: 'BT-0001', status: 'sold', soldAt: '2026-11-03' });
             fetchMock.mockResolvedValue(reply({ ...item, status: 'inStock' }));
             await expect(getItem('BT-0001')).resolves.toMatchObject({ code: 'BT-0001' });
             fetchMock.mockResolvedValue(reply(item));
             await expect(getItem('BT-0001')).resolves.toMatchObject({ code: 'BT-0001' });
+        });
+
+        it('parses a sold piece with no price, no sale day or a malformed one, and no photos', async () => {
+            fetchMock.mockResolvedValue(reply({ ...item, status: 'sold', priceCents: null, soldAt: null, photos: [] }));
+            await expect(getItem('BT-0001')).resolves.toMatchObject({ priceCents: null, soldAt: null, photos: [] });
+            fetchMock.mockResolvedValue(reply({ ...item, status: 'sold', soldAt: '3 Nov' }));
+            await expect(getItem('BT-0001')).resolves.toMatchObject({ soldAt: null });
+            fetchMock.mockResolvedValue(reply(item));
+            await expect(getItem('BT-0001')).resolves.toMatchObject({ soldAt: null });
         });
 
         it('resolves null for a 404 (hidden or unknown)', async () => {

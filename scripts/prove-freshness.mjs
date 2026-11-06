@@ -1,6 +1,6 @@
 // Freshness round trip: a signed How many webhook must refresh the list within seconds.
 // Usage: node scripts/prove-freshness.mjs <baseUrl> [--mock <mockUrl>] [--outage]
-// Item pages: item-page, item-unknown, code-gate (mock only) and item-gone (mock only) check /items/<code>.
+// Item pages: item-page, item-unknown, code-gate (mock only), item-sold, item-hidden and item-sold-bare (mock only) check /items/<code>.
 // Needs HOWMANY_WEBHOOK_SECRET and STORE_SLUG in the environment. No dependencies.
 // The stock page is /shop; / is the home page (hero, newest pieces, static sections).
 // Runs against `next start`, `wrangler dev` and the deployed Worker. Without --mock only the
@@ -173,29 +173,96 @@ await check('ignored', async () => {
 });
 
 if (mock) {
-    await check('item-gone', async () => {
+    // The listing pages that must stop showing a sold piece, each by its path
+    const listings = ['/shop', '/just-dropped', '/'];
+    await check('item-sold', async () => {
         const code = 'MOCK-0002';
+        const sibling = 'MOCK-0005'; // same brand (Acme), so its More from row starts with MOCK-0002
+        const text = async path => {
+            const res = await fetch(`${base}${path}`);
+            return { status: res.status, html: await res.text() };
+        };
+        for (let i = 0; i < 2; i++) {
+            const { status, html } = await text(`/items/${code}`);
+            assert(status === 200, `GET /items/${code} returned ${status}, expected 200`);
+            assert(html.includes('€15') && html.includes('This piece is listed on'), `the in-stock /items/${code} lost its price or where-to-buy panel`);
+            assert(!html.includes('Sold on'), `the in-stock /items/${code} shows a Sold line`);
+        }
+        for (const path of listings) {
+            const { html } = await text(path);
+            assert(html.includes(`href="/items/${code}"`), `${path} does not list ${code} before it sells`);
+        }
+        const before = await text(`/items/${sibling}`);
+        assert(before.html.includes(`href="/items/${code}"`), `/items/${sibling} has no More from link to ${code} before it sells`);
+        try {
+            await setMock({ gone: [code] });
+            await sleep(1200);
+            const status = await post(valid());
+            assert(status === 204, `signed webhook returned ${status}, expected 204`);
+            // COPY.item.soldOn over the mock's soldAt, in en-IE
+            const sold = await poll(async () => {
+                const res = await fetch(`${base}/items/${code}`);
+                const html = await res.text();
+                return res.status === 200 && html.includes('Sold on 3 November 2026') ? html : null;
+            });
+            assert(sold, `/items/${code} was not a 200 with "Sold on 3 November 2026" within 10 s of the webhook`);
+            assert(sold.includes('https://schema.org/SoldOut'), 'the sold page has no SoldOut availability in its JSON-LD');
+            assert(sold.includes('content="noindex, follow"'), 'the sold page has no "noindex, follow" robots meta tag');
+            assert(sold.includes('content="Sold. '), 'the sold page description does not start with "Sold."');
+            assert(!sold.includes('€15'), 'the sold page still shows the asking price');
+            assert(!sold.includes('This piece is listed on'), 'the sold page still has the where-to-buy panel');
+            assert(!sold.includes('More from'), 'the sold page still has a More from row');
+            for (const path of listings) {
+                const { status: s, html } = await text(path);
+                assert(s === 200, `GET ${path} returned ${s}, expected 200`);
+                assert(!html.includes(`href="/items/${code}"`), `${path} still lists the sold ${code}`);
+            }
+            const dropped = await poll(async () => {
+                const { status: s, html } = await text(`/items/${sibling}`);
+                return s === 200 && !html.includes(`href="/items/${code}"`) ? html : null;
+            });
+            assert(dropped, `the More from row of /items/${sibling} still links the sold ${code}`);
+        } finally {
+            await setMock({ gone: [] });
+        }
+    });
+
+    await check('item-hidden', async () => {
+        const code = 'MOCK-0004';
         const view = () => fetch(`${base}/items/${code}`);
         for (let i = 0; i < 2; i++) {
             const res = await view();
             assert(res.status === 200, `GET /items/${code} returned ${res.status}, expected 200`);
         }
         try {
-            await setMock({ gone: [code] });
+            await setMock({ hidden: [code] });
             await sleep(1200);
             const status = await post(valid());
             assert(status === 204, `signed webhook returned ${status}, expected 204`);
             // COPY.gone.title in src/lib/copy.ts
-            const sold = await poll(async () => {
+            const gone = await poll(async () => {
                 const res = await view();
                 const html = await res.text();
-                return res.status === 404 && html.includes('This piece has found a new home') ? html : null;
+                return res.status === 404 && html.includes('This piece is no longer available') ? html : null;
             });
-            assert(sold, `/items/${code} was not a 404 with the gone message within 10 s of the webhook`);
+            assert(gone, `/items/${code} was not a 404 with the gone message within 10 s of the webhook`);
+            const shop = await (await fetch(`${base}/shop`)).text();
+            assert(!shop.includes(`href="/items/${code}"`), `/shop still lists the hidden ${code}`);
         } finally {
-            // So a second run starts with the piece back; a 404 is never cached, so the next read sees it again
-            await setMock({ gone: [] });
+            // A 404 is never cached, so the next read sees the piece again
+            await setMock({ hidden: [] });
         }
+    });
+
+    // MOCK-0031 is always sold, with no price, no sale date and no photos (no webhook needed)
+    await check('item-sold-bare', async () => {
+        const res = await fetch(`${base}/items/MOCK-0031`);
+        const html = await res.text();
+        assert(res.status === 200, `GET /items/MOCK-0031 returned ${res.status}, expected 200`);
+        assert(html.includes('>Sold</p>'), 'the bare sold page has no "Sold" line on its own');
+        assert(html.includes('https://schema.org/SoldOut'), 'the bare sold page has no SoldOut availability');
+        assert(html.includes('content="noindex, follow"'), 'the bare sold page has no "noindex, follow" robots meta tag');
+        for (const text of ['Sold on', 'NaN', 'Invalid Date', '"price":']) assert(!html.includes(text), `the bare sold page contains "${text}"`);
     });
 }
 

@@ -2,20 +2,20 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { COPY } from '@/lib/copy';
-import type { Item } from '@/lib/definitions';
+import type { ItemDetail } from '@/lib/definitions';
 import { SHOP } from '@/shop/config';
 import { ItemDetails } from './ItemDetails';
 import { ItemJsonLd } from './ItemJsonLd';
 import { WhereToBuy } from './WhereToBuy';
 
-const item: Item = {
+const item: ItemDetail = {
     code: 'BT-0001', title: 'Wool coat', brand: 'Acme', category: 'clothing', type: null, size: 'L', condition: 'A', colour: 'Navy', era: '90s',
     department: 'mens', measurements: { pitToPitMm: 560, lengthMm: 700 }, details: {}, priceCents: 12000, currency: 'EUR',
     photos: [{ url: 'https://p.test/1.jpg', thumbUrl: 'https://p.test/1t.jpg', width: 800, height: 1000 }],
-    publishedAt: '2026-01-01T00:00:00Z',
+    publishedAt: '2026-01-01T00:00:00Z', soldAt: null,
 };
-const details = (over: Partial<Item>) => renderToStaticMarkup(createElement(ItemDetails, { item: { ...item, ...over } }));
-const ld = (over: Partial<Item> = {}) => renderToStaticMarkup(createElement(ItemJsonLd, { item: { ...item, ...over }, url: 'https://shop.test/items/BT-0001' }));
+const details = (over: Partial<ItemDetail>) => renderToStaticMarkup(createElement(ItemDetails, { item: { ...item, ...over } }));
+const ld = (over: Partial<ItemDetail> = {}) => renderToStaticMarkup(createElement(ItemJsonLd, { item: { ...item, ...over }, url: 'https://shop.test/items/BT-0001' }));
 const ldBody = (html: string) => html.match(/<script[^>]*>([\s\S]*)<\/script>/)![1];
 
 describe('ItemDetails', () => {
@@ -100,7 +100,7 @@ describe('ItemJsonLd', () => {
 
     it('leaves out the brand when there is none, and never carries the code, details or cost', () => {
         expect(JSON.parse(ldBody(ld({ brand: null }))).brand).toBeUndefined();
-        const leaky = ld({ details: { costCents: 'SECRET' }, notes: 'SECRET' } as unknown as Partial<Item>);
+        const leaky = ld({ details: { costCents: 'SECRET' }, notes: 'SECRET' } as unknown as Partial<ItemDetail>);
         expect(leaky).not.toContain('SECRET');
         const data = JSON.parse(ldBody(ld()));
         for (const key of ['sku', 'code', 'details']) expect(data).not.toHaveProperty(key);
