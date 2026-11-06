@@ -25,7 +25,7 @@ A sold piece keeps a working page at `/items/[code]`, clearly marked Sold. A pie
 - **D-07:** Reword the `COPY.gone` 404 text to be neutral ("no longer available"), since "sold" now has its own page.
 
 ### Listing buttons
-- **D-08:** Label is "Buy on <Platform>" (user choice; replaces today's "Visit on").
+- **D-08:** Label is "Buy on <Platform>" (user choice; replaces today's "Visit on") on the per-item listing buttons. **Amended by owner 2026-11-06:** the exception is the profile fallback (empty `listings`, LINK-02), which keeps today's "Visit us on <name>" label, because those buttons open the shop's profile, not this piece. Decided, not an open question.
 - **D-09:** Platform display name is resolved by matching the listing's platform to `SHOP.platforms` by name (config owns the name). An unknown platform falls back to the hostname of its URL.
 - **D-10:** Keep the sand panel. Buttons follow the API order, stacked on mobile and in a row from 480px. The "listed on ..." copy is built from the item's own listings. Empty `listings` shows today's profile-link panel from `SHOP.platforms` (LINK-02).
 - **D-11:** Listing URLs are validated in the zod schema: https only. Invalid ones are dropped, and if none remain the profile fallback shows. Links use `ButtonLink external` (new tab, opens-in-new-tab sr-only text).

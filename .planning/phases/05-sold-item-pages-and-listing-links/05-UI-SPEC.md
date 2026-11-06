@@ -209,7 +209,7 @@ Applicable state considerations resolved: 11 covered, 1 backstop, 0 unresolved.
 1. **Badge colour** inverse of the "New" badge (forest fill, ivory text), `aria-hidden`. Within the discretion CONTEXT.md grants.
 2. **Sold line typography** reuses the price styling (Bodoni 24px) so the layout does not jump, minus `tabular-nums`.
 3. **Newest drops link** is a secondary `ButtonLink` to `ROUTES.justDropped`, beside the primary Shop all items button (RESEARCH open question 2).
-4. **`visitOn` stays** for the profile fallback and `ContactPanel`; `buyOn` is used only for per-item listing buttons (RESEARCH A2). If the owner wants "Buy on" on profile links too, it is a one-key copy change with no layout impact.
+4. **`visitOn` stays** for the profile fallback and `ContactPanel`; `buyOn` is used only for per-item listing buttons (RESEARCH A2). Confirmed by the owner on 2026-11-06 (D-08 amended).
 5. **No second help line** under the listing intro (the profile help sentence would be misleading for an exact listing).
 6. **Listing buttons stay `variant="secondary"`** (D-10 keeps today's panel and style); there is no filled "Buy" button because checkout is out of scope and the listing is on another site.
 7. **Platform name de-dup** in the intro sentence so "eBay and eBay" cannot appear if two listings resolve to one name.
