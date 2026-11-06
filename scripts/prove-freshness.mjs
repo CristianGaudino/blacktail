@@ -1,6 +1,6 @@
 // Freshness round trip: a signed How many webhook must refresh the list within seconds.
 // Usage: node scripts/prove-freshness.mjs <baseUrl> [--mock <mockUrl>] [--outage]
-// Item pages: item-page, item-unknown, code-gate (mock only), item-sold and item-hidden (mock only) check /items/<code>.
+// Item pages: item-page, item-unknown, code-gate (mock only), item-sold, item-hidden and item-sold-bare (mock only) check /items/<code>.
 // Needs HOWMANY_WEBHOOK_SECRET and STORE_SLUG in the environment. No dependencies.
 // The stock page is /shop; / is the home page (hero, newest pieces, static sections).
 // Runs against `next start`, `wrangler dev` and the deployed Worker. Without --mock only the
@@ -252,6 +252,17 @@ if (mock) {
             // A 404 is never cached, so the next read sees the piece again
             await setMock({ hidden: [] });
         }
+    });
+
+    // MOCK-0031 is always sold, with no price, no sale date and no photos (no webhook needed)
+    await check('item-sold-bare', async () => {
+        const res = await fetch(`${base}/items/MOCK-0031`);
+        const html = await res.text();
+        assert(res.status === 200, `GET /items/MOCK-0031 returned ${res.status}, expected 200`);
+        assert(html.includes('>Sold</p>'), 'the bare sold page has no "Sold" line on its own');
+        assert(html.includes('https://schema.org/SoldOut'), 'the bare sold page has no SoldOut availability');
+        assert(html.includes('content="noindex, follow"'), 'the bare sold page has no "noindex, follow" robots meta tag');
+        for (const text of ['Sold on', 'NaN', 'Invalid Date', '"price":']) assert(!html.includes(text), `the bare sold page contains "${text}"`);
     });
 }
 
