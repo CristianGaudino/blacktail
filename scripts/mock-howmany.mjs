@@ -1,6 +1,7 @@
 // Mock How many API for local and CI proofs. No dependencies.
 // Usage: node scripts/mock-howmany.mjs [--port 4010] [--host 127.0.0.1]
-//   GET <anything>/items    -> 30 items, filtered, sorted and paged by the query (brand, ...; page, limit)
+//   GET <anything>/items    -> 30 items, filtered, sorted and paged by the query (brand, ...; page, limit); it filters on `spotlight=true`
+//                              (any other value is a 400) and MOCK-0003 and MOCK-0015 are spotlighted
 //   GET <anything>/filters  -> the facets and ranges of those 30 items
 //   GET <anything>/items/<code> -> that item (200), or 404 no-store when it does not exist or is in `hidden`; a piece in `gone` is a 200 with
 //                              status "sold" and soldAt "2026-11-03", like the real API. MOCK-0031 is always sold with no price, no date and no photos (never in a list)
@@ -62,6 +63,8 @@ const allItems = () => Array.from({ length: 30 }, (_, n) => {
             { platform: 'ebay', url: 'https://www.ebay.ie/itm/mock-3' },
             { platform: 'vinted', url: 'https://www.vinted.ie/items/mock-3' },
         ] : [],
+        // MOCK-0003 is among the 10 newest (proves no piece twice), MOCK-0015 is 14 days old, outside them (proves promotion)
+        spotlight:    i === 3 || i === 15,
         publishedAt:  new Date(startedAt - n * DAY).toISOString(),
         futureField:  'ignored',
     };
@@ -121,6 +124,7 @@ function listItems(search) {
         && listMatch(search, 'type', x.type) && listMatch(search, 'size', x.size) && listMatch(search, 'colour', x.colour)
         && listMatch(search, 'era', x.era) && listMatch(search, 'condition', x.condition) && listMatch(search, 'department', x.department)
         && listMatch(search, 'category', x.category) && listMatch(search, 'material', x.material)
+        && (!search.has('spotlight') || x.spotlight)
         && rangeMatch(search, 'minPrice', 'maxPrice', x.priceCents)
         && rangeMatch(search, 'minPitToPitMm', 'maxPitToPitMm', x.measurements.pitToPitMm)
         && rangeMatch(search, 'minLengthMm', 'maxLengthMm', x.measurements.lengthMm)
@@ -169,7 +173,11 @@ createServer((req, res) => {
     if (failStatus) return send(res, failStatus, { error: 'Mock failure' }, { 'cache-control': 'no-store' });
 
     const cache = { 'cache-control': 'public, s-maxage=60, stale-while-revalidate=600' };
-    if (isItems) return send(res, 200, listItems(searchParams), cache);
+    if (isItems) {
+        // The live API answers 400 to any spotlight value but true
+        if (searchParams.has('spotlight') && searchParams.get('spotlight') !== 'true') return send(res, 400, { error: 'Bad query: spotlight' }, { 'cache-control': 'no-store' });
+        return send(res, 200, listItems(searchParams), cache);
+    }
     if (single) {
         const code = decodeURIComponent(single[1]);
         // A sold piece that never had a price, a sale date or photos (a returned sale), outside every list

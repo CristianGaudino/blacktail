@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { stripBrands, visibleTiles } from './homeSections';
+import type { Item } from '@/lib/definitions';
+import { spotlightFirst, stripBrands, visibleTiles } from './homeSections';
 
 const names = (brands: { name: string }[]) => brands.map(b => b.name);
 
@@ -35,6 +36,37 @@ describe('stripBrands', () => {
 
     it('drops a name with an empty slug', () => {
         expect(names(stripBrands(['東京', 'Acme'], [], []))).toEqual(['Acme']);
+    });
+});
+
+describe('spotlightFirst', () => {
+    const base: Item = {
+        code: 'X', title: 'Wool coat', brand: 'Acme', category: 'clothing', type: null, size: 'L', condition: 'A', colour: 'Navy', era: '90s',
+        department: null, measurements: { pitToPitMm: 580, lengthMm: 700 }, details: {}, priceCents: 12000, currency: 'EUR',
+        photos: [{ url: 'https://p.test/1.jpg', thumbUrl: 'https://p.test/1t.jpg', width: 800, height: 1000 }],
+        publishedAt: '2026-06-10T12:00:00Z',
+    };
+    const list = (...codes: string[]): Item[] => codes.map(code => ({ ...base, code }));
+    const codes = (items: Item[]) => items.map(i => i.code);
+
+    it('puts spotlight pieces first, then the newest', () => {
+        expect(codes(spotlightFirst(list('S1', 'S2'), list('N1', 'N2'), 10))).toEqual(['S1', 'S2', 'N1', 'N2']);
+    });
+
+    it('shows a piece in both lists once, at its spotlight position', () => {
+        expect(codes(spotlightFirst(list('N2'), list('N1', 'N2', 'N3'), 10))).toEqual(['N2', 'N1', 'N3']);
+    });
+
+    it('is exactly the newest list cut to size when nothing is spotlighted', () => {
+        expect(codes(spotlightFirst([], list('N1', 'N2', 'N3', 'N4'), 3))).toEqual(['N1', 'N2', 'N3']);
+    });
+
+    it('cuts a long spotlight list to size and shows no newest piece', () => {
+        expect(codes(spotlightFirst(list('S1', 'S2', 'S3'), list('N1'), 2))).toEqual(['S1', 'S2']);
+    });
+
+    it('gives nothing when both lists are empty', () => {
+        expect(spotlightFirst([], [], 10)).toEqual([]);
     });
 });
 

@@ -1,7 +1,7 @@
 // Pure and client-safe: no env, no fetch. The orderings the home page sections render (D-07, D-05).
 import { brandIndex, brandSlug } from '@/lib/brands';
 import { HOME } from '@/lib/config';
-import type { Filters } from '@/lib/definitions';
+import type { Filters, Item } from '@/lib/definitions';
 
 /**
  * The brand strip order (D-07): brands in stock, then sold-before brands, each tier A to Z and then ranked by the shop's default order.
@@ -17,6 +17,12 @@ export function stripBrands(inStock: string[], soldBefore: readonly string[], de
     const stocked = new Set(first.map(b => b.slug));
     const second = brandIndex([...soldBefore]).filter(b => !stocked.has(b.slug));
     return [...byRank(first), ...byRank(second)].slice(0, HOME.stripBrands);
+}
+
+/** The Just Dropped carousel order (HOME-05, D-01): spotlight pieces in the API's order, then the newest, no code twice, marked by order only */
+export function spotlightFirst(spotlight: Item[], newest: Item[], size: number): Item[] {
+    const seen = new Set<string>();
+    return [...spotlight, ...newest].filter(item => !seen.has(item.code) && seen.add(item.code)).slice(0, size);
 }
 
 export type CategoryTile = { type: string; label: string; image: string };
