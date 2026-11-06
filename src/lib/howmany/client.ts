@@ -86,5 +86,7 @@ export const getItemsPage = cache(async (search: string, limit: number = CATALOG
     const params = new URLSearchParams(search);
     params.set('limit', String(limit));
     const { data, asOf } = await howmanyFetch('/items', itemsPageSchema, params);
+    // Such a piece is listed but its page answers 404 (see getItem): say so in the logs instead of failing silently
+    if (data.items.some(({ code }) => !SHOP.itemCode.test(code))) console.warn('How many item code outside the shop pattern (SHOP.itemCode)');
     return { page: data, asOf };
 });

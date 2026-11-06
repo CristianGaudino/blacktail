@@ -1,6 +1,7 @@
 import { createHmac } from 'node:crypto';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { revalidateTag } from 'next/cache';
+import { getItem } from '@/lib/howmany/client';
 import * as route from './route';
 
 vi.mock('next/cache', () => ({ revalidateTag: vi.fn() }));
@@ -77,6 +78,18 @@ describe('POST /api/webhooks/howmany', () => {
         const res = await route.POST(post(JSON.stringify(store)));
         expect(res.status).toBe(204);
         expect(revalidateTag).toHaveBeenCalledExactlyOnceWith('store:test-shop', { expire: 0 });
+    });
+
+    it('makes getItem forget a remembered 404', async () => {
+        const fetchMock = vi.fn(async () => new Response('{}', { status: 404 }));
+        vi.stubGlobal('fetch', fetchMock);
+        await getItem('FGT-1');
+        await getItem('FGT-1');
+        expect(fetchMock).toHaveBeenCalledTimes(1);
+        expect((await route.POST(post(JSON.stringify(store)))).status).toBe(204);
+        await getItem('FGT-1');
+        expect(fetchMock).toHaveBeenCalledTimes(2);
+        vi.unstubAllGlobals();
     });
 
     it('is idempotent: the same valid request twice gives 204 twice with the same revalidation', async () => {
