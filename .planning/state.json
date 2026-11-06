@@ -1,7 +1,7 @@
 {
   "contract": "1.0.0",
   "flavor": "core",
-  "milestone": "v1.1",
+  "milestone": "v1.1 — How many API fields",
   "phases": [
     {
       "number": "1",
@@ -22,12 +22,22 @@
       "number": "4",
       "name": "Home and Launch",
       "status": "complete"
+    },
+    {
+      "number": "5",
+      "name": "Sold Item Pages and Listing Links",
+      "status": "complete"
+    },
+    {
+      "number": "6",
+      "name": "Sold-Before Brands, Spotlight and Docs",
+      "status": "pending"
     }
   ],
   "next": {
-    "command": "/gsd-discuss-phase",
-    "label": "Discuss the first phase",
-    "reason": "Project initialized — plan your first phase"
+    "command": "/gsd-progress --next",
+    "label": "Advance to the next step (plan phase 6)",
+    "reason": "Phase 2 of 2 — needs a plan"
   },
-  "updated_at": "2026-11-06T14:24:41.876Z"
+  "updated_at": "2026-11-06T21:09:36.967Z"
 }

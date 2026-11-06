@@ -169,7 +169,7 @@ Plans:
 
 **Milestone Goal:** Use the fields How many added to its public API, so sold pieces keep a page, buyers reach the exact listing, and the home page uses the seller's own picks.
 
-- [ ] **Phase 5: Sold Item Pages and Listing Links** - A sold piece keeps a page with a Sold mark instead of a 404, and each piece links to its exact Vinted or eBay listing (closes #13)
+- [x] **Phase 5: Sold Item Pages and Listing Links** - A sold piece keeps a page with a Sold mark instead of a 404, and each piece links to its exact Vinted or eBay listing (closes #13) (completed 2026-11-06)
 - [ ] **Phase 6: Sold-Before Brands, Spotlight and Docs** - Brand strip filled from `soldBrands`, spotlight pieces first in the Just Dropped carousel, and docs that state the 600 requests a minute limit (closes #19)
 
 #### Phase 5: Sold Item Pages and Listing Links
@@ -185,7 +185,7 @@ Plans:
   4. A piece with `listings` shows one button per listing, labelled with the platform name from config, and each opens that exact listing in a new tab
   5. A piece with an empty `listings` shows the shop's Vinted and eBay profile links from config, as it does today
 
-**Plans:** 4/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
 **Wave 1**
@@ -227,5 +227,5 @@ Phases execute in numeric order: 5 → 6
 | 2. Branded Catalogue | v1.0 | 10/10 | Complete | 2026-11-02 |
 | 3. Item and Brand Pages | v1.0 | 4/4 | Complete | 2026-11-03 |
 | 4. Home and Launch | v1.0 | 5/5 | Complete | 2026-11-03 |
-| 5. Sold Item Pages and Listing Links | v1.1 | 4/4 | In Progress | - |
+| 5. Sold Item Pages and Listing Links | v1.1 | 4/4 | Complete    | 2026-11-06 |
 | 6. Sold-Before Brands, Spotlight and Docs | v1.1 | 0/0 | Not started | - |
