@@ -11,15 +11,15 @@ Uses the fields How many added to its public API: `listings`, `status: "sold"` w
 
 ### Sold items
 
-- [ ] **SOLD-01**: A sold piece's item page returns 200 with its photos, title and details, and a Sold mark with the sold date from `soldAt`
-- [ ] **SOLD-02**: A sold item page shows no where-to-buy block and no price call to action, and its JSON-LD availability is `SoldOut`
-- [ ] **SOLD-03**: A sold item page is `noindex` and left out of the sitemap, the catalogue, Just Dropped and More from this brand
-- [ ] **SOLD-04**: A hidden, deleted or unknown item, or a code of the wrong shape, is still a real 404 with the newest drops, including right after the webhook
+- [x] **SOLD-01**: A sold piece's item page returns 200 with its photos, title and details, and a Sold mark with the sold date from `soldAt`
+- [x] **SOLD-02**: A sold item page shows no where-to-buy block and no price call to action, and its JSON-LD availability is `SoldOut`
+- [x] **SOLD-03**: A sold item page is `noindex` and left out of the sitemap, the catalogue, Just Dropped and More from this brand
+- [x] **SOLD-04**: A hidden, deleted or unknown item, or a code of the wrong shape, is still a real 404 with the newest drops, including right after the webhook
 
 ### Listing links
 
-- [ ] **LINK-01**: An item with `listings` shows one button per listing (platform name from config) that opens that exact listing in a new tab
-- [ ] **LINK-02**: An item with an empty `listings` falls back to the shop's Vinted and eBay profile links from config, as today
+- [x] **LINK-01**: An item with `listings` shows one button per listing (platform name from config) that opens that exact listing in a new tab
+- [x] **LINK-02**: An item with an empty `listings` falls back to the shop's Vinted and eBay profile links from config, as today
 
 ### Brands
 
@@ -55,12 +55,12 @@ Uses the fields How many added to its public API: `listings`, `status: "sold"` w
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SOLD-01 | Phase 5 | Pending |
-| SOLD-02 | Phase 5 | Pending |
-| SOLD-03 | Phase 5 | Pending |
-| SOLD-04 | Phase 5 | Pending |
-| LINK-01 | Phase 5 | Pending |
-| LINK-02 | Phase 5 | Pending |
+| SOLD-01 | Phase 5 | Complete |
+| SOLD-02 | Phase 5 | Complete |
+| SOLD-03 | Phase 5 | Complete |
+| SOLD-04 | Phase 5 | Complete |
+| LINK-01 | Phase 5 | Complete |
+| LINK-02 | Phase 5 | Complete |
 | BRAND-05 | Phase 6 | Pending |
 | HOME-05 | Phase 6 | Pending |
 | DOC-01 | Phase 6 | Pending |

@@ -2,20 +2,20 @@
 gsd_state_version: "1.0"
 milestone: v1.1
 milestone_name: How many API fields
-current_phase: 05
-current_phase_name: Sold Item Pages and Listing Links
-status: verifying
-stopped_at: Phase 05 UI-SPEC approved
-last_updated: "2026-11-06T19:39:40.033Z"
+current_phase: 6
+current_phase_name: Sold-Before Brands, Spotlight and Docs
+status: planning
+stopped_at: Phase 05 complete, ready to plan Phase 6
+last_updated: "2026-11-06T21:09:36.940Z"
 last_activity: 2026-11-06
-last_activity_desc: Phase 05 execution started
-state_head: dedf20f4b528e98459bff98051d523b51f429433
+last_activity_desc: Phase 05 complete, transitioned to Phase 6
+state_head: fb9a69bcc959106a9ab036bb272d5abf526f078b
 progress:
   total_phases: 2
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 4
   completed_plans: 4
-  percent: 100
+  percent: 83
 ---
 
 # Project State
@@ -29,17 +29,17 @@ See: .planning/PROJECT.md (updated 2026-11-06)
 
 ## Current Position
 
-Phase: 05 (Sold Item Pages and Listing Links) — EXECUTING
-Plan: 4 of 4
-Status: Phase complete — ready for verification
-Last activity: 2026-11-06 — Phase 05 execution started
+Phase: 6 — Sold-Before Brands, Spotlight and Docs
+Plan: Not started
+Status: Ready to plan
+Last activity: 2026-11-06 — Phase 05 complete, transitioned to Phase 6
 
-Progress: [██████████] 100%
+Progress: [████████░░] 83%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19 (all in v1.0; none yet in v1.1)
+- Total plans completed: 23 (all in v1.0; none yet in v1.1)
 - Average duration: -
 - Total execution time: 0.0 hours
 
@@ -50,6 +50,7 @@ Progress: [██████████] 100%
 | 01 | 4 | - | - |
 | 02 | 10 | - | - |
 | 04 | 5 | - | - |
+| 05 | 4 | - | - |
 
 **Recent Trend:**
 - Last 5 plans: -
@@ -130,5 +131,5 @@ Items acknowledged and deferred at milestone close, most recent first:
 ## Session Continuity
 
 Last session: 2026-11-06T18:11:53.517Z
-Stopped at: Phase 05 UI-SPEC approved
+Stopped at: Phase 05 complete, ready to plan Phase 6
 Resume file: .planning/phases/05-sold-item-pages-and-listing-links/05-UI-SPEC.md
