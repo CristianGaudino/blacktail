@@ -46,7 +46,7 @@ export async function getStore(): Promise<Store> {
  */
 export const getFilters = cache(async (): Promise<Filters> => (await howmanyFetch('/filters', filtersSchema)).data);
 
-// A code that cannot exist never reaches the shared 3000/min API limit (RESEARCH A1: relax this if a real code fails)
+// A code that cannot exist fails here before any call (not the shop's own SHOP.itemCode shape), so it never reaches the shared limit of 600 uncached requests a minute per IP (RESEARCH A1: relax this if a real code fails)
 // Next never stores a 404, so without this each request for a made-up code would reach the shared API limit.
 // shortcut: per isolate and short, so a piece shown again can take up to missingSeconds to reappear; share it (KV) only if that matters.
 // On globalThis because Next bundles the webhook route and the pages separately: a module-level Map would be two Maps
@@ -54,7 +54,6 @@ const store = globalThis as typeof globalThis & { __howmanyMissing?: Map<string,
 const missing = (store.__howmanyMissing ??= new Map<string, number>());
 /** A webhook means stock changed: forget the 404s so a piece shown again is not hidden by them (this isolate only) */
 export const forgetMissing = () => missing.clear();
-// A code that cannot exist never reaches the shared 3000/min API limit, and a made-up one fails here before any call: the shape is the shop's own (SHOP.itemCode)
 
 /**
  * One /items/{code} read. null = the API answered 404 (hidden, deleted, unknown) or the code is badly shaped.
