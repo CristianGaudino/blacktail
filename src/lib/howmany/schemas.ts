@@ -39,12 +39,20 @@ export const itemSchema = z.object({
     status:       z.string().optional(),
 });
 
+// https only, so a javascript: or http: link never becomes an href
+const listingSchema = z.object({ platform: z.string(), url: z.url({ protocol: /^https$/ }) });
+
 /** The /items/{code} read. Lists stay on the strict itemSchema; a sold piece can lack a price, a sale date and photos. */
 export const itemDetailSchema = itemSchema.extend({
     // null only for a sold piece that never had a price
     priceCents: z.number().int().nullable(),
     // A day key (YYYY-MM-DD) in the seller's zone, not a timestamp; missing or malformed becomes null instead of an error page
     soldAt:     z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().catch(null),
+    // Where this piece is listed, in the API's order; a bad entry is dropped on its own, a bad field is []
+    listings:   z.array(z.unknown()).catch([]).transform(list => list.flatMap(entry => {
+        const parsed = listingSchema.safeParse(entry);
+        return parsed.success ? [parsed.data] : [];
+    })),
 });
 
 export const itemsPageSchema = z.object({

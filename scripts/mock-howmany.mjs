@@ -4,6 +4,7 @@
 //   GET <anything>/filters  -> the facets and ranges of those 30 items
 //   GET <anything>/items/<code> -> that item (200), or 404 no-store when it does not exist or is in `hidden`; a piece in `gone` is a 200 with
 //                              status "sold" and soldAt "2026-11-03", like the real API. MOCK-0031 is always sold with no price, no date and no photos (never in a list)
+//                              Every item carries `listings: []` except MOCK-0003, which has two (ebay then vinted, the API's order); a sold read has none
 //   GET <anything else>     -> the store
 //   GET /__count            -> {"store":n,"items":n} of non-control GETs so far (/filters counts as store; a single item counts as items)
 //   GET /__last             -> the raw query string (no "?") of the last /items list request
@@ -57,6 +58,10 @@ const allItems = () => Array.from({ length: 30 }, (_, n) => {
             ] : []),
         ],
         soldAt:       null,
+        listings:     i === 3 ? [
+            { platform: 'ebay', url: 'https://www.ebay.ie/itm/mock-3' },
+            { platform: 'vinted', url: 'https://www.vinted.ie/items/mock-3' },
+        ] : [],
         publishedAt:  new Date(startedAt - n * DAY).toISOString(),
         futureField:  'ignored',
     };
@@ -168,11 +173,11 @@ createServer((req, res) => {
     if (single) {
         const code = decodeURIComponent(single[1]);
         // A sold piece that never had a price, a sale date or photos (a returned sale), outside every list
-        if (code === 'MOCK-0031') return send(res, 200, { ...allItems()[29], code, status: 'sold', soldAt: null, priceCents: null, photos: [] }, cache);
+        if (code === 'MOCK-0031') return send(res, 200, { ...allItems()[29], code, status: 'sold', soldAt: null, priceCents: null, photos: [], listings: [] }, cache);
         const found = hidden.includes(code) ? undefined : allItems().find(x => x.code === code);
         if (!found) return send(res, 404, { error: 'Not found' }, { 'cache-control': 'no-store' });
         const isGone = gone.includes(code);
-        return send(res, 200, { ...found, status: isGone ? 'sold' : 'inStock', soldAt: isGone ? '2026-11-03' : null }, cache);
+        return send(res, 200, { ...found, status: isGone ? 'sold' : 'inStock', soldAt: isGone ? '2026-11-03' : null, listings: isGone ? [] : found.listings }, cache);
     }
     if (pathname.endsWith('/filters')) return send(res, 200, filters(), cache);
     send(res, 200, { slug: pathname.split('/').filter(Boolean).pop(), name: 'Mock Store', currency: 'EUR', futureField: 'ignored' }, cache);

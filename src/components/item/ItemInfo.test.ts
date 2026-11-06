@@ -14,7 +14,7 @@ const item: ItemDetail = {
     code: 'BT-0001', title: 'Wool coat', brand: 'Acme', category: 'clothing', type: null, size: 'L', condition: 'A', colour: 'Navy', era: '90s',
     department: 'mens', measurements: { pitToPitMm: 560, lengthMm: 700 }, details: {}, priceCents: 12000, currency: 'EUR',
     photos: [{ url: 'https://p.test/1.jpg', thumbUrl: 'https://p.test/1t.jpg', width: 800, height: 1000 }],
-    publishedAt: '2026-01-01T00:00:00Z', soldAt: null,
+    publishedAt: '2026-01-01T00:00:00Z', soldAt: null, listings: [],
 };
 const details = (over: Partial<ItemDetail>) => renderToStaticMarkup(createElement(ItemDetails, { item: { ...item, ...over } }));
 const ld = (over: Partial<ItemDetail> = {}) => renderToStaticMarkup(createElement(ItemJsonLd, { item: { ...item, ...over }, url: 'https://shop.test/items/BT-0001' }));
@@ -66,7 +66,7 @@ describe('ItemDetails', () => {
 });
 
 describe('WhereToBuy', () => {
-    const html = renderToStaticMarkup(createElement(WhereToBuy));
+    const html = renderToStaticMarkup(createElement(WhereToBuy, { listings: [] }));
 
     it('links each platform profile in a new tab with rel noopener noreferrer', () => {
         for (const platform of SHOP.platforms) {
@@ -79,6 +79,42 @@ describe('WhereToBuy', () => {
     it('says the piece is listed on every platform', () => {
         for (const platform of SHOP.platforms) expect(html).toContain(platform.name);
         expect(html).toContain(COPY.item.listedOn('').trim());
+    });
+});
+
+describe('WhereToBuy with listings', () => {
+    const [first, second] = SHOP.platforms;
+    const render = (listings: ItemDetail['listings']) => renderToStaticMarkup(createElement(WhereToBuy, { listings }));
+    const anchors = (html: string) => html.match(/<a [^>]*>/g) ?? [];
+
+    it('shows one new-tab Buy on button per listing, in the given order, and no profile text', () => {
+        const listings = [
+            { platform: second!.name.toLowerCase(), url: 'https://listing.test/a' },
+            { platform: first!.name.toUpperCase(), url: 'https://listing.test/b' },
+        ];
+        const html = render(listings);
+        expect(anchors(html)).toHaveLength(2);
+        listings.forEach((listing, n) => {
+            expect(anchors(html)[n]).toMatch(new RegExp(`href="${listing.url}"[^>]*target="_blank"[^>]*rel="noopener noreferrer"`));
+        });
+        expect(html.indexOf(COPY.item.buyOn(second!.name))).toBeLessThan(html.indexOf(COPY.item.buyOn(first!.name)));
+        expect(html.match(new RegExp(COPY.common.opensInNewTab, 'g'))).toHaveLength(2);
+        expect(html).not.toContain(COPY.item.visitOn(first!.name));
+        expect(html).not.toContain(COPY.item.whereToBuyHelp);
+    });
+
+    it('labels an unknown platform with its host and never prints the code or the URL as text', () => {
+        const html = render([{ platform: 'nosuchplatform', url: 'https://www.example.test/item/1' }]);
+        expect(html).toContain(COPY.item.buyOn('example.test'));
+        expect(html).not.toContain('nosuchplatform');
+        expect(html.split('https://www.example.test/item/1')).toHaveLength(2);
+    });
+
+    it('names a platform once in the intro when two listings share it, with two buttons', () => {
+        const code = first!.name.toLowerCase();
+        const html = render([{ platform: code, url: 'https://listing.test/a' }, { platform: code, url: 'https://listing.test/b' }]);
+        expect(html).toContain(COPY.item.listedOn(first!.name));
+        expect(anchors(html)).toHaveLength(2);
     });
 });
 

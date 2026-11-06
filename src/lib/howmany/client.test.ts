@@ -151,6 +151,29 @@ describe('how many client', () => {
             await expect(getItem('BT-0001')).resolves.toMatchObject({ soldAt: null });
         });
 
+        it('keeps, in order, only the https listings and drops each bad entry alone', async () => {
+            const good = (n: number) => ({ platform: 'ebay', url: `https://listing.test/${n}` });
+            const bad = [
+                { platform: 'ebay', url: 'http://a.test/x' }, { platform: 'ebay', url: 'javascript:alert(1)' }, { platform: 'ebay', url: 'https://' },
+                { platform: 'ebay' }, { platform: 5, url: 'https://listing.test/5' }, null, 'x',
+            ];
+            fetchMock.mockResolvedValue(reply({ ...item, listings: [good(1), ...bad, good(2)] }));
+            const parsed = await getItem('BT-0001');
+            expect(parsed?.listings).toEqual([good(1), good(2)]);
+        });
+
+        it('gives no listings when the field is missing, a string or null', async () => {
+            for (const listings of [undefined, 'x', null]) {
+                fetchMock.mockResolvedValue(reply({ ...item, listings }));
+                await expect(getItem('BT-0001')).resolves.toMatchObject({ listings: [] });
+            }
+        });
+
+        it('keeps listings off the list read', async () => {
+            fetchMock.mockResolvedValue(reply(page([{ ...item, listings: [{ platform: 'ebay', url: 'https://listing.test/1' }] }])));
+            expect((await getItemsPage('')).page.items[0]).not.toHaveProperty('listings');
+        });
+
         it('resolves null for a 404 (hidden or unknown)', async () => {
             fetchMock.mockResolvedValue(new Response('{}', { status: 404 }));
             await expect(getItem('BT-0001')).resolves.toBeNull();
