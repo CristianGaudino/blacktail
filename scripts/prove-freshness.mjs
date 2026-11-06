@@ -251,8 +251,9 @@ if (mock) {
             const shop = await (await fetch(`${base}/shop`)).text();
             assert(!shop.includes(`href="/items/${code}"`), `/shop still lists the hidden ${code}`);
         } finally {
-            // A 404 is never cached, so the next read sees the piece again
+            // A 404 is never cached by Next, but the client remembers it for 30 s
             await setMock({ hidden: [] });
+            await post(valid()); // the client remembers a 404 for 30 s; a webhook makes it forget
         }
     });
 

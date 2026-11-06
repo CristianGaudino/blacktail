@@ -50,6 +50,8 @@ export const getFilters = cache(async (): Promise<Filters> => (await howmanyFetc
 // Next never stores a 404, so without this each request for a made-up code would reach the shared API limit.
 // shortcut: per isolate and short, so a piece shown again can take up to missingSeconds to reappear; share it (KV) only if that matters.
 const missing = new Map<string, number>();
+/** A webhook means stock changed: forget the 404s so a piece shown again is not hidden by them (this isolate only) */
+export const forgetMissing = () => missing.clear();
 // A code that cannot exist never reaches the shared 3000/min API limit, and a made-up one fails here before any call: the shape is the shop's own (SHOP.itemCode)
 
 /**
