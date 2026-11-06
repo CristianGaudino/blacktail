@@ -183,7 +183,7 @@ describe('how many client', () => {
 
         it('resolves null for a 404 (hidden or unknown)', async () => {
             fetchMock.mockResolvedValue(new Response('{}', { status: 404 }));
-            await expect(getItem('BT-0001')).resolves.toBeNull();
+            await expect(getItem('BT-0404')).resolves.toBeNull();
         });
 
         it('rejects with HowManyError for 429 and 500, so they never look like a not-found', async () => {
