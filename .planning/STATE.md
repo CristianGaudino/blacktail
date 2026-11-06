@@ -6,10 +6,10 @@ current_phase: 06
 current_phase_name: Sold-Before Brands, Spotlight and Docs
 status: executing
 stopped_at: Phase 05 complete, ready to plan Phase 6
-last_updated: "2026-11-06T21:56:48.555Z"
+last_updated: "2026-11-06T22:05:04.921Z"
 last_activity: 2026-11-06
-last_activity_desc: Phase 05 complete, transitioned to Phase 6
-state_head: 63c377b37ed163e143f10f8ba948c99a19c56b5a
+last_activity_desc: Phase 06 execution started
+state_head: 5bec54fd10958f7796359f3707d7f005d8f025bf
 progress:
   total_phases: 2
   completed_phases: 5
@@ -25,14 +25,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-06)
 
 **Core value:** Shoppers see the shop's current in-stock pieces, always up to date with How many, in a storefront that looks like the Blacktail Archive mockups.
-**Current focus:** Phase 05 — Sold Item Pages and Listing Links
+**Current focus:** Phase 06 — Sold-Before Brands, Spotlight and Docs
 
 ## Current Position
 
-Phase: 06 (Sold-Before Brands, Spotlight and Docs) — READY TO EXECUTE
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-11-06 — Phase 05 complete, transitioned to Phase 6
+Phase: 06 (Sold-Before Brands, Spotlight and Docs) — EXECUTING
+Plan: 1 of 4
+Status: Executing Phase 06
+Last activity: 2026-11-06 — Phase 06 execution started
 
 Progress: [█████░░░░░] 50%
 
