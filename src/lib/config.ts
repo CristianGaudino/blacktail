@@ -24,7 +24,7 @@ export const IMAGES = {
 
 /** The home page (D-12) */
 export const HOME = {
-    /** Newest pieces in the Just Dropped carousel */
+    /** Pieces in the Just Dropped carousel: spotlight first, then the newest (HOME-05) */
     carouselItems: 10,
     /** Brands in the home brand strip */
     stripBrands: 16,
