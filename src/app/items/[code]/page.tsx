@@ -6,15 +6,17 @@ import { ItemDetails } from '@/components/item/ItemDetails';
 import { ItemGallery } from '@/components/item/ItemGallery';
 import { ItemJsonLd } from '@/components/item/ItemJsonLd';
 import { MoreFromBrand } from '@/components/item/MoreFromBrand';
+import { SoldNotice } from '@/components/item/SoldNotice';
 import { WhereToBuy } from '@/components/item/WhereToBuy';
 import { brandSlug, linkableSlug } from '@/lib/brands';
+import { formatDay } from '@/lib/dates';
 import { storeEnv } from '@/lib/env';
 import { getFilters, getItem, getItemsPage } from '@/lib/howmany/client';
 import { COPY } from '@/lib/copy';
 import { label } from '@/lib/labels';
 import { formatMoney } from '@/lib/money';
 import { ROUTES } from '@/lib/routes';
-import { pageMetadata } from '@/lib/seo';
+import { pageMetadata, soldItemRobots } from '@/lib/seo';
 
 const nameOf = (item: { brand: string | null; title: string }) => [item.brand, item.title].filter(Boolean).join(' ');
 // SITE_URL is read per call, never at module scope and never from the Host header
@@ -30,12 +32,16 @@ export async function generateMetadata({ params }: PageProps<'/items/[code]'>): 
         ...(item.size === null ? [] : [COPY.seo.size(item.size)]),
         COPY.seo.condition(label(item.condition, COPY.labels.condition)),
     ].join('. ') + '.';
-    return pageMetadata({
-        url:   itemUrl(item.code),
-        title: nameOf(item),
-        description,
-        image: cover && { url: cover.url, width: cover.width, height: cover.height },
-    });
+    const sold = item.status === 'sold';
+    return {
+        ...pageMetadata({
+            url:   itemUrl(item.code),
+            title: nameOf(item),
+            description: sold ? `${COPY.seo.sold} ${description}` : description,
+            image: cover && { url: cover.url, width: cover.width, height: cover.height },
+        }),
+        ...(sold ? { robots: soldItemRobots() } : {}),
+    };
 }
 
 export default async function ItemPage({ params }: PageProps<'/items/[code]'>) {
@@ -51,7 +57,9 @@ export default async function ItemPage({ params }: PageProps<'/items/[code]'>) {
     const slug = !item.brand ? '' : filters ? linkableSlug(item.brand, filters.brand.map(f => f.value)) : brandSlug(item.brand);
     // Exactly the query of page 1 of the brand page (never a limit of our own), so this shares its cache entry and adds no API call.
     // A failed read hides the row instead of showing the error screen.
-    const more = item.brand
+    // A sold page has no More from row, so it makes no list call
+    const sold = item.status === 'sold';
+    const more = item.brand && !sold
         ? await getItemsPage(new URLSearchParams({ brand: item.brand }).toString()).catch(() => {
             console.warn('Item page: more-from read failed');
             return null;
@@ -75,8 +83,17 @@ export default async function ItemPage({ params }: PageProps<'/items/[code]'>) {
                         </p>
                     )}
                     <h1 className="font-heading text-heading leading-[1.2] break-words lg:text-display">{item.title}</h1>
-                    <p className="mt-4 font-heading text-heading tabular-nums">{formatMoney(item.priceCents, item.currency)}</p>
-                    <div className="mt-6"><WhereToBuy /></div>
+                    {sold ? (
+                        <>
+                            <p className="mt-4 font-heading text-heading">{item.soldAt ? COPY.item.soldOn(formatDay(item.soldAt)) : COPY.item.sold}</p>
+                            <div className="mt-6"><SoldNotice /></div>
+                        </>
+                    ) : (
+                        <>
+                            {item.priceCents !== null && <p className="mt-4 font-heading text-heading tabular-nums">{formatMoney(item.priceCents, item.currency)}</p>}
+                            <div className="mt-6"><WhereToBuy /></div>
+                        </>
+                    )}
                     <div className="mt-8"><ItemDetails item={item} /></div>
                 </div>
             </div>

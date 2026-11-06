@@ -1,10 +1,10 @@
-import type { Item } from '@/lib/definitions';
+import type { ItemDetail } from '@/lib/definitions';
 
 /**
  * Product data for search engines (SEO-02). Named fields only: no code, sku, details or cost.
  * The price string is machine data, not display (formatMoney stays the only display formatter).
  */
-export function ItemJsonLd({ item, url }: { item: Item; url: string }) {
+export function ItemJsonLd({ item, url }: { item: ItemDetail; url: string }) {
     const data = {
         '@context': 'https://schema.org',
         '@type':    'Product',
@@ -13,9 +13,10 @@ export function ItemJsonLd({ item, url }: { item: Item; url: string }) {
         ...(item.brand ? { brand: { '@type': 'Brand', name: item.brand } } : {}),
         offers: {
             '@type':       'Offer',
-            price:         (item.priceCents / 100).toFixed(2),
+            // A sold piece that never had a price has no price key
+            ...(item.priceCents === null ? {} : { price: (item.priceCents / 100).toFixed(2) }),
             priceCurrency: item.currency,
-            availability:  'https://schema.org/InStock',
+            availability:  item.status === 'sold' ? 'https://schema.org/SoldOut' : 'https://schema.org/InStock',
             itemCondition: 'https://schema.org/UsedCondition',
             url,
         },

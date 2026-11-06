@@ -2,13 +2,15 @@
 // Usage: node scripts/mock-howmany.mjs [--port 4010] [--host 127.0.0.1]
 //   GET <anything>/items    -> 30 items, filtered, sorted and paged by the query (brand, ...; page, limit)
 //   GET <anything>/filters  -> the facets and ranges of those 30 items
-//   GET <anything>/items/<code> -> that item (200), or 404 no-store when it does not exist; a piece in `gone` is a 200 with status "sold", like the real API
+//   GET <anything>/items/<code> -> that item (200), or 404 no-store when it does not exist or is in `hidden`; a piece in `gone` is a 200 with
+//                              status "sold" and soldAt "2026-11-03", like the real API. MOCK-0031 is always sold with no price, no date and no photos (never in a list)
 //   GET <anything else>     -> the store
 //   GET /__count            -> {"store":n,"items":n} of non-control GETs so far (/filters counts as store; a single item counts as items)
 //   GET /__last             -> the raw query string (no "?") of the last /items list request
-//   POST /__set             -> JSON { title?: string, status?: number, gone?: string[] }: change the first item's title,
+//   POST /__set             -> JSON { title?: string, status?: number, gone?: string[], hidden?: string[] }: change the first item's title,
 //                              make every non-control GET answer that status with an error body, and/or
-//                              replace the set of sold codes (they leave the list, /filters and the single read)
+//                              replace the set of sold codes (they leave the list and /filters; the single read becomes a sold 200) and/or
+//                              the set of hidden codes (they leave the list and /filters; the single read becomes a 404)
 import { createServer } from 'node:http';
 
 const arg = (name, fallback) => {
@@ -24,9 +26,10 @@ let title = 'Mock oxford shirt';
 let failStatus = 0;
 let last = '';
 let gone = [];
+let hidden = [];
 
 const DAY = 24 * 60 * 60 * 1000;
-const items = () => allItems().filter(x => !gone.includes(x.code));
+const items = () => allItems().filter(x => !gone.includes(x.code) && !hidden.includes(x.code));
 const allItems = () => Array.from({ length: 30 }, (_, n) => {
     const i = n + 1;
     return {
@@ -53,6 +56,7 @@ const allItems = () => Array.from({ length: 30 }, (_, n) => {
                 { url: 'https://example.com/photo-1c.jpg', thumbUrl: 'https://example.com/thumb-1c.jpg', width: 1500, height: 2000 },
             ] : []),
         ],
+        soldAt:       null,
         publishedAt:  new Date(startedAt - n * DAY).toISOString(),
         futureField:  'ignored',
     };
@@ -143,6 +147,7 @@ createServer((req, res) => {
                 if (typeof set.title === 'string') title = set.title;
                 if (typeof set.status === 'number') failStatus = set.status === 200 ? 0 : set.status;
                 if (Array.isArray(set.gone)) gone = set.gone.filter(code => typeof code === 'string');
+                if (Array.isArray(set.hidden)) hidden = set.hidden.filter(code => typeof code === 'string');
                 send(res, 200, { ok: true });
             } catch {
                 send(res, 400, { error: 'Bad body' });
@@ -162,8 +167,12 @@ createServer((req, res) => {
     if (isItems) return send(res, 200, listItems(searchParams), cache);
     if (single) {
         const code = decodeURIComponent(single[1]);
-        const found = allItems().find(x => x.code === code);
-        return found ? send(res, 200, { ...found, status: gone.includes(code) ? 'sold' : 'inStock' }, cache) : send(res, 404, { error: 'Not found' }, { 'cache-control': 'no-store' });
+        // A sold piece that never had a price, a sale date or photos (a returned sale), outside every list
+        if (code === 'MOCK-0031') return send(res, 200, { ...allItems()[29], code, status: 'sold', soldAt: null, priceCents: null, photos: [] }, cache);
+        const found = hidden.includes(code) ? undefined : allItems().find(x => x.code === code);
+        if (!found) return send(res, 404, { error: 'Not found' }, { 'cache-control': 'no-store' });
+        const isGone = gone.includes(code);
+        return send(res, 200, { ...found, status: isGone ? 'sold' : 'inStock', soldAt: isGone ? '2026-11-03' : null }, cache);
     }
     if (pathname.endsWith('/filters')) return send(res, 200, filters(), cache);
     send(res, 200, { slug: pathname.split('/').filter(Boolean).pop(), name: 'Mock Store', currency: 'EUR', futureField: 'ignored' }, cache);
