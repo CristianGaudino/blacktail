@@ -55,21 +55,21 @@ Uses the fields How many added to its public API: `listings`, `status: "sold"` w
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SOLD-01 | Pending | Pending |
-| SOLD-02 | Pending | Pending |
-| SOLD-03 | Pending | Pending |
-| SOLD-04 | Pending | Pending |
-| LINK-01 | Pending | Pending |
-| LINK-02 | Pending | Pending |
-| BRAND-05 | Pending | Pending |
-| HOME-05 | Pending | Pending |
-| DOC-01 | Pending | Pending |
+| SOLD-01 | Phase 5 | Pending |
+| SOLD-02 | Phase 5 | Pending |
+| SOLD-03 | Phase 5 | Pending |
+| SOLD-04 | Phase 5 | Pending |
+| LINK-01 | Phase 5 | Pending |
+| LINK-02 | Phase 5 | Pending |
+| BRAND-05 | Phase 6 | Pending |
+| HOME-05 | Phase 6 | Pending |
+| DOC-01 | Phase 6 | Pending |
 
 **Coverage:**
 - v1.1 requirements: 9 total
-- Mapped to phases: 0
-- Unmapped: 9
+- Mapped to phases: 9 (Phase 5: 6, Phase 6: 3)
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-11-06*
-*Last updated: 2026-11-06 after defining milestone v1.1*
+*Last updated: 2026-11-06 after creating the v1.1 roadmap*

@@ -3,10 +3,10 @@ gsd_state_version: "1.0"
 milestone: v1.1
 milestone_name: How many API fields
 status: planning
-last_updated: "2026-11-06T14:24:41.873Z"
+last_updated: "2026-11-06T15:00:00.000Z"
 last_activity: 2026-11-06
 progress:
-  total_phases: 0
+  total_phases: 2
   completed_phases: 0
   total_plans: 0
   completed_plans: 0
@@ -17,22 +17,24 @@ progress:
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-10-26)
+See: .planning/PROJECT.md (updated 2026-11-06)
 
 **Core value:** Shoppers see the shop's current in-stock pieces, always up to date with How many, in a storefront that looks like the Blacktail Archive mockups.
-**Current focus:** Phase 04 — Home and Launch
+**Current focus:** Phase 5 — Sold Item Pages and Listing Links
 
 ## Current Position
 
-Phase: Not started (defining requirements)
+Phase: 5 of 6 (Sold Item Pages and Listing Links)
 Plan: —
-Status: Defining requirements
-Last activity: 2026-11-06 — Milestone v1.1 started
+Status: Ready to plan
+Last activity: 2026-11-06 — Roadmap created for milestone v1.1
+
+Progress: [░░░░░░░░░░] 0%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 19
+- Total plans completed: 19 (all in v1.0; none yet in v1.1)
 - Average duration: -
 - Total execution time: 0.0 hours
 
@@ -75,6 +77,8 @@ Last activity: 2026-11-06 — Milestone v1.1 started
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
+- [Roadmap v1.1]: Two phases, chosen by the owner. Phase 5 is sold item pages plus per-item listing links (closes #13); Phase 6 is sold-before brands, spotlight and the rate-limit docs (closes #19)
+- [Roadmap v1.1]: A sold piece now returns 200 on its own address (noindex, SoldOut, no buy block) and stays out of every list and the sitemap; hidden, deleted and unknown items stay a real 404 (supersedes v1.0 Phase 3 criterion 3 for sold pieces)
 - [Roadmap]: Freshness round trip (R2 + D1 tag cache + DO queue, signed webhook) is proven on a deployed Worker in Phase 1, before any styled UI
 - [Roadmap]: No `cacheComponents` / `'use cache'`; guard test lands in Phase 1
 - [Roadmap]: Shop seam (`src/shop/`) and the shop-strings guard test land in Phase 2 with the design system
@@ -106,7 +110,8 @@ None yet.
 - [Phase 1]: Freshness round trip on a deployed Worker is unproven (research flag, highest). Settle `{ expire: 0 }` vs `'max'` and `force-cache` after `await searchParams`
 - [Phase 1]: OpenNext cannot build on Windows. Build and deploy from Linux CI or WSL only
 - [Phase 3]: Ralph Lauren spelling (`ralph-lauren` vs `polo-ralph-lauren`) and `arc-teryx.svg` rename to `arcteryx.svg` need confirming
-- [Phase 4]: Sold-before brand tier has no data source (BRAND-02 ships with it empty; BRAND-05 is v2)
+- [Phase 6]: The sold-before brand tier now has a source (`/filters` `soldBrands`, BRAND-05); it ships empty until How many returns brands there
+- [Phase 5]: A sold piece must return 200 while hidden, deleted and unknown items stay a real 404, including right after the webhook. Prove it on workerd as v1.0 Phase 3 did
 - [Phase 4]: Default brand order and lifestyle photos (hero, 2 banners, 4 category tiles, story band) still to come from the owner
 
 ## Deferred Items
@@ -119,6 +124,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-11-03T11:31:11.270Z
-Stopped at: Phase 04 complete — all phases complete
-Resume file: .planning/phases/04-home-and-launch/04-UI-SPEC.md
+Last session: 2026-11-06T15:00:00.000Z
+Stopped at: Roadmap created for v1.1 — next is /gsd-discuss-phase 5 or /gsd-plan-phase 5
+Resume file: None
