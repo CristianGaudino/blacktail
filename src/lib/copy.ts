@@ -133,6 +133,7 @@ export const COPY = {
         listedOn:       (names: string) => `This piece is listed on ${names}`,
         whereToBuyHelp: 'Find this piece in our shop on each platform.',
         visitOn:        (name: string) => `Visit us on ${name}`,
+        buyOn:          (name: string) => `Buy on ${name}`,
         photos:         'Photos',
         photoOf:        (n: number, total: number) => `Photo ${n} of ${total}`,
         openPhoto:      (n: number, total: number) => `Open photo ${n} of ${total} full size`,

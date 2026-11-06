@@ -91,7 +91,7 @@ export default async function ItemPage({ params }: PageProps<'/items/[code]'>) {
                     ) : (
                         <>
                             {item.priceCents !== null && <p className="mt-4 font-heading text-heading tabular-nums">{formatMoney(item.priceCents, item.currency)}</p>}
-                            <div className="mt-6"><WhereToBuy /></div>
+                            <div className="mt-6"><WhereToBuy listings={item.listings} /></div>
                         </>
                     )}
                     <div className="mt-8"><ItemDetails item={item} /></div>
