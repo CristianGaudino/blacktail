@@ -13,9 +13,10 @@ const MAX_DOTS = 10;
 /**
  * Gets the photos and the display name only, never the item: its details would ship in the RSC payload.
  * One scroll-snap track of full-size photos on every viewport; its frame takes the cover's ratio, so
- * switching photos never moves the page.
+ * switching photos never moves the page. An optional soldLabel (a plain string) shows as a corner badge on the cover
+ * frame, outside the track and the lightbox.
  */
-export function ItemGallery({ photos, name }: { photos: ItemPhoto[]; name: string }) {
+export function ItemGallery({ photos, name, soldLabel }: { photos: ItemPhoto[]; name: string; soldLabel?: string }) {
     const [index, setIndex] = useState(0);
     const [open, setOpen] = useState(false);
     const track = useRef<HTMLDivElement>(null);
@@ -84,7 +85,12 @@ export function ItemGallery({ photos, name }: { photos: ItemPhoto[]; name: strin
                     </div>
                 </div>
             )}
-            <div>
+            <div className="relative">
+                {soldLabel && (
+                    <span aria-hidden="true" className="pointer-events-none absolute left-2 top-2 z-10 border border-forest bg-forest px-2 py-1 text-label uppercase text-ivory">
+                        {soldLabel}
+                    </span>
+                )}
                 {cover ? (
                     <div
                         ref={track}

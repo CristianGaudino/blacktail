@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import { SHOP } from '@/shop/config';
-import { isNew } from './dates';
+import { formatDay, isNew } from './dates';
 
 const DAY = 24 * 60 * 60 * 1000;
 const NOW = Date.parse('2026-10-26T12:00:00Z');
@@ -25,5 +25,15 @@ describe('isNew', () => {
     it('is false for an empty or unparseable date and never throws', () => {
         expect(isNew('', NOW, DAYS)).toBe(false);
         expect(isNew('not-a-date', NOW, DAYS)).toBe(false);
+    });
+});
+
+describe('formatDay', () => {
+    // Pinned to en-IE; a shop with another locale needs its own expectation
+    it('prints the date of the day key itself, whatever the machine time zone', () => {
+        expect(SHOP.locale).toBe('en-IE');
+        expect(formatDay('2026-11-03')).toBe('3 November 2026');
+        expect(formatDay('2026-01-01')).toBe('1 January 2026');
+        expect(formatDay('2026-12-31')).toBe('31 December 2026');
     });
 });

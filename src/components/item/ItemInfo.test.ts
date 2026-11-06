@@ -2,10 +2,12 @@ import { createElement } from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { describe, expect, it } from 'vitest';
 import { COPY } from '@/lib/copy';
+import { ROUTES } from '@/lib/routes';
 import type { ItemDetail } from '@/lib/definitions';
 import { SHOP } from '@/shop/config';
 import { ItemDetails } from './ItemDetails';
 import { ItemJsonLd } from './ItemJsonLd';
+import { SoldNotice } from './SoldNotice';
 import { WhereToBuy } from './WhereToBuy';
 
 const item: ItemDetail = {
@@ -94,6 +96,17 @@ describe('ItemJsonLd', () => {
         expect(JSON.parse(ldBody(ld({ priceCents: 11950 }))).offers.price).toBe('119.50');
     });
 
+    it('says SoldOut for a sold piece and keeps its asking price', () => {
+        const data = JSON.parse(ldBody(ld({ status: 'sold' })));
+        expect(data.offers).toMatchObject({ price: '120.00', availability: 'https://schema.org/SoldOut' });
+    });
+
+    it('leaves out the price key but keeps the currency for a sold piece with no price', () => {
+        const { offers } = JSON.parse(ldBody(ld({ status: 'sold', priceCents: null })));
+        expect(offers).not.toHaveProperty('price');
+        expect(offers).toMatchObject({ priceCurrency: 'EUR', availability: 'https://schema.org/SoldOut' });
+    });
+
     it('leaves out image when the piece has no photos', () => {
         expect(JSON.parse(ldBody(ld({ photos: [] }))).image).toBeUndefined();
     });
@@ -104,5 +117,20 @@ describe('ItemJsonLd', () => {
         expect(leaky).not.toContain('SECRET');
         const data = JSON.parse(ldBody(ld()));
         for (const key of ['sku', 'code', 'details']) expect(data).not.toHaveProperty(key);
+    });
+});
+
+describe('SoldNotice', () => {
+    const html = renderToStaticMarkup(createElement(SoldNotice));
+
+    it('says the piece is sold and links back to the stock', () => {
+        expect(html).toContain(COPY.item.soldMessage);
+        expect(html).toMatch(new RegExp(`<a [^>]*href="${ROUTES.shop}"[^>]*>[^<]*${COPY.common.shopAll}`));
+        expect(html).toMatch(new RegExp(`<a [^>]*href="${ROUTES.justDropped}"[^>]*>[^<]*${COPY.item.newestDrops}`));
+    });
+
+    it('opens nothing in a new tab and shows no price', () => {
+        expect(html).not.toContain('target=');
+        expect(html).not.toMatch(/[€$£]/);
     });
 });

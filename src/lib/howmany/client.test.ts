@@ -143,6 +143,10 @@ describe('how many client', () => {
             await expect(getItem('BT-0001')).resolves.toMatchObject({ priceCents: null, soldAt: null, photos: [] });
             fetchMock.mockResolvedValue(reply({ ...item, status: 'sold', soldAt: '3 Nov' }));
             await expect(getItem('BT-0001')).resolves.toMatchObject({ soldAt: null });
+            fetchMock.mockResolvedValue(reply({ ...item, status: 'sold', soldAt: 'yesterday' }));
+            await expect(getItem('BT-0001')).resolves.toMatchObject({ soldAt: null });
+            fetchMock.mockResolvedValue(reply({ ...item, status: 'sold', soldAt: '2026-11-03T10:00:00Z' }));
+            await expect(getItem('BT-0001')).resolves.toMatchObject({ soldAt: null });
             fetchMock.mockResolvedValue(reply(item));
             await expect(getItem('BT-0001')).resolves.toMatchObject({ soldAt: null });
         });
@@ -157,6 +161,11 @@ describe('how many client', () => {
                 fetchMock.mockResolvedValue(new Response('{}', { status }));
                 await expect(getItem('BT-0001')).rejects.toMatchObject({ name: 'HowManyError', status });
             }
+        });
+
+        it('rejects, never null, for a body that fails the schema', async () => {
+            fetchMock.mockResolvedValue(reply({ ...item, title: 5 }));
+            await expect(getItem('BT-0001')).rejects.toThrow();
         });
 
         it('resolves null without fetching for a badly shaped code', async () => {

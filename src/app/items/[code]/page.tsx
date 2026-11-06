@@ -72,7 +72,7 @@ export default async function ItemPage({ params }: PageProps<'/items/[code]'>) {
         <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:py-12">
             <div className="lg:grid lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-12">
                 <div className="-mx-4 sm:-mx-6 lg:mx-0">
-                    <ItemGallery photos={item.photos} name={nameOf(item)} />
+                    <ItemGallery photos={item.photos} name={nameOf(item)} soldLabel={sold ? COPY.item.sold : undefined} />
                 </div>
                 <div className="mt-6 flex flex-col lg:mt-0">
                     {item.brand && (

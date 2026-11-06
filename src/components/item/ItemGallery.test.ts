@@ -7,7 +7,7 @@ import { ItemGallery } from './ItemGallery';
 
 const photo = (n: number, width = 800, height = 1000): ItemPhoto => ({ url: `https://p.test/${n}.jpg`, thumbUrl: `https://p.test/${n}t.jpg`, width, height });
 const photos = (n: number) => Array.from({ length: n }, (_, i) => photo(i + 1));
-const render = (list: ItemPhoto[]) => renderToStaticMarkup(createElement(ItemGallery, { photos: list, name: 'Acme Wool coat' }));
+const render = (list: ItemPhoto[], soldLabel?: string) => renderToStaticMarkup(createElement(ItemGallery, { photos: list, name: 'Acme Wool coat', soldLabel }));
 const count = (html: string, needle: string) => html.split(needle).length - 1;
 // img tags only: React also hoists a preload link for a high-priority image
 const imgs = (html: string) => html.match(/<img[^>]*>/g) ?? [];
@@ -93,5 +93,28 @@ describe('ItemGallery', () => {
         expect(html).toContain('aspect-[4/5]');
         expect(html).not.toContain('<img');
         expect(html).not.toContain('<button');
+    });
+});
+
+describe('ItemGallery soldLabel', () => {
+    const badge = (html: string) => html.match(/<span[^>]*pointer-events-none[^>]*>[^<]*<\/span>/g) ?? [];
+
+    it('shows one aria-hidden badge before the carousel, outside the scroll track', () => {
+        const html = render(photos(2), COPY.item.sold);
+        const tags = badge(html);
+        expect(tags).toHaveLength(1);
+        expect(tags[0]).toContain('aria-hidden="true"');
+        expect(tags[0]).toContain(`>${COPY.item.sold}<`);
+        expect(html.indexOf(tags[0]!)).toBeLessThan(html.indexOf('role="region"'));
+    });
+
+    it('still shows the badge next to the placeholder when there are no photos', () => {
+        const html = render([], COPY.item.sold);
+        expect(badge(html)).toHaveLength(1);
+        expect(html).not.toContain('role="region"');
+    });
+
+    it('shows no badge without a label', () => {
+        expect(badge(render(photos(2)))).toHaveLength(0);
     });
 });
