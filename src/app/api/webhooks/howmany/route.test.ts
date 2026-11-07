@@ -25,6 +25,7 @@ beforeEach(() => {
     vi.stubEnv('HOWMANY_WEBHOOK_SECRET', secret);
     vi.stubEnv('SITE_URL', 'https://shop.test');
     vi.spyOn(console, 'warn').mockImplementation(() => {});
+    vi.spyOn(console, 'info').mockImplementation(() => {});
 });
 
 afterEach(() => {

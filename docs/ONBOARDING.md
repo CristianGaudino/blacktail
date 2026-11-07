@@ -75,6 +75,8 @@ gh secret set CLOUDFLARE_API_TOKEN
 gh secret set CLOUDFLARE_ACCOUNT_ID
 ```
 
+- Add a Cloudflare rate-limiting rule (Security > WAF > Rate limiting rules) on the shop's zone: paths `/shop`, `/brands/*`, `/just-dropped` and `/items/*`, about 30 requests a minute per IP, action Block. Every new search text, filter mix or item code is an uncached call to How many, and all calls share one allowance of 600 uncached requests a minute per IP. Without the rule one script can use it up and every shopper sees the error page. Do not cover `/api/webhooks/*`.
+
 ## 8. `wrangler.jsonc`
 
 Edit these values and nothing else:
