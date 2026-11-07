@@ -18,9 +18,6 @@ export function sitemapEntries({ siteUrl, brands, items }: {
     return [
         ...[ROUTES.home, ROUTES.shop, ROUTES.brands, ROUTES.justDropped, ROUTES.about, ROUTES.contact].map(path => ({ url: abs(path) })),
         ...brands.map(b => ({ url: abs(ROUTES.brand(b.slug)) })),
-        ...items.map(i => ({
-            url: abs(ROUTES.item(i.code)),
-            ...(Number.isNaN(Date.parse(i.publishedAt)) ? {} : { lastModified: i.publishedAt }),
-        })),
+        ...items.map(i => ({ url: abs(ROUTES.item(i.code)) })),
     ].slice(0, MAX_URLS);
 }

@@ -52,6 +52,7 @@ export async function POST(request: Request): Promise<Response> {
     }
 
     // The tag always comes from env, never from the body
+    console.info('How many webhook accepted');
     forgetMissing();
     revalidateTag(storeTag(), CACHE.webhookRevalidate);
     return new Response(null, { status: 204 });

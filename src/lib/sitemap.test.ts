@@ -24,12 +24,6 @@ describe('sitemapEntries', () => {
         for (const { url } of entries) expect(url).not.toMatch(/[&<>?]/);
     });
 
-    it('uses publishedAt as lastModified only when it parses', () => {
-        const [ok, bad] = build({ items: [{ code: 'A', publishedAt: '2026-01-01T00:00:00Z' }, { code: 'B', publishedAt: 'not-a-date' }] }).slice(6);
-        expect(ok.lastModified).toBe('2026-01-01T00:00:00Z');
-        expect(bad).not.toHaveProperty('lastModified');
-    });
-
     it('caps the list at 50,000 entries', () => {
         const items = Array.from({ length: 60_000 }, (_, i) => ({ code: `C${i}`, publishedAt: '2026-01-01T00:00:00Z' }));
         expect(build({ items })).toHaveLength(50_000);
