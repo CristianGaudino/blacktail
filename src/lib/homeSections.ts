@@ -1,12 +1,12 @@
 // Pure and client-safe: no env, no fetch. The orderings the home page sections render (D-07, D-05).
 import { brandIndex, brandSlug } from '@/lib/brands';
 import { HOME } from '@/lib/config';
-import type { Filters } from '@/lib/definitions';
+import type { Filters, Item } from '@/lib/definitions';
 
 /**
  * The brand strip order (D-07): brands in stock, then sold-before brands, each tier A to Z and then ranked by the shop's default order.
- * `soldBefore` is supplied by BRAND-05 (empty until How many provides it): sold-before brands show even with no stock and their
- * brand page renders the empty catalogue (D-21). A default-order brand that is in neither tier is never added (D-21).
+ * `soldBefore` comes from /filters `soldBrands` (BRAND-05); with none, the strip is the in-stock brands ranked by the default order, as in v1.0.
+ * Sold-before brands show even with no stock and their brand page renders the empty catalogue (D-21). A default-order brand that is in neither tier is never added (D-21).
  */
 export function stripBrands(inStock: string[], soldBefore: readonly string[], defaultOrder: readonly string[]): { name: string; slug: string }[] {
     const rank = defaultOrder.map(brandSlug);
@@ -17,6 +17,12 @@ export function stripBrands(inStock: string[], soldBefore: readonly string[], de
     const stocked = new Set(first.map(b => b.slug));
     const second = brandIndex([...soldBefore]).filter(b => !stocked.has(b.slug));
     return [...byRank(first), ...byRank(second)].slice(0, HOME.stripBrands);
+}
+
+/** The Just Dropped carousel order (HOME-05, D-01): spotlight pieces in the API's order, then the newest, no code twice, marked by order only */
+export function spotlightFirst(spotlight: Item[], newest: Item[], size: number): Item[] {
+    const seen = new Set<string>();
+    return [...spotlight, ...newest].filter(item => !seen.has(item.code) && seen.add(item.code)).slice(0, size);
 }
 
 export type CategoryTile = { type: string; label: string; image: string };

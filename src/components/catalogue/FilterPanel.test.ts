@@ -14,6 +14,7 @@ const filters = (over: Partial<Filters> = {}): Filters => ({
     material: facet('Cotton'), category: facet('clothing'), type: facet('knit', 'shirt'),
     condition: facet('A', 'AB'), department: facet('mens'),
     priceCents: { min: 1250, max: 8500 }, pitToPitMm: { min: 500, max: 560 }, lengthMm: null,
+    soldBrands: [],
     ...over,
 });
 const query = (lists: Partial<CatalogueQuery['lists']> = {}, ranges: Partial<CatalogueQuery['ranges']> = {}): CatalogueQuery => ({

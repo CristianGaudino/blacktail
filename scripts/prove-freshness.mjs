@@ -1,6 +1,8 @@
 // Freshness round trip: a signed How many webhook must refresh the list within seconds.
 // Usage: node scripts/prove-freshness.mjs <baseUrl> [--mock <mockUrl>] [--outage]
 // Item pages: item-page, item-unknown, code-gate (mock only), item-sold, item-hidden and item-sold-bare (mock only) check /items/<code>.
+// home-spotlight (mock only) checks the home carousel order (spotlight first, no piece twice, cap of 10) and that /just-dropped stays newest first.
+// home-sold-brands (mock only) checks the brand strip tiers (in stock, then sold before), logo or name, the empty sold-before brand pages and /brands in stock only.
 // Needs HOWMANY_WEBHOOK_SECRET and STORE_SLUG in the environment. No dependencies.
 // The stock page is /shop; / is the home page (hero, newest pieces, static sections).
 // Runs against `next start`, `wrangler dev` and the deployed Worker. Without --mock only the
@@ -85,6 +87,56 @@ await check('home', async () => {
     assert(html.includes('<h1'), 'GET / has no h1');
     if (mock) assert(html.includes('href="/items/'), 'GET / has no /items/<code> link (the Just Dropped carousel)');
 });
+
+if (mock) {
+    await check('home-spotlight', async () => {
+        const at = (html, code) => html.indexOf(`href="/items/${code}"`);
+        const inOrder = (html, codes, where) => {
+            const positions = codes.map(code => at(html, code));
+            assert(positions.every(p => p > -1), `${where}: ${codes.join(', ')} not all linked`);
+            assert(positions.every((p, i) => i === 0 || p > positions[i - 1]), `${where}: ${codes.join(', ')} not in that order`);
+        };
+        const res = await fetch(`${base}/`, { redirect: 'manual' });
+        const html = await res.text();
+        assert(res.status === 200, `GET / returned ${res.status}, expected 200`);
+        inOrder(html, ['MOCK-0003', 'MOCK-0015', 'MOCK-0001'], 'GET / carousel (spotlight first in API order, then newest)');
+        assert(html.split('href="/items/MOCK-0003"').length === 2, 'MOCK-0003 is linked more than once on GET / (a piece twice)');
+        assert(at(html, 'MOCK-0009') > -1, 'MOCK-0009 is missing from the carousel (10 pieces expected after the dedupe)');
+        assert(at(html, 'MOCK-0010') === -1, 'MOCK-0010 is in the carousel (more than 10 pieces)');
+        const all = await fetch(`${base}/just-dropped`, { redirect: 'manual' });
+        assert(all.status === 200, `GET /just-dropped returned ${all.status}, expected 200`);
+        inOrder(await all.text(), ['MOCK-0001', 'MOCK-0003', 'MOCK-0015'], 'GET /just-dropped (newest first, spotlight ignored)');
+    });
+
+    await check('home-sold-brands', async () => {
+        const get = async path => {
+            const res = await fetch(`${base}${path}`, { redirect: 'manual' });
+            return { status: res.status, html: await res.text() };
+        };
+        const home = await get('/');
+        assert(home.status === 200, `GET / returned ${home.status}, expected 200`);
+        // The header's Brands dropdown repeats the in-stock links first, so only the strip between its heading and the next section counts
+        const from = home.html.indexOf('id="home-brands"');
+        const to = home.html.indexOf('id="home-just-dropped"');
+        assert(from > -1 && to > from, 'the brand strip or the Just Dropped heading is missing on GET /');
+        const strip = home.html.slice(from, to);
+        for (const part of ['href="/brands/barbour"', 'src="/brands/barbour.svg"', 'href="/brands/old-mill"', '>Old Mill<']) {
+            assert(strip.includes(part), `the brand strip has no ${part} (a sold-before brand shows like any other)`);
+        }
+        const order = ['acme', 'mock-brand', 'northwind', 'barbour', 'old-mill'].map(s => strip.indexOf(`href="/brands/${s}"`));
+        assert(order.every(p => p > -1), 'the brand strip does not link all of Acme, Mock Brand, Northwind, Barbour and Old Mill');
+        assert(order.every((p, i) => i === 0 || p > order[i - 1]), 'the brand strip is not in stock first, then sold before (Barbour before Old Mill)');
+        for (const s of ['barbour', 'old-mill']) {
+            const brand = await get(`/brands/${s}`);
+            assert(brand.status === 200, `GET /brands/${s} returned ${brand.status}, expected 200`);
+            assert(brand.html.includes('Nothing is in stock right now'), `GET /brands/${s} does not show the empty catalogue screen`);
+        }
+        const brands = await get('/brands');
+        assert(brands.status === 200, `GET /brands returned ${brands.status}, expected 200`);
+        assert(brands.html.includes('href="/brands/mock-brand"'), 'GET /brands does not list the in-stock Mock Brand');
+        assert(!brands.html.includes('href="/brands/barbour"') && !brands.html.includes('href="/brands/old-mill"'), 'GET /brands lists a sold-before brand (in-stock brands only)');
+    });
+}
 
 await check('noindex', async () => {
     assert(/noindex/i.test(current.headers.get('x-robots-tag') ?? ''), 'x-robots-tag header has no noindex');

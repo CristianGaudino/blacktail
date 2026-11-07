@@ -1,7 +1,6 @@
 import { ChevronRight } from 'lucide-react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { SOLD_BEFORE_BRANDS } from '@/lib/brands';
 import { COPY } from '@/lib/copy';
 import { getFilters } from '@/lib/howmany/client';
 import { stripBrands } from '@/lib/homeSections';
@@ -56,7 +55,7 @@ export async function BrandStrip() {
     let brands: { name: string; slug: string }[] = [];
     try {
         const filters = await getFilters();
-        brands = stripBrands(filters.brand.map(f => f.value), SOLD_BEFORE_BRANDS, SHOP.defaultBrandOrder);
+        brands = stripBrands(filters.brand.map(f => f.value), filters.soldBrands, SHOP.defaultBrandOrder);
     } catch (error) {
         console.warn('Home: brand strip read failed', error);
     }

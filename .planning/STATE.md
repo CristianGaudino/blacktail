@@ -2,20 +2,20 @@
 gsd_state_version: "1.0"
 milestone: v1.1
 milestone_name: How many API fields
-current_phase: 6
+current_phase: 06
 current_phase_name: Sold-Before Brands, Spotlight and Docs
-status: planning
+status: executing
 stopped_at: Phase 05 complete, ready to plan Phase 6
-last_updated: "2026-11-06T21:09:36.940Z"
+last_updated: "2026-11-06T22:05:04.921Z"
 last_activity: 2026-11-06
-last_activity_desc: Phase 05 complete, transitioned to Phase 6
-state_head: fb9a69bcc959106a9ab036bb272d5abf526f078b
+last_activity_desc: Phase 06 execution started
+state_head: 5bec54fd10958f7796359f3707d7f005d8f025bf
 progress:
   total_phases: 2
   completed_phases: 5
-  total_plans: 4
+  total_plans: 8
   completed_plans: 4
-  percent: 83
+  percent: 50
 ---
 
 # Project State
@@ -25,16 +25,16 @@ progress:
 See: .planning/PROJECT.md (updated 2026-11-06)
 
 **Core value:** Shoppers see the shop's current in-stock pieces, always up to date with How many, in a storefront that looks like the Blacktail Archive mockups.
-**Current focus:** Phase 05 — Sold Item Pages and Listing Links
+**Current focus:** Phase 06 — Sold-Before Brands, Spotlight and Docs
 
 ## Current Position
 
-Phase: 6 — Sold-Before Brands, Spotlight and Docs
-Plan: Not started
-Status: Ready to plan
-Last activity: 2026-11-06 — Phase 05 complete, transitioned to Phase 6
+Phase: 06 (Sold-Before Brands, Spotlight and Docs) — EXECUTING
+Plan: 1 of 4
+Status: Executing Phase 06
+Last activity: 2026-11-06 — Phase 06 execution started
 
-Progress: [████████░░] 83%
+Progress: [█████░░░░░] 50%
 
 ## Performance Metrics
 

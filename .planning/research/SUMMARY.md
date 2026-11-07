@@ -14,7 +14,7 @@
   - **Stays off:** Cache Components and `'use cache'` (opennextjs-cloudflare #1450 is still open).
 - **Main risks:**
   - The webhook returns 204 but nothing is invalidated.
-  - Uncached or unnormalised calls use up the shared 3000/min API budget. Build-time prerendering counts too.
+  - Uncached or unnormalised calls use up the shared API budget of 600 uncached requests a minute per IP. Build-time prerendering counts too.
   - Sold items show as soft 404s or stale JSON-LD.
   - The webhook verifier crashes, or it trusts the request body for the tag.
 

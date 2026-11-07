@@ -214,7 +214,18 @@ Plans:
   3. A shop with no spotlight pieces or no sold brands sees the home page as in v1.0: a newest-first carousel and a strip of in-stock brands then the default order, with no gap and no error
   4. Searching the docs, code comments and scripts for the rate limit finds "600 uncached requests a minute per IP" and no mention of 3000
 
-**Plans**: TBD
+**Plans:** 4 plans
+
+Plans:
+**Wave 1**
+- [ ] 06-01-PLAN.md — Tracer: spotlight pieces open the home Just Dropped carousel, then the newest, no piece twice; /just-dropped stays newest first; an empty or failed spotlight read leaves the v1.0 carousel
+- [ ] 06-02-PLAN.md — Tracer: the client comment, README, CLAUDE.md and the research notes state 600 uncached requests a minute per IP; the historical record is left as it is
+
+**Wave 2** *(blocked on 06-01)*
+- [ ] 06-03-PLAN.md — Tracer: the brand strip's sold-before tier and its brand pages come from /filters soldBrands (logo or name, empty catalogue); the placeholder constant is removed
+
+**Wave 3** *(blocked on Waves 1 and 2)*
+- [ ] 06-04-PLAN.md — Tracer: CI proves spotlight-first and the sold-before tier on workerd; phase PR (Closes #19) and the Phase 6 UAT comment
 
 ## Progress
 

@@ -65,11 +65,19 @@ export const itemsPageSchema = z.object({
 const facet = z.array(z.object({ value: z.string(), count: z.number() })).default([]);
 const range = z.object({ min: z.number(), max: z.number() }).nullable().default(null);
 
+// The element shape is not observed yet (the live list is empty), so plain names and facet-like { value, count } objects are both accepted.
+const soldBrand = z.union([z.string(), z.object({ value: z.string() }).transform(o => o.value)]).transform(s => s.trim()).pipe(z.string().min(1));
+
 /** The values a shopper can pick, from GET /filters. Lenient: the header reads it on every page */
 export const filtersSchema = z.object({
     brand: facet, size: facet, colour: facet, era: facet, material: facet,
     category: facet, type: facet, condition: facet, department: facet,
     priceCents: range, pitToPitMm: range, lengthMm: range,
+    // Brands the seller has sold before but has none of now; a bad entry is dropped on its own, a missing or non-array field is []
+    soldBrands: z.array(z.unknown()).catch([]).transform(list => list.flatMap(entry => {
+        const parsed = soldBrand.safeParse(entry);
+        return parsed.success ? [parsed.data] : [];
+    })),
 });
 
 export const webhookEventSchema = z.object({

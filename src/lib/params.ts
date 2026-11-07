@@ -108,6 +108,6 @@ export function hasFilters(query: CatalogueQuery): boolean {
 }
 
 export function clearFilters(query: CatalogueQuery): CatalogueQuery {
-    const empty = parseCatalogueQuery({}, { brand: [], size: [], colour: [], era: [], material: [], category: [], type: [], condition: [], department: [], priceCents: null, pitToPitMm: null, lengthMm: null });
+    const empty = parseCatalogueQuery({}, { brand: [], size: [], colour: [], era: [], material: [], category: [], type: [], condition: [], department: [], priceCents: null, pitToPitMm: null, lengthMm: null, soldBrands: [] });
     return { ...empty, sort: query.sort };
 }
